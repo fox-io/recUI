@@ -1,0 +1,73 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<!--
+		This template requires the layout to set the anchoring positions from the
+		sub-frame(s). These are feed to the layouts style functions as any other unit
+		spawned by a header. The main difference is that they have the unitsuffix
+		attribute set (and they are parented to their respective owener).
+	-->
+	<Button name="oUF_HeaderTargetTemplate" inherits="SecureUnitButtonTemplate" hidden="true" virtual="true">
+		<Frames>
+			<Button name="$parentTarget" inherits="SecureUnitButtonTemplate">
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="target"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="type1" type="string" value="target"/>
+					<Attribute name="initial-unitWatch" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+		</Frames>
+	</Button>
+	
+	<Button name="recUI_Party" inherits="SecureUnitButtonTemplate" hidden="true" virtual="true">
+		<Frames>
+			<Button name="$parentPet" inherits="SecureUnitButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="0" y="-26.5"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="pet"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="type1" type="string" value="target"/>
+					<Attribute name="initial-unitWatch" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+			<Button name="$parentTarget" inherits="SecureUnitButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parent">
+						<Offset>
+							<AbsDimension x="7.5" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="target"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="type1" type="string" value="target"/>
+					<Attribute name="initial-unitWatch" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+		</Frames>
+	</Button>
+	
+	<Script file='ouf.lua' />
+	<Script file='power.lua' />
+	<Script file='aura.lua' />
+	<Script file='health.lua' />
+	<Script file='cpoints.lua' />
+	<Script file='ricons.lua' />
+	<Script file='leader.lua' />
+	<Script file='status.lua' />
+	<Script file='pvp.lua' />
+	<Script file='portraits.lua' />
+	<Script file='range.lua' />
+	<Script file='happiness.lua' />
+	<Script file='castbar.lua' />
+	<Script file='threat.lua' />
+	<Script file='tags.lua' />
+	<Script file='vehicle.lua' />
+	<Script file='lfdrole.lua' />
+</Ui>
