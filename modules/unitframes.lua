@@ -98,6 +98,37 @@ local PostCastStop = function(self, event, unit)
 	self.Castbar.spellName:SetText()
 end
 
+local PostCreateAuraIcon = function(self, button)
+	button.count:ClearAllPoints()
+	button.count:SetPoint("BOTTOM")
+	
+	button.icon:SetTexCoord(.07, .93, .07, .93)
+
+	--[[button.overlay = button:CreateTexture(nil, "OVERLAY")
+	button.overlay.Hide = function() end
+	button.overlay:SetTexture(ns.media.iconBorder)
+	button.overlay:SetPoint("TOPLEFT", -1, 1)
+	button.overlay:SetPoint("BOTTOMRIGHT", 1, -1)
+	button.overlay:SetTexCoord(0, 1, 0.02, 1)--]]
+end
+
+local PostUpdateAuraIcon
+do
+	local playerUnits = {
+		player = true,
+		pet = true,
+		vehicle = true,
+	}
+
+	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
+		if(playerUnits[icon.owner]) then
+			icon.icon:SetDesaturated(false)
+		else
+			icon.icon:SetDesaturated(true)
+		end
+	end
+end
+
 local function style(self, unit)
 	self.menu = menu
 	self:RegisterForClicks("AnyUp")
@@ -181,6 +212,48 @@ local function style(self, unit)
 		self.Castbar.spellName:SetFont(ns.media.font, 9, nil)
 		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
 		self.Castbar.spellName:SetTextColor(1, 1, 1)
+	end
+	
+-- Buffs
+	if unit == "player" or unit == "target" then
+		self.Buffs = CreateFrame("Frame", nil, self)
+		self.Buffs:SetHeight(2 * 22 + 2 * 2)
+		self.Buffs:SetWidth(8 * 22 + 8 * 2)
+		self.Buffs.num = 16
+		self.Buffs.size = 22
+		self.Buffs.spacing = 2
+		self.Buffs.showBuffType = true
+		
+		self.Debuffs = CreateFrame("Frame", nil, self)
+		self.Debuffs:SetHeight(2 * 22 + 2 * 2)
+		self.Debuffs:SetWidth(8 * 22 + 8 * 2)
+		self.Debuffs.num = 16
+		self.Debuffs.size = 22
+		self.Debuffs.spacing = 2
+		self.Debuffs.showDebuffType = true
+		
+		if unit == "player" then
+			self.Buffs.initialAnchor = "TOPRIGHT"
+			self.Buffs["growth-x"] = "LEFT"
+			self.Buffs["growth-y"] = "DOWN"
+			self.Buffs:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 2)
+			
+			BuffFrame:Hide()
+			TemporaryEnchantFrame:Hide()
+		else
+			self.Buffs.initialAnchor = "TOPLEFT"
+			self.Buffs["growth-x"] = "RIGHT"
+			self.Buffs["growth-y"] = "DOWN"
+			self.Buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 2)
+		end
+		
+		self.Debuffs.initialAnchor = "TOPLEFT"
+		self.Debuffs["growth-x"] = "RIGHT"
+		self.Debuffs["growth-y"] = "DOWN"
+		self.Debuffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+		
+		self.PostUpdateAuraIcon = PostUpdateAuraIcon
+		self.PostCreateAuraIcon = PostCreateAuraIcon
 	end
 
 -- Size
