@@ -113,7 +113,7 @@ local function style(self, unit)
 		edgeFile = ns.media.edgeFile, edgeSize = 3,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	}
-	self.background:SetBackdropColor(0.25, 0.25, 0.25, 1)
+	self.background:SetBackdropColor(0, 0, 0, 1)
 	self.background:SetBackdropBorderColor(0, 0, 0)
 	
 -- Health	
@@ -124,7 +124,7 @@ local function style(self, unit)
 	--self.Health.frequentUpdates = true
 	
 	self.Health.background = self.Health:CreateTexture(nil, "BACKGROUND")
-	self.Health.background:SetTexture(0, 0, 0, 1)
+	self.Health.background:SetTexture(.25, .25, .25, 1)
 	self.Health.background:SetAllPoints()
 	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
@@ -144,7 +144,7 @@ local function style(self, unit)
 	self.Power.colorReaction = true
 	
 	self.Power.background = self.Power:CreateTexture(nil, "BACKGROUND")
-	self.Power.background:SetTexture(0, 0, 0, 1)
+	self.Power.background:SetTexture(.25, .25, .25, 1)
 	self.Power.background:SetAllPoints()
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
