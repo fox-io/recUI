@@ -1,5 +1,5 @@
 local _, ns = ...
---local oUF = ns.oUF
+local oUF = ns.oUF
 
 local siValue = function(val)
 	if(val >= 1e6) then
