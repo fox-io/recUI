@@ -55,10 +55,12 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 	elseif(not UnitIsConnected(unit)) then
 		bar.value:SetText("Offline")
 	else
-		if(min ~= 0 and min ~= max) then
-			bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
-		else
-			bar.value:SetText(max)
+		if unit == "player" or unit == "target" then
+			if(min ~= 0 and min ~= max) then
+				bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
+			else
+				bar.value:SetText(max)
+			end
 		end
 	end
 
