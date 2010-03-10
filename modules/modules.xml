@@ -2,7 +2,6 @@
 	<Script file='actionbar.lua' />
 	<Script file='alts.lua' />
 	<Script file='bags.lua' />
-	<Script file='buffs.lua' />
 	<Script file='chat.lua' />
 	<Script file='chatfilter.lua' />
 	<Script file='combattext.lua' />
