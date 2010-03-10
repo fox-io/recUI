@@ -1,5 +1,5 @@
 local _, ns = ...
-local oUF = ns.oUF
+--local oUF = ns.oUF
 
 local siValue = function(val)
 	if(val >= 1e6) then
@@ -75,6 +75,7 @@ local PostUpdatePower = function(self, event, unit, bar, min, max)
 		bar.value:SetText()
 		bar:SetValue(0)
 	elseif(UnitIsDead(unit) or UnitIsGhost(unit)) then
+		bar.value:SetText()
 		bar:SetValue(0)
 	else
 		if unit == "player" or unit == "target" then
@@ -103,13 +104,6 @@ local PostCreateAuraIcon = function(self, button)
 	button.count:SetPoint("BOTTOM")
 	
 	button.icon:SetTexCoord(.07, .93, .07, .93)
-
-	--[[button.overlay = button:CreateTexture(nil, "OVERLAY")
-	button.overlay.Hide = function() end
-	button.overlay:SetTexture(ns.media.iconBorder)
-	button.overlay:SetPoint("TOPLEFT", -1, 1)
-	button.overlay:SetPoint("BOTTOMRIGHT", 1, -1)
-	button.overlay:SetTexCoord(0, 1, 0.02, 1)--]]
 end
 
 local PostUpdateAuraIcon
@@ -157,11 +151,11 @@ local function style(self, unit)
 	self.background:SetBackdropBorderColor(0, 0, 0)
 	
 -- Health	
-	self.Health = CreateFrame("StatusBar", nil, self.background)
+	self.Health = CreateFrame("StatusBar", nil, self)
 	self.Health:SetStatusBarTexture(ns.media.statusBar)
-	self.Health:SetPoint("TOPLEFT", 3, -3)
-	self.Health:SetPoint("TOPRIGHT", -3, 3)
-	--self.Health.frequentUpdates = true
+	self.Health:SetPoint("TOPLEFT", 0,0)
+	self.Health:SetPoint("TOPRIGHT", 0,0)
+	self.Health.frequentUpdates = true
 	
 	self.Health.background = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.background:SetTexture(.25, .25, .25, 1)
@@ -173,11 +167,11 @@ local function style(self, unit)
 	self.Health.value:SetTextColor(1, 1, 1)
 	
 -- Power
-	self.Power = CreateFrame("StatusBar", nil, self.background)
+	self.Power = CreateFrame("StatusBar", nil, self)
 	self.Power:SetStatusBarTexture(ns.media.statusBar)
-	self.Power:SetPoint("BOTTOMLEFT", 3, 3)
-	self.Power:SetPoint("BOTTOMRIGHT", -3, 3)
-	--self.Power.frequentUpdates = true
+	self.Power:SetPoint("BOTTOMLEFT", 0,0)
+	self.Power:SetPoint("BOTTOMRIGHT", 0,0)
+	self.Power.frequentUpdates = true
 	self.Power.colorTapping = true
 	self.Power.colorHappiness = true
 	self.Power.colorClass = true
@@ -290,7 +284,7 @@ local function style(self, unit)
 		self:RegisterEvent("UNIT_HAPPINESS", updateName)
 	end
 	self:RegisterEvent('UNIT_NAME_UPDATE', updateName)
-	
+
 	return self
 end
 	
