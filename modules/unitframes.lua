@@ -61,6 +61,8 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 			else
 				bar.value:SetText(max)
 			end
+		else
+			bar.value:SetText()
 		end
 	end
 
@@ -121,6 +123,10 @@ local function style(self, unit)
 	self.Health:SetPoint("TOPRIGHT", -3, 3)
 	--self.Health.frequentUpdates = true
 	
+	self.Health.background = self.Health:CreateTexture(nil, "BACKGROUND")
+	self.Health.background:SetTexture(0, 0, 0, 1)
+	self.Health.background:SetAllPoints()
+	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Health.value:SetFont(ns.media.font, 9, nil)
 	self.Health.value:SetPoint("RIGHT", -5)
@@ -136,6 +142,10 @@ local function style(self, unit)
 	self.Power.colorHappiness = true
 	self.Power.colorClass = true
 	self.Power.colorReaction = true
+	
+	self.Power.background = self.Power:CreateTexture(nil, "BACKGROUND")
+	self.Power.background:SetTexture(0, 0, 0, 1)
+	self.Power.background:SetAllPoints()
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
 	self.Power.value:SetFont(ns.media.font, 9, nil)
@@ -159,7 +169,7 @@ local function style(self, unit)
 		self:SetAttribute("initial-height", 10)
 		self:SetAttribute("initial-width", 113)
 		self.Power:SetHeight(2)
-		self.Health:SetHeight(20)
+		self.Health:SetHeight(8)
 	elseif self:GetParent():GetName():match("oUF_Raid") then
 		self:SetAttribute("initial-height", 28)
 		self:SetAttribute("initial-width", 60)
