@@ -89,6 +89,15 @@ local PostUpdatePower = function(self, event, unit, bar, min, max)
 	end
 end
 
+local PostCastStart = function(self, event, unit, spell, spellrank, castid)
+	self.Castbar.spellName:SetText(spell)
+end
+
+local PostCastStop = function(self, event, unit)
+	if(unit ~= self.unit) then return end
+	self.Castbar.spellName:SetText()
+end
+
 local function style(self, unit)
 	self.menu = menu
 	self:RegisterForClicks("AnyUp")
@@ -159,6 +168,21 @@ local function style(self, unit)
 	self.Name:SetFont(ns.media.font, 9, nil)
 	self.Name:SetTextColor(1, 1, 1)
 	
+-- Castbar
+	if unit == "player" or unit == "target" then
+		self.Castbar = CreateFrame("StatusBar", nil, self)
+		self.Castbar:SetStatusBarTexture(ns.media.statusBar)
+		self.Castbar:SetStatusBarColor(.3, .3, .6, 1)
+		self.Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT")
+		self.Castbar:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT")
+		self.Castbar:SetToplevel(true)
+		
+		self.Castbar.spellName = self.Castbar:CreateFontString(nil, "OVERLAY")
+		self.Castbar.spellName:SetFont(ns.media.font, 9, nil)
+		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
+		self.Castbar.spellName:SetTextColor(1, 1, 1)
+	end
+
 -- Size
 	if unit == "player" or unit == "target" then
 		self:SetAttribute("initial-height", 40)
@@ -185,6 +209,10 @@ local function style(self, unit)
 -- Overrides/Hooks
 	self.PostUpdateHealth = PostUpdateHealth
 	self.PostUpdatePower = PostUpdatePower
+	self.PostChannelStart = PostCastStart
+	self.PostCastStart = PostCastStart
+	self.PostCastStop = PostCastStop
+	self.PostChannelStop = PostCastStop
 	if unit == "pet" then
 		self:RegisterEvent("UNIT_HAPPINESS", updateName)
 	end
