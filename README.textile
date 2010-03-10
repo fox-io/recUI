@@ -6,6 +6,4 @@ p. recUI is under development.  While written from the ground up, many of Reclus
 
 p. This incarnation of recUI will be hosted at "GitHub (recUI@GitHub)":http://www.github.com/Recluse/recUI
 
-p. !http://www.pledgie.com/campaigns/9295.png?skin_name=chrome (Click here to lend your support to: recUI and make a donation at www.pledgie.com !)!:http://www.pledgie.com/campaigns/9295
-
 p. ~recUI (c)2009-2010 "Recluse (Send E-Mail)":mailto:john.d.mann@gmail.com~
