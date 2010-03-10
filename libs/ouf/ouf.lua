@@ -1,4 +1,5 @@
 local parent, ns = ...
+local _VERSION = GetAddOnMetadata(parent, 'version')
 
 local function argcheck(value, num, ...)
 	assert(type(num) == 'number', "Bad argument #2 to 'argcheck' (number expected, got "..type(num)..")")
@@ -42,8 +43,28 @@ local colors = {
 	reaction = {},
 }
 
-for eclass, color in next, RAID_CLASS_COLORS do
-	colors.class[eclass] = {color.r, color.g, color.b}
+-- We do this because people edit the vars directly, and changing the default
+-- globals makes SPICE FLOW!
+if(IsAddOnLoaded'!ClassColors' and CUSTOM_CLASS_COLORS) then
+	local updateColors = function()
+		for eclass, color in next, CUSTOM_CLASS_COLORS do
+			colors.class[eclass] = {color.r, color.g, color.b}
+		end
+
+		local oUF = ns.oUF or _G[parent]
+		if(oUF) then
+			for _, obj in next, oUF.objects do
+				obj:PLAYER_ENTERING_WORLD"PLAYER_ENTERING_WORLD"
+			end
+		end
+	end
+
+	updateColors()
+	CUSTOM_CLASS_COLORS:RegisterCallback(updateColors)
+else
+	for eclass, color in next, RAID_CLASS_COLORS do
+		colors.class[eclass] = {color.r, color.g, color.b}
+	end
 end
 
 for eclass, color in next, FACTION_BAR_COLORS do
@@ -51,7 +72,7 @@ for eclass, color in next, FACTION_BAR_COLORS do
 end
 
 -- add-on object
-oUF = {}
+local oUF = {}
 local event_metatable = {
 	__call = function(funcs, self, ...)
 		for _, func in next, funcs do
@@ -540,6 +561,7 @@ function oUF:AddElement(name, update, enable, disable)
 	}
 end
 
+oUF.version = _VERSION
 oUF.units = units
 oUF.objects = objects
 oUF.colors = colors

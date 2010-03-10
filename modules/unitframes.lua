@@ -1,5 +1,92 @@
-local function style(self, unit)
+local _, ns = ...
+local oUF = ns.oUF
+
+local siValue = function(val)
+	if(val >= 1e6) then
+		return ('%.1f'):format(val / 1e6):gsub('%.', 'm')
+	elseif(val >= 1e4) then
+		return ("%.1f"):format(val / 1e3):gsub('%.', 'k')
+	else
+		return val
+	end
+end
+
+local menu = function(self)
+	local unit = self.unit:sub(1, -2)
+	local cunit = self.unit:gsub("(.)", string.upper, 1)
+	if(unit == "party" or unit == "partypet") then
+		ToggleDropDownMenu(1, nil, _G[format("PartyMemberFrame%dDropDown", self.id)], "cursor", 0, 0)
+	elseif(_G[format("%sFrameDropDown", cunit)]) then
+		ToggleDropDownMenu(1, nil, _G[format("%sFrameDropDown", cunit)], "cursor", 0, 0)
+	end
+end
+
+local updateName = function(self, event, unit)
+	if(self.unit == unit) then
+		local r, g, b, t
+		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
+			r, g, b = .6, .6, .6
+		elseif(unit == 'pet') then
+			t = self.colors.happiness[GetPetHappiness()]
+		elseif(UnitIsPlayer(unit)) then
+			local _, class = UnitClass(unit)
+			t = self.colors.class[class]
+		else
+			t = self.colors.reaction[UnitReaction(unit, "player")]
+		end
+
+		if(t) then
+			r, g, b = t[1], t[2], t[3]
+		end
+
+		if(r) then
+			self.Name:SetTextColor(r, g, b)
+		end
+	end
 	
+	self.Name:SetText(UnitName(unit))
+end
+
+local PostUpdateHealth = function(self, event, unit, bar, min, max)
+	if(UnitIsDead(unit)) then
+		bar.value:SetText("Dead")
+	elseif(UnitIsGhost(unit)) then
+		bar.value:SetText("Ghost")
+	elseif(not UnitIsConnected(unit)) then
+		bar.value:SetText("Offline")
+	else
+		if(min ~= 0 and min ~= max) then
+			bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
+		else
+			bar.value:SetText(max)
+		end
+	end
+
+	bar:SetStatusBarColor(.25, .25, .35)
+	return updateName(self, event, unit)
+end
+
+local PostUpdatePower = function(self, event, unit, bar, min, max)
+	if(min == 0 or max == 0 or not UnitIsConnected(unit)) then
+		bar.value:SetText()
+		bar:SetValue(0)
+	elseif(UnitIsDead(unit) or UnitIsGhost(unit)) then
+		bar:SetValue(0)
+	else
+		if unit == "player" or unit == "target" then
+			if (min ~= 0 and min ~= max) then
+				bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
+			else
+				bar.value:SetText(max)
+			end
+		else
+			bar.value:SetText()
+		end
+	end
+end
+
+local function style(self, unit)
+	self.menu = menu
 	self:RegisterForClicks("AnyUp")
 	self:SetAttribute("type2", "menu")
 	
@@ -12,31 +99,84 @@ local function style(self, unit)
 		end
 	end)
 	
+-- Backdrop
+	self.background = CreateFrame("Frame", nil, self)
+	self.background:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
+	self.background:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
+	self.background:SetFrameStrata("BACKGROUND")
+	self.background:SetBackdrop {
+		bgFile = ns.media.bgFile,
+		edgeFile = ns.media.edgeFile, edgeSize = 3,
+		insets = {left = 3, right = 3, top = 3, bottom = 3}
+	}
+	self.background:SetBackdropColor(0.25, 0.25, 0.25, 1)
+	self.background:SetBackdropBorderColor(0, 0, 0)
+	
+-- Health	
+	self.Health = CreateFrame("StatusBar", nil, self.background)
+	self.Health:SetStatusBarTexture(ns.media.statusBar)
+	self.Health:SetPoint("TOPLEFT", 3, -3)
+	self.Health:SetPoint("TOPRIGHT", -3, 3)
+	--self.Health.frequentUpdates = true
+	
+	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
+	self.Health.value:SetFont(ns.media.font, 9, nil)
+	self.Health.value:SetPoint("RIGHT", -5)
+	self.Health.value:SetTextColor(1, 1, 1)
+	
+-- Power
+	self.Power = CreateFrame("StatusBar", nil, self.background)
+	self.Power:SetStatusBarTexture(ns.media.statusBar)
+	self.Power:SetPoint("BOTTOMLEFT", 3, 3)
+	self.Power:SetPoint("BOTTOMRIGHT", -3, 3)
+	--self.Power.frequentUpdates = true
+	self.Power.colorTapping = true
+	self.Power.colorHappiness = true
+	self.Power.colorClass = true
+	self.Power.colorReaction = true
+	
+	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
+	self.Power.value:SetFont(ns.media.font, 9, nil)
+	self.Power.value:SetPoint("RIGHT", -5)
+	self.Power.value:SetTextColor(1, 1, 1)
+	
+-- Name	
+	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
+	self.Name:SetPoint("LEFT", 5)
+	self.Name:SetJustifyH("LEFT")
+	self.Name:SetFont(ns.media.font, 9, nil)
+	self.Name:SetTextColor(1, 1, 1)
+	
+-- Size
 	if unit == "player" or unit == "target" then
-		self:SetAttribute("initial-height", 53)
+		self:SetAttribute("initial-height", 40)
 		self:SetAttribute("initial-width", 230)
+		self.Power:SetHeight(10)
+		self.Health:SetHeight(20)
 	elseif self:GetAttribute("unitsuffix") == "pet" then
 		self:SetAttribute("initial-height", 10)
 		self:SetAttribute("initial-width", 113)
+		self.Power:SetHeight(2)
+		self.Health:SetHeight(20)
 	elseif self:GetParent():GetName():match("oUF_Raid") then
 		self:SetAttribute("initial-height", 28)
 		self:SetAttribute("initial-width", 60)
+		self.Power:SetHeight(2)
+		self.Health:SetHeight(20)
 	else
 		self:SetAttribute("initial-height", 22)
 		self:SetAttribute("initial-width", 113)
+		self.Power:SetHeight(2)
+		self.Health:SetHeight(20)
 	end
 	
-	self.FrameBackdrop = CreateFrame("Frame", nil, self)
-	self.FrameBackdrop:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
-	self.FrameBackdrop:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
-	self.FrameBackdrop:SetFrameStrata("BACKGROUND")
-	self.FrameBackdrop:SetBackdrop {
-		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-		edgeFile = [[]], edgeSize = 3,
-		insets = {left = 3, right = 3, top = 3, bottom = 3}
-	}
-	self.FrameBackdrop:SetBackdropColor(0.25, 0.25, 0.25)
-	self.FrameBackdrop:SetBackdropBorderColor(0, 0, 0)
+-- Overrides/Hooks
+	self.PostUpdateHealth = PostUpdateHealth
+	self.PostUpdatePower = PostUpdatePower
+	if unit == "pet" then
+		self:RegisterEvent("UNIT_HAPPINESS", updateName)
+	end
+	self:RegisterEvent('UNIT_NAME_UPDATE', updateName)
 	
 	return self
 end
