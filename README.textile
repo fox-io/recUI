@@ -1,0 +1,9 @@
+h2. recUI
+
+h3. Recluse's World of Warcraft UI
+
+p. recUI is under development.  While written from the ground up, many of Recluse's _recFoo_ series of addons will be used as a base or in part to move towards a stable state.
+
+This incarnation of recUI will be hosted at "GitHub (recUI@GitHub)":http://www.github.com/Recluse/recUI
+
+~recUI (c)2009-2010 "Recluse (Send E-Mail)":mailto:john.d.mann@gmail.com~
