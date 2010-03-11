@@ -5,8 +5,8 @@ recPanels.panels = {}
 
 --[[reference
 recMedia.backdrop_table = {
-	bgFile   = [=[Interface\ChatFrame\ChatFrameBackground]=],
-	edgeFile = [=[Interface\Addons\recMedia\caellian\glowtex]=],
+	bgFile   = recPanels.media.bgFile,
+	edgeFile = recPanels.media.edgeFile,
 	edgeSize = 4,
 	insets   = {
 		left   = 3,
@@ -26,7 +26,7 @@ recPanels.create_panel = function(self, name, offsetx, offsety, width, height, p
 	
 	self.panels[id]:SetBackdrop({
 		bgFile = nil,
-		edgeFile = [[Interface\Addons\recMedia\caellian\glowtex]],
+		edgeFile = recPanels.media.edgeFile,
 		edgeSize = 4,
 	})
 	self.panels[id]:SetBackdropBorderColor(0,0,0)
@@ -73,12 +73,12 @@ local c = RAID_CLASS_COLORS[playerClass]
 
 local textures = {
 	["leaf"] = {
-		file = [[Interface\Addons\recMedia\panels\leaf]],
+		file = [[Interface\Addons\recUI\media\texture\leaf]],
 		vertex = { r = 0, g = 0, b = 0, a = 1 },
 		panel = { r = .25, g = .25, b = .25, a = .5 }
 	},
 	["cyborg"] = {
-		file = [[Interface\Addons\recMedia\panels\cyborg]],
+		file = [[Interface\Addons\recUI\media\texture\cyborg]],
 		vertex = { r = c.r, g = c.g, b = c.b, a = 1 },
 		panel = { r = 0, g = 0, b = 0, a = 0 }
 	},

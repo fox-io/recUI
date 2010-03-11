@@ -8,7 +8,7 @@ local function CreateFeedFrame(name, from, to, x, y, w, h)
 	f:SetHeight(h)
 	f:SetWidth(w)
 	f:SetPoint(from, UIParent, to, x, y)
-	--f:SetBackdrop({ bgFile = [[Interface\ChatFrame\ChatFrameBackground]] })
+	--f:SetBackdrop({ bgFile = ns.media.bgFile })
 	--f:SetBackdropColor(0, 0, 0, 1)
 	f.Feeds = {}
 	return f

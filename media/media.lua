@@ -5,7 +5,17 @@ ns.media = {
 	statusBar     = [[Interface\Addons\recUI\media\texture\minimalist]],
 	font          = [[Interface\Addons\recUI\media\font\rexlia free.ttf]],
 	iconBorder    = [[Interface\Addons\recUI\media\texture\border]],
-	iconHighlight = [[Interface\Addons\recUI\media\texture\highlight]]
+	iconHighlight = [[Interface\Addons\recUI\media\texture\highlight]],
+	
+	buttonNormal = [[Interface\AddOns\recUI\media\texture\Normal]],
+	buttonGloss = [[Interface\AddOns\recUI\media\texture\gloss]],
+	buttonFlash = [[Interface\AddOns\recUI\media\texture\flash]],
+	buttonHover = [[Interface\AddOns\recUI\media\texture\hover]],
+	buttonPushed = [[Interface\AddOns\recUI\media\texture\pushed]],
+	buttonChecked = [[Interface\AddOns\recUI\media\texture\checked]],
+	buttonEquipped = [[Interface\AddOns\recUI\media\texture\gloss_grey]],
+	buttonBackdrop = [[Interface\AddOns\recUI\media\texture\Backdrop]],
+	buttonHighlight = [[Interface\AddOns\recUI\media\texture\Highlight]]
 }
 
 ns.backdrop_table = {

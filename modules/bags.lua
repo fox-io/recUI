@@ -1,3 +1,4 @@
+local _, ns = ...
 recBagsConfig = recBagsConfig or {}
 local cfg = recBagsConfig
 
@@ -31,13 +32,13 @@ cfg.bag_border_g		= 0
 cfg.bag_border_b		= 0
 cfg.bag_border_a		= 1
 
-cfg.slot_bg_file		= [[Interface\AddOns\recUI\media\texture\Backdrop]]
+cfg.slot_bg_file		= ns.media.buttonBackdrop
 cfg.slot_edge_file		= ""
 cfg.slot_edge_size		= 0
 cfg.slot_inset			= 0
-cfg.normal_texture		= [[Interface\AddOns\recUI\media\texture\Normal]]
-cfg.pushed_texture		= [[Interface\AddOns\recUI\media\texture\Overlay]]
-cfg.highlight_texture	= [[Interface\AddOns\recUI\media\texture\Highlight]]
+cfg.normal_texture		= ns.media.buttonNormal
+cfg.pushed_texture		= ns.media.buttonPushed
+cfg.highlight_texture	= ns.media.buttonHighlight
 
 cfg.locked_desaturation_r = 0.5
 cfg.locked_desaturation_g = 0.5
@@ -48,8 +49,8 @@ cfg.slot_backdrop_g = 1
 cfg.slot_backdrop_b = 1
 cfg.slot_backdrop_a = 1
 
-cfg.bag_bg_file			= [[Interface\ChatFrame\ChatFrameBackground]]
-cfg.bag_edge_file		= [[Interface\DialogFrame\UI-DialogBox-Border]]
+cfg.bag_bg_file			= ns.media.bgFile
+cfg.bag_edge_file		= ns.media.edgeFilt
 
 cfg.backpack_texture	= [[Interface\Buttons\Button-Backpack-Up]]
 cfg.empty_bag_texture	= [[interface\paperdoll\UI-PaperDoll-Slot-Bag]]
@@ -63,9 +64,9 @@ cfg.texture_size		= 32
 -- Buttons A/S, Keyring, etc
 cfg.button_bg_file		= nil --[[Interface\ChatFrame\ChatFrameBackground]]
 cfg.button_edge_file	= nil --[[Interface\DialogFrame\UI-DialogBox-Border]]
-cfg.button_normal_texture	= [[Interface\AddOns\recUI\media\texture\Normal]]
-cfg.button_pushed_texture	= [[Interface\AddOns\recUI\media\texture\Overlay]]
-cfg.button_highlight_texture	= [[Interface\AddOns\recUI\media\texture\Highlight]]
+cfg.button_normal_texture	= ns.media.buttonNormal
+cfg.button_pushed_texture	= ns.media.buttonPushed
+cfg.button_highlight_texture	= ns.media.buttonHighlight
 cfg.button_highlight_blend_mode	= "ADD"
 cfg.button_edge_size	= 5
 cfg.button_inset		= 5
@@ -85,14 +86,14 @@ cfg.button_font_object	= GameFontNormalSmall	-- Object, not font face. Buttons a
 -- Rarity glow color
 cfg.rarity_threshold		= nil -- items must be higher than this rarity to be colored with rarity glow
 cfg.rarity_layer			= "OVERLAY"
-cfg.rarity_overlay_texture	= [[Interface\AddOns\recUI\media\texture\Gloss]]
+cfg.rarity_overlay_texture	= ns.media.buttonGloss
 cfg.rarity_overlay_size = 32
 cfg.rarity_overlay_blend_mode = "ADD"
 cfg.rarity_overlay_r		= 1
 cfg.rarity_overlay_g		= 1
 cfg.rarity_overlay_b		= 1
 cfg.rarity_overlay_a		= 0.5
-cfg.rarity_border_texture = [[Interface\AddOns\recBags\mediaUI\media\texture\Normal]]
+cfg.rarity_border_texture = ns.media.buttonEquipped
 cfg.rarity_border_size	= 32
 cfg.rarity_border_r		= 1
 cfg.rarity_border_g		= 1

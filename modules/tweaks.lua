@@ -790,9 +790,9 @@ function SetZoneText(showZone)
 	SubZoneTextString:SetTextColor(1, 1, 1)
 	--end
 	
-	ZoneTextString:SetFont(    recMedia.fontFace.NORMAL, 18, "OUTLINE" )
-	SubZoneTextString:SetFont( recMedia.fontFace.NORMAL, 18, "OUTLINE" )
-	pvpTextString:SetFont(     recMedia.fontFace.NORMAL, 18, "OUTLINE" )
+	ZoneTextString:SetFont(    ns.media.font, 18, "OUTLINE" )
+	SubZoneTextString:SetFont( ns.media.font, 18, "OUTLINE" )
+	pvpTextString:SetFont(     ns.media.font, 18, "OUTLINE" )
 	
 	ZoneTextString:SetJustifyH("CENTER")
 	ZoneTextString:ClearAllPoints()

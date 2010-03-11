@@ -23,7 +23,7 @@ opt.display_bg_color_a = 0		-- Alpha of the main frame's background.
 
 opt.mode = "Total"				-- Default display mode: "Total", "Fight", or "DPS"
 opt.mode_button_width = 50
---opt.mode_font_face = [[Fonts\ARIALN.TTF]]
+--opt.mode_font_face = ns.media.font
 --opt.mode_font_size = 11
 --opt.mode_font_flags = ""
 --opt.mode_font_color_r = 1

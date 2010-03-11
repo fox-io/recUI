@@ -438,17 +438,17 @@ HideDefaultFrames()
   
   --TEXTURES
   --default border texture  
-  local rb2_normal_texture    = [[Interface\AddOns\recUI\media\texture\gloss]]
+  local rb2_normal_texture    = ns.media.buttonGloss
   --texture when a button flashs --> button becomes ready
-  local rb2_flash_texture     = [[Interface\AddOns\recUI\media\texture\flash]]
+  local rb2_flash_texture     = ns.media.buttonFlash
   --hover textures
-  local rb2_hover_texture     = [[Interface\AddOns\recUI\media\texture\hover]]
+  local rb2_hover_texture     = ns.media.buttonHover
   --texture if you push that button
-  local rb2_pushed_texture    = [[Interface\AddOns\recUI\media\texture\pushed]]
+  local rb2_pushed_texture    = ns.media.buttonPushed
   --texture that is active when the button is in active state (next melee swing attacks mostly)
-  local rb2_checked_texture   = [[Interface\AddOns\recUI\media\texture\checked]] 
+  local rb2_checked_texture   = ns.media.buttonChecked
   --texture used for equipped items, this can differ since you may want to apply a different vertexcolor
-  local rb2_equipped_texture  = [[Interface\AddOns\recUI\media\texture\gloss_grey]]
+  local rb2_equipped_texture  = ns.media.buttonEquipped
   
   --hide the hotkey? 0/1
   local hide_hotkey = 1
