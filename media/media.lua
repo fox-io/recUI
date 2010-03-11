@@ -23,7 +23,7 @@ recUI.media = {
 recUI.media.fontObject = CreateFont("recUIFontObject")
 recUI.media.fontObject:SetFont(recUI.media.font, 10, nil)
 
-recUI.backdrop_table = {
+recUI.media.backdropTable = {
 	bgFile   = recUI.media.bgFile,
 	edgeFile = recUI.media.edgeFile,
 	edgeSize = 4,
