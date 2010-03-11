@@ -271,7 +271,7 @@ local function style(self, unit)
 		self:SetAttribute("initial-height", 22)
 		self:SetAttribute("initial-width", 113)
 		self.Power:SetHeight(2)
-		self.Health:SetHeight(20)
+		self.Health:SetHeight(18)
 	end
 	
 -- Overrides/Hooks
