@@ -24,7 +24,7 @@ event_frame:SetScript("OnEvent", function(self, event)
 	self:SetScript("OnEvent", nil)
 	
 	-- Make Minimap square
-	Minimap:SetMaskTexture([[Interface\AddOns\recMinimap\media\square]])
+	Minimap:SetMaskTexture([[Interface\AddOns\recUI\media\texture\minimapsquare]])
 	
 	-- Position Minimap
 	Minimap:SetParent(TestTextureFrame)
