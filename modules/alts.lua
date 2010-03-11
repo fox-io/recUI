@@ -1,13 +1,7 @@
 local _, recUI = ...
---------------------------------------------------------
--- RecAltInfo (c)2009-2010 Recluse <john.d.mann@gmail.com>
---
--- Stores information about your alts, compiling the data
--- into an informative display.
---------------------------------------------------------
 
 -- Some variables we will need.
-local event_frame, db, my_name, my_realm, my_faction = CreateFrame("Frame")
+local db, my_name, my_realm, my_faction
 
 local function UpdateInfo(self, event, ...)
 	-- Short reference to player's saved var table
@@ -317,12 +311,14 @@ local function SlashCommand(cmd)
 	end
 end
 
-local function AddonLoaded()
-	if arg1 ~= "recAltInfo" then return end
+recUI.lib.registerEvent("PLAYER_MONEY", "recUIModuleAltUpdater", UpdateInfo)
+recUI.lib.registerEvent("PLAYER_LEVEL_UP", "recUIModuleAltUpdater", UpdateInfo)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIModuleAltUpdater", UpdateInfo)
+recUI.lib.registerEvent("TIME_PLAYED_MSG", "recUIModuleAltUpdater", UpdateInfo)
 
-	-- Remove any events that we are watching (sanity)
-	event_frame:UnregisterAllEvents()
-
+recUI.lib.registerEvent("ADDON_LOADED", "recUIModuleAltOnLoad", function(self, event, addon, ...)
+	if addon ~= "recUI" then return end
+	
 	-- Get the information about the player that we will need to save their data
 	my_name = UnitName("player")
 	my_realm = GetRealmName()
@@ -330,34 +326,24 @@ local function AddonLoaded()
 
 	-- Create a saved variable table for this realm/faction/character if it does not exist.
 	if my_name and my_realm and my_faction then
-		RecAltInfoDB = RecAltInfoDB or {}
-		db = {}
+		recUIDB = recUIDB or {}
+		db = recUIDB
 		if not db[my_realm] then db[my_realm] = {} end
 		if not db[my_realm][my_faction] then db[my_realm][my_faction] = {} end
 		if not db[my_realm][my_faction][my_name] then db[my_realm][my_faction][my_name] = {} end
 	else
 		-- This should not happen, but if it does, then we need to know about it.
-		print("RecAltInfo: ERROR #1 Inform author.")
+		print("recUI Alts: ERROR #1 Inform author.")
 		return
 	end
-
-	-- Change the function called OnEvent, and register events which will trigger a data update
-	event_frame:SetScript("OnEvent", UpdateInfo)
-	--event_frame:RegisterEvent("PLAYER_LOGOUT")	-- Tried this, but didn't seem to work as it should have.
-	event_frame:RegisterEvent("PLAYER_MONEY")
-	event_frame:RegisterEvent("PLAYER_LEVEL_UP")
-	event_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-	event_frame:RegisterEvent("TIME_PLAYED_MSG")
-
+	
 	-- Set up the slash command
 	SlashCmdList["RECALTINFO"] = SlashCommand
 	SLASH_RECALTINFO1 = "/rai"
 	SLASH_RECALTINFO2 = "/recaltinfo"
-
+	
 	-- Give it a swift kick in the rear to get started.
 	UpdateInfo()
-end
-
--- Since we are dealing with saved variables and whatnot, we need to wait until RAI is ready for us.
-event_frame:SetScript("OnEvent", AddonLoaded)
-event_frame:RegisterEvent("ADDON_LOADED")
+	
+	recUI.lib.unregisterEvent("ADDON_LOADED", "recUIModuleAltOnLoad")
+end)
