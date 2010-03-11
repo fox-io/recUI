@@ -35,7 +35,7 @@ recUI.lib.eventFrame:SetScript("OnEvent", function(self, event, ...)
 	end
 	
 	-- Call each event handler.
-	for _, eventHander in pairs(recUI.lib.events[event]) do
+	for _, eventHandler in pairs(recUI.lib.events[event]) do
 		eventHandler(self, event, ...)
 	end
 end)
@@ -52,6 +52,7 @@ recUI.lib.registerEvent = function(event, handlerName, eventHandler)
 		
 	-- Insert handler
 	else
+		recUI.lib.eventFrame:RegisterEvent(event)
 		recUI.lib.events[event][handlerName] = eventHandler
 		return
 	end
@@ -73,6 +74,7 @@ recUI.lib.unregisterEvent = function(event, handlerName)
 		-- Remove event entry if final handler was removed.
 		local remainingHandlers = #recUI.lib.events[event]
 		if not(remainingHandlers) or (remainingHandlers == 0) then
+			recUI.lib.eventFrame:UnregisterEvent(event)
 			recUI.lib.events[event] = nil
 		end
 	end
