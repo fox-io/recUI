@@ -1,7 +1,8 @@
 local _, recUI = ...
 recUI.tweaks = {}
 local t = recUI.tweaks
-t.events = CreateFrame("Frame")
+
+recUI.tweaks.eventFrame = CreateFrame("Frame")
 
 local GetInventoryItemQuality = GetInventoryItemQuality
 local CharacterFrame = CharacterFrame
@@ -45,17 +46,17 @@ local function reanchor()
 	end
 end
 
-t.events:RegisterEvent("VARIABLES_LOADED")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("VARIABLES_LOADED")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "VARIABLES_LOADED" then
 		AlertFrame_FixAnchors = reanchor
 	end
 end)
 
-t.events:RegisterEvent("CHAT_MSG_SYSTEM")
-t.events:RegisterEvent("PLAYER_LOGOUT")
-t.events:RegisterEvent("PLAYER_ENTERING_WORLD")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
+recUI.tweaks.eventFrame:RegisterEvent("PLAYER_LOGOUT")
+recUI.tweaks.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "CHAT_MSG_SYSTEM" or event == "PLAYER_LOGOUT" or event == "PLAYER_ENTERING_WORLD" then
 		if event == "PLAYER_LOGOUT" then
 			SetCVar("UnitNameOwn", 0)
@@ -73,8 +74,8 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-t.events:RegisterEvent("PLAYER_DEAD")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("PLAYER_DEAD")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_DEAD" then
 		if MiniMapBattlefieldFrame.status == "active" then
 			RepopMe()
@@ -90,8 +91,8 @@ local unwanted_buffs = {
 	[58493] = true,	-- Mr. T mohawk
 }
 
-t.events:RegisterEvent("UNIT_AURA")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("UNIT_AURA")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "UNIT_AURA" then
 		if unit == "player" then
 			for k,_ in pairs(unwanted_buffs) do
@@ -103,8 +104,8 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-t.events:RegisterEvent("PLAYER_LOGIN")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("PLAYER_LOGIN")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_LOGIN" then
 		SetCVar("alwaysCompareItems", 0)						-- 0,1 show comparison tooltips 0 == with shift, 1 == full time
 		SetCVar("autoDismount", 1)								-- 0,1 dismount when using an ability
@@ -187,13 +188,14 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-t.events:RegisterEvent("DUEL_REQUESTED")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("DUEL_REQUESTED")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "DUEL_REQUESTED" then
 		CancelDuel()
 	end
 end)
 
+-- Block errors
 UIErrorsFrame:UnregisterEvent("UI_ERROR_MESSAGE")
 
 local useless_messages = {
@@ -213,10 +215,10 @@ UIErrorsFrame:SetScript("OnEvent", function(self, event, msg, ...)
 	return oUIErrorsFrame_OnEvent(self, event, msg, ...)
 end)
 
-t.events:RegisterEvent("ADDON_LOADED")
-t.events:RegisterEvent("UPDATE_INSTANCE_INFO")
+recUI.tweaks.eventFrame:RegisterEvent("ADDON_LOADED")
+recUI.tweaks.eventFrame:RegisterEvent("UPDATE_INSTANCE_INFO")
 
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" then
 		if ... == "recUI" then
 			RequestRaidInfo()
@@ -324,8 +326,8 @@ end)
 
 
 -- Auto DE/Greed
-t.events:RegisterEvent("START_LOOT_ROLL")
-t.events:HookScript("OnEvent", function(self, event, id)
+recUI.tweaks.eventFrame:RegisterEvent("START_LOOT_ROLL")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, id)
 	if event == "START_LOOT_ROLL" then
 		if UnitLevel("player") < 60 then return end
 		if(id and select(4, GetLootRollItemInfo(id))==2 and not (select(5, GetLootRollItemInfo(id)))) then
@@ -661,8 +663,8 @@ end
 	Ensures that we have the player's name, their realm, and that a table actually exists for
 	that particular character before scanning the vendor for purchases.
 --]]
-t.events:RegisterEvent("MERCHANT_SHOW")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("MERCHANT_SHOW")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
 		if not my_reagents then
 			if not player_name then player_name = UnitName("player") end
@@ -676,8 +678,8 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-t.events:RegisterEvent("MERCHANT_SHOW")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("MERCHANT_SHOW")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
 		if CanMerchantRepair() then
 			local repair_cost, repair_needed = GetRepairAllCost()
@@ -727,8 +729,8 @@ ChatFrameEditBox:HookScript("OnTextChanged", function(self, from_user, ...)
 	end
 end)
 
-t.events:RegisterEvent("MERCHANT_SHOW")
-t.events:HookScript("OnEvent", function(self, event, ...)
+recUI.tweaks.eventFrame:RegisterEvent("MERCHANT_SHOW")
+recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
 		for bag_id = 0, 4 do
 			for slot_id = 0, GetContainerNumSlots(bag_id) do
@@ -744,7 +746,6 @@ end)
 
 
 -- Override Blizzard fade durations
-
 FadingFrame_SetFadeInTime(  ZoneTextFrame,    2)
 FadingFrame_SetHoldTime(    ZoneTextFrame,    0)
 FadingFrame_SetFadeOutTime( ZoneTextFrame,    5)
