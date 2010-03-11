@@ -87,7 +87,8 @@ local filters = {
 		-- Special "all" source prevents any source from displaying messages containing the patterns.
 		["all"]			= {
 						[1] = " anal ",
-						[2] = "penis"
+						[2] = "penis",
+						[3] = "ignah"	-- Trade spam/Gold|PL seller
 					},
 		-- Special "author" source prevents any messages from the authors in the list from displaying.
 		["author"]		= {
