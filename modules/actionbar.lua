@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 local mouseOverBar1 = 0
 local mouseOverBar2 = 0
 local mouseOverBar3 = 0
@@ -436,20 +436,6 @@ HideDefaultFrames()
   -- CONFIG 
   ---------------------------------------
   
-  --TEXTURES
-  --default border texture  
-  local rb2_normal_texture    = ns.media.buttonGloss
-  --texture when a button flashs --> button becomes ready
-  local rb2_flash_texture     = ns.media.buttonFlash
-  --hover textures
-  local rb2_hover_texture     = ns.media.buttonHover
-  --texture if you push that button
-  local rb2_pushed_texture    = ns.media.buttonPushed
-  --texture that is active when the button is in active state (next melee swing attacks mostly)
-  local rb2_checked_texture   = ns.media.buttonChecked
-  --texture used for equipped items, this can differ since you may want to apply a different vertexcolor
-  local rb2_equipped_texture  = ns.media.buttonEquipped
-  
   --hide the hotkey? 0/1
   local hide_hotkey = 1
   
@@ -519,29 +505,29 @@ HideDefaultFrames()
     nt:SetPoint("Center", 0, 0)
     bo:Hide()
     
-    ho:SetFont(ns.media.font, 14, "OUTLINE")
-    co:SetFont(ns.media.font, 14, "OUTLINE")
-    na:SetFont(ns.media.font, 14, "OUTLINE")
+    ho:SetFont(recUI.media.font, 14, "OUTLINE")
+    co:SetFont(recUI.media.font, 14, "OUTLINE")
+    na:SetFont(recUI.media.font, 14, "OUTLINE")
     if hide_hotkey == 1 then
       ho:Hide()
     end
     na:Hide()
   
-    fl:SetTexture(rb2_flash_texture)
-    bu:SetHighlightTexture(rb2_hover_texture)
-    bu:SetPushedTexture(rb2_pushed_texture)
-    bu:SetCheckedTexture(rb2_checked_texture)
-    bu:SetNormalTexture(rb2_normal_texture)
+    fl:SetTexture(recUI.media.buttonFlash)
+    bu:SetHighlightTexture(recUI.media.buttonHighlight)
+    bu:SetPushedTexture(recUI.media.buttonPushed)
+    bu:SetCheckedTexture(recUI.media.buttonChecked)
+    bu:SetNormalTexture(recUI.media.buttonNormal)
   
     ic:SetTexCoord(0.1,0.9,0.1,0.9)
     ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
     ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
   
     if ( IsEquippedAction(action) ) then
-      bu:SetNormalTexture(rb2_equipped_texture)
+      bu:SetNormalTexture(recUI.media.buttonNormal)
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
-      bu:SetNormalTexture(rb2_normal_texture)
+      bu:SetNormalTexture(recUI.media.buttonNormal)
       nt:SetVertexColor(color.r,color.g,color.b,.6)
     end  
   
@@ -563,11 +549,11 @@ HideDefaultFrames()
       
       nt:SetVertexColor(color.r,color.g,color.b,1)
       
-      fl:SetTexture(rb2_flash_texture)
-      bu:SetHighlightTexture(rb2_hover_texture)
-      bu:SetPushedTexture(rb2_pushed_texture)
-      bu:SetCheckedTexture(rb2_checked_texture)
-      bu:SetNormalTexture(rb2_normal_texture)
+      fl:SetTexture(recUI.media.buttonFlash)
+      bu:SetHighlightTexture(recUI.media.buttonHighlight)
+      bu:SetPushedTexture(recUI.media.buttonPushed)
+      bu:SetCheckedTexture(recUI.media.buttonChecked)
+      bu:SetNormalTexture(recUI.media.buttonNormal)
     
       ic:SetTexCoord(0.1,0.9,0.1,0.9)
       ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
@@ -591,11 +577,11 @@ HideDefaultFrames()
       
       nt:SetVertexColor(color.r,color.g,color.b,1)
       
-      fl:SetTexture(rb2_flash_texture)
-      bu:SetHighlightTexture(rb2_hover_texture)
-      bu:SetPushedTexture(rb2_pushed_texture)
-      bu:SetCheckedTexture(rb2_checked_texture)
-      bu:SetNormalTexture(rb2_normal_texture)
+      fl:SetTexture(recUI.media.buttonFlash)
+      bu:SetHighlightTexture(recUI.media.buttonHover)
+      bu:SetPushedTexture(recUI.media.buttonPushed)
+      bu:SetCheckedTexture(recUI.media.buttonChecked)
+      bu:SetNormalTexture(recUI.media.buttonNormal)
     
       ic:SetTexCoord(0.1,0.9,0.1,0.9)
       ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
