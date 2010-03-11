@@ -138,6 +138,6 @@ recUI.lib.registerEvent("ADDON_LOADED", "recUIMediaLoadFonts", function(self, ev
 		hooksecurefunc("PlayerTitleFrame_UpdateTitles", FixTitleFont)
 		FixTitleFont()
 		
-		recUI.lib.unregisterEvent("recUIMediaLoadFonts")
+		recUI.lib.unregisterEvent("ADDON_LOADED", "recUIMediaLoadFonts")
 	end
 end)
