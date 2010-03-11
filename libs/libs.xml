@@ -1,4 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Include file='ouf\ouf.xml' />
 	<Script file='recUILib.lua' />
+	<Include file='ouf\ouf.xml' />
 </Ui>
