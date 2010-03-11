@@ -255,7 +255,7 @@ local function style(self, unit)
 		self.Debuffs.initialAnchor = "TOPLEFT"
 		self.Debuffs["growth-x"] = "RIGHT"
 		self.Debuffs["growth-y"] = "DOWN"
-		self.Debuffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -2)
+		self.Debuffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -3, -4)
 		
 		self.PostUpdateAuraIcon = PostUpdateAuraIcon
 		self.PostCreateAuraIcon = PostCreateAuraIcon
