@@ -1,5 +1,6 @@
 ## Interface: 30300
 ## Title: recUI
+## Notes: Recluse's UI
 ## Author: Recluse
 ## Version: 3.3.2 b1
 ## SavedVariables: recUIDB
