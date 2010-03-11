@@ -65,7 +65,7 @@ recPetCare:SetScript("OnEvent", function(self, event, ...) if self[event] then r
 recPetCare:RegisterEvent("ADDON_LOADED")
 
 function recPetCare:ADDON_LOADED(addon)
-	if addon ~= "recPetCare" then return end
+	if addon ~= "recUI" then return end
 	
 	if select(2, UnitClass("player")) ~= "HUNTER" then
 		self:UnregisterAllEvents()
