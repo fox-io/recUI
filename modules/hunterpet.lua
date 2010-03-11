@@ -243,12 +243,12 @@ function recPetCare:UNIT_HAPPINESS(unit)
 	if self.db.warnHungry then
 		if happiness == 1 then
 			if (GetTime() - warned) > 60 then
-				print(format("|cFFABD473recPetCare:|r %s is very hungry!", UnitName("pet")))
+				print(format("|cFFABD473recUI Pet:|r %s is very hungry!", UnitName("pet")))
 				warned = GetTime()
 			end
 		elseif happiness == 2 then
 			if (GetTime() - warned) > 120 then
-				print(format("|cFFABD473recPetCare:|r %s is hungry.", UnitName("pet")))
+				print(format("|cFFABD473recUI Pet:|r %s is hungry.", UnitName("pet")))
 				warned = GetTime()
 			end
 		end
@@ -412,7 +412,7 @@ function recPetCare:Scan()
 			end
 		end
 		if not best.id and UnitName("pet") ~= "Unknown" and self.db.warnFood and GetTime() - warned > 240 then
-			print(format("|cFFABD473recPetCare:|r You don't have any food for %s.", UnitName("pet")))
+			print(format("|cFFABD473recUI Pet:|r You don't have any food for %s.", UnitName("pet")))
 			warned = GetTime()
 		end
 		self:Edit()
