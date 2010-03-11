@@ -100,8 +100,9 @@ local PostCastStop = function(self, event, unit)
 end
 
 local PostCreateAuraIcon = function(self, button)
+	button.count:SetFont(ns.media.font, 9, nil)
 	button.count:ClearAllPoints()
-	button.count:SetPoint("BOTTOM")
+	button.count:SetPoint("BOTTOMRIGHT")
 	
 	button.icon:SetTexCoord(.07, .93, .07, .93)
 end
