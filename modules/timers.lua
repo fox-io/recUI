@@ -1,7 +1,7 @@
-local _, ns = ...
+local _, recUI = ...
 
 local recAutoShot = CreateFrame("StatusBar")
-recAutoShot:SetStatusBarTexture(ns.media.statusBar)
+recAutoShot:SetStatusBarTexture(recUI.media.statusBar)
 recAutoShot:SetStatusBarColor(1, .3, .3, .8)
 recAutoShot:SetPoint("CENTER")
 recAutoShot:SetSize(200, 10)
@@ -10,17 +10,17 @@ recAutoShot:Hide()
 recAutoShot.backdrop = recAutoShot:CreateTexture(nil, "BACKGROUND")
 recAutoShot.backdrop:SetPoint("TOPLEFT", -2, 2)
 recAutoShot.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
-recAutoShot.backdrop:SetTexture(ns.media.bgFile)
+recAutoShot.backdrop:SetTexture(recUI.media.bgFile)
 recAutoShot.backdrop:SetVertexColor(0, 0, 0, .5)
 
 recAutoShot.label = recAutoShot:CreateFontString(nil, "OVERLAY")
 recAutoShot.label:SetPoint("LEFT", 5)
-recAutoShot.label:SetFont(ns.media.font, 8, "THINOUTLINE")
+recAutoShot.label:SetFont(recUI.media.font, 8, "THINOUTLINE")
 recAutoShot.label:SetText("Auto Shot")
 
 recAutoShot.time = recAutoShot:CreateFontString(nil, "OVERLAY")
 recAutoShot.time:SetPoint("RIGHT", -5)
-recAutoShot.time:SetFont(ns.media.font, 8, "THINOUTLINE")
+recAutoShot.time:SetFont(recUI.media.font, 8, "THINOUTLINE")
 
 local currentTime, startTime, endTime
 recAutoShot:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
@@ -47,19 +47,19 @@ recAutoShot:SetScript("OnUpdate", function(self, elapsed)
 	end
 end)
 
-local _, t = ...
+recUI.timers = {}
 local event_frame = CreateFrame("Frame")
 local floor = math.floor
 local mod = mod
 local format = string.format
 local pairs = pairs
 local UnitBuff, UnitDebuff = UnitBuff, UnitDebuff
-local font_face    = t.media.font
+local font_face    = recUI.media.font
 local font_size    = 9
 local font_outline = ""
-local texture      = t.media.statusBar
-local edge_file    = t.media.edgeFile
-local bg_file      = t.media.bgFile
+local texture      = recUI.media.statusBar
+local edge_file    = recUI.media.edgeFile
+local bg_file      = recUI.media.bgFile
 local aura_colors  = {
 	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
 	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
@@ -124,7 +124,7 @@ local function position_bar(bar)
 	bar:SetPoint(bar.position[spec].attach_point, bar.position[spec].parent_frame, bar.position[spec].relative_point, bar.position[spec].x_offset, bar.position[spec].y_offset)
 end
 
-t.make_bar = function(self, spell_name, unit, buff_type, only_self, r, g, b, width, height, attach_point1, parent_frame1, relative_point1, x_offset1, y_offset1, attach_point2, parent_frame2, relative_point2, x_offset2, y_offset2, hide_name)
+recUI.timers.make_bar = function(self, spell_name, unit, buff_type, only_self, r, g, b, width, height, attach_point1, parent_frame1, relative_point1, x_offset1, y_offset1, attach_point2, parent_frame2, relative_point2, x_offset2, y_offset2, hide_name)
 	local new_id = (#bars or 0) + 1
 	bars[new_id] = CreateFrame("StatusBar", format("recTimers_Bar_%d", new_id), parent_frame)
 	bars[new_id]:SetHeight(height)
@@ -196,7 +196,7 @@ t.make_bar = function(self, spell_name, unit, buff_type, only_self, r, g, b, wid
 	bars[new_id].icon:SetTexture(nil)
 	
 	bars[new_id].lbl = bars[new_id]:CreateFontString(format("recTimers_BarLabel_%d", new_id), "OVERLAY")
-	bars[new_id].lbl:SetFont(t.media.font, 8, "THINOUTLINE")
+	bars[new_id].lbl:SetFont(recUI.media.font, 8, "THINOUTLINE")
 	bars[new_id].lbl:SetPoint("CENTER", bars[new_id], "CENTER", 0, 1)
 	
 	position_bar(bars[new_id])
@@ -282,8 +282,7 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local _, t = ...
-local _, class = UnitClass("player")
+local class = recUI.lib.playerClass
 local level = UnitLevel("player")
 
 -- Bar creation reference.
@@ -317,138 +316,138 @@ end
 
 -- DEATHKNIGHT
 if class == "DEATHKNIGHT" then
-	t:make_bar("Blood Plague",		"target", "debuff", true,	0, .5, 0,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Frost Fever",		"target", "debuff", true,	0, .5, .5,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 328)
-	t:make_bar("Horn of Winter",	"player", "buff",	false, nil, nil, nil,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 344, nil, nil, nil, 0, 355)
+	recUI.timers:make_bar("Blood Plague",		"target", "debuff", true,	0, .5, 0,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Frost Fever",		"target", "debuff", true,	0, .5, .5,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 328)
+	recUI.timers:make_bar("Horn of Winter",	"player", "buff",	false, nil, nil, nil,	200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 344, nil, nil, nil, 0, 355)
 end
 
 -- DRUID
 if class == "DRUID" then
-	t:make_bar("Entangling Roots",    "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Moonfire",            "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Faerie Fire",         "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Faerie Fire (Feral)", "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Rake",                "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Rip",                 "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Mangle (Cat)",        "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Lacerate",            "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Demoralizing Roar",   "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Mangle (Bear)",       "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Gift of the Wild",    "player", "buff",   false, .5, 0, .5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Mark of the Wild",    "player", "buff",   false, .5, 0, .5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Thorns",              "player", "buff",   false, .3, .2, .1, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
+	recUI.timers:make_bar("Entangling Roots",    "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Moonfire",            "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Faerie Fire",         "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Faerie Fire (Feral)", "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Rake",                "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Rip",                 "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Mangle (Cat)",        "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Lacerate",            "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Demoralizing Roar",   "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Mangle (Bear)",       "target", "debuff", false, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Gift of the Wild",    "player", "buff",   false, .5, 0, .5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Mark of the Wild",    "player", "buff",   false, .5, 0, .5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Thorns",              "player", "buff",   false, .3, .2, .1, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
 end
 
 -- HUNTER
 if class == "HUNTER" then
-	t:make_bar("Serpent Sting", "target", "debuff", true, 0.0, 0.35, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 328)
-	t:make_bar("Hunter's Mark", "target", "debuff", false, 0.4, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Serpent Sting", "target", "debuff", true, 0.0, 0.35, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 328)
+	recUI.timers:make_bar("Hunter's Mark", "target", "debuff", false, 0.4, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
 end
 
 -- MAGE
 if class == "MAGE" then
-	t:make_bar("Scorch",				"target", "debuff",	false, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Ice Barrier",			"player", "buff",	false, 0.0, 0.5, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
-	t:make_bar("Missile Barrage",		"player", "buff",	false, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 346)
-	t:make_bar("Dalaran Intellect",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
-	t:make_bar("Dalaran Brilliance",	"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
-	t:make_bar("Arcane Intellect",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
-	t:make_bar("Arcane Brilliance",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
-	t:make_bar("Molten Armor",			"player", "buff",	false, 0.5, 0.2, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 380)
+	recUI.timers:make_bar("Scorch",				"target", "debuff",	false, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Ice Barrier",			"player", "buff",	false, 0.0, 0.5, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
+	recUI.timers:make_bar("Missile Barrage",		"player", "buff",	false, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 346)
+	recUI.timers:make_bar("Dalaran Intellect",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
+	recUI.timers:make_bar("Dalaran Brilliance",	"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
+	recUI.timers:make_bar("Arcane Intellect",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
+	recUI.timers:make_bar("Arcane Brilliance",		"player", "buff",	false, 0.0, 0.0, 0.5, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
+	recUI.timers:make_bar("Molten Armor",			"player", "buff",	false, 0.5, 0.2, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 380)
 end
 
 -- PALADIN
 if class == "PALADIN" then
-	t:make_bar("Judgement of Wisdom",	"target", "debuff",	false,	0.0, 0.42, 0.53, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 370)
-	t:make_bar("Judgement of Light",	"target", "debuff",	false,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 387)
-	t:make_bar("Judgement of Justice",	"target", "debuff",	false,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 404)
-	t:make_bar("Blessing of Sanctuary",	"player", "buff",	false,	0.0, 0.00, 0.50, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192, 404, true)
-	t:make_bar("Blessing of Wisdom",	"player", "buff",	false,	0.0, 0.50, 0.50, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 57.5, 404, true)
-	t:make_bar("Blessing of Might",		"player", "buff",	false,	0.4, 0.00, 0.00, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 115, 404, true)
-	t:make_bar("Blessing of Kings",		"player", "buff",	false,	0.6, 0.60, 0.00, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 172, 404, true)
-	t:make_bar("Seal of Righteousness",	"player", "buff",	true,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
-	t:make_bar("Seal of Wisdom",		"player", "buff",	true,	1.0, 0.00, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
-	t:make_bar("Seal of Justice",		"player", "buff",	true,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
-	t:make_bar("Seal of Light",			"player", "buff",	true,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
-	t:make_bar("Righteous Fury",		"player", "buff",	true,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 370)
+	recUI.timers:make_bar("Judgement of Wisdom",	"target", "debuff",	false,	0.0, 0.42, 0.53, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 370)
+	recUI.timers:make_bar("Judgement of Light",	"target", "debuff",	false,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 387)
+	recUI.timers:make_bar("Judgement of Justice",	"target", "debuff",	false,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", 278, 404)
+	recUI.timers:make_bar("Blessing of Sanctuary",	"player", "buff",	false,	0.0, 0.00, 0.50, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192, 404, true)
+	recUI.timers:make_bar("Blessing of Wisdom",	"player", "buff",	false,	0.0, 0.50, 0.50, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 57.5, 404, true)
+	recUI.timers:make_bar("Blessing of Might",		"player", "buff",	false,	0.4, 0.00, 0.00, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 115, 404, true)
+	recUI.timers:make_bar("Blessing of Kings",		"player", "buff",	false,	0.6, 0.60, 0.00, 57.5, 10, "BOTTOM", UIParent, "BOTTOM", -192 - 172, 404, true)
+	recUI.timers:make_bar("Seal of Righteousness",	"player", "buff",	true,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
+	recUI.timers:make_bar("Seal of Wisdom",		"player", "buff",	true,	1.0, 0.00, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
+	recUI.timers:make_bar("Seal of Justice",		"player", "buff",	true,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
+	recUI.timers:make_bar("Seal of Light",			"player", "buff",	true,	0.6, 0.60, 0.00, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 387)
+	recUI.timers:make_bar("Righteous Fury",		"player", "buff",	true,	0.5, 0.30, 0.09, 230,  10, "BOTTOM", UIParent, "BOTTOM", -278, 370)
 end
 
 -- PRIEST
 if class == "PRIEST" then
-	t:make_bar("Shadow Word: Pain",		"target", "debuff", true, 0.4, 0.0, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 416)
-	t:make_bar("Shadow Word: Death",	"target", "debuff", true, 0.4, 0.0, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 399)
-	t:make_bar("Weakened Soul",			"target", "debuff", true, 0.5, 0.1, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 382)
-	t:make_bar("Renew",					"target", "buff",	true, 0.0, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 365)
-	t:make_bar("Weakened Soul",			"player", "debuff", true, 0.5, 0.1, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 433)
-	t:make_bar("Inner Fire",			"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 416)
-	t:make_bar("Power Word: Fortitude",	"player", "buff",	true, 0.5, 0.6, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 399)
-	t:make_bar("Prayer of Fortitude",	"player", "buff",	true, 0.5, 0.6, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 399)
-	t:make_bar("Divine Spirit",			"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 382)
-	t:make_bar("Prayer of Spirit",		"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 382)
-	t:make_bar("Fade",					"player", "buff",	true, 0.0, 0.5, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 365)
-	t:make_bar("Power Word: Fortitude",	"party1", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Prayer of Fortitude",	"party1", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Divine Spirit",			"party1", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Prayer of Spirit",		"party1", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Power Word: Fortitude",	"party2", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Prayer of Fortitude",	"party2", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Divine Spirit",			"party2", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Prayer of Spirit",		"party2", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Power Word: Fortitude",	"party3", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Prayer of Fortitude",	"party3", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Divine Spirit",			"party3", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Prayer of Spirit",		"party3", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Power Word: Fortitude",	"party4", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Prayer of Fortitude",	"party4", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
-	t:make_bar("Divine Spirit",			"party4", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
-	t:make_bar("Prayer of Spirit",		"party4", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Shadow Word: Pain",		"target", "debuff", true, 0.4, 0.0, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 416)
+	recUI.timers:make_bar("Shadow Word: Death",	"target", "debuff", true, 0.4, 0.0, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 399)
+	recUI.timers:make_bar("Weakened Soul",			"target", "debuff", true, 0.5, 0.1, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 382)
+	recUI.timers:make_bar("Renew",					"target", "buff",	true, 0.0, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 263, 365)
+	recUI.timers:make_bar("Weakened Soul",			"player", "debuff", true, 0.5, 0.1, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 433)
+	recUI.timers:make_bar("Inner Fire",			"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 416)
+	recUI.timers:make_bar("Power Word: Fortitude",	"player", "buff",	true, 0.5, 0.6, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 399)
+	recUI.timers:make_bar("Prayer of Fortitude",	"player", "buff",	true, 0.5, 0.6, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 399)
+	recUI.timers:make_bar("Divine Spirit",			"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 382)
+	recUI.timers:make_bar("Prayer of Spirit",		"player", "buff",	true, 0.6, 0.6, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 382)
+	recUI.timers:make_bar("Fade",					"player", "buff",	true, 0.0, 0.5, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", -263, 365)
+	recUI.timers:make_bar("Power Word: Fortitude",	"party1", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Prayer of Fortitude",	"party1", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Divine Spirit",			"party1", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Prayer of Spirit",		"party1", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Power Word: Fortitude",	"party2", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Prayer of Fortitude",	"party2", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Divine Spirit",			"party2", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Prayer of Spirit",		"party2", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Power Word: Fortitude",	"party3", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Prayer of Fortitude",	"party3", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Divine Spirit",			"party3", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Prayer of Spirit",		"party3", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Power Word: Fortitude",	"party4", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Prayer of Fortitude",	"party4", "buff",	true, 0.5, 0.6, 0.6,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 399, true)
+	recUI.timers:make_bar("Divine Spirit",			"party4", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
+	recUI.timers:make_bar("Prayer of Spirit",		"party4", "buff",	true, 0.6, 0.6, 0.0,  40, 10, "BOTTOM", UIParent, "BOTTOM", 0, 382, true)
 end
 
 -- ROGUE
 if class == "ROGUE" then
-	t:make_bar("Deadly Poison",  "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Slice and Dice", "player", "buff",   true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Rupture",        "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Sap",            "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Sap",            "focus",  "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Garrote",        "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Cheap Shot",     "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Kidney Shot",    "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Blind",          "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Gouge",          "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Evasion",        "player", "buff",   true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Deadly Poison",  "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Slice and Dice", "player", "buff",   true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Rupture",        "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Sap",            "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Sap",            "focus",  "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Garrote",        "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Cheap Shot",     "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Kidney Shot",    "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Blind",          "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Gouge",          "target", "debuff", true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Evasion",        "player", "buff",   true, 1, 0, 0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
 end
 
 -- SHAMAN
 if class == "SHAMAN" then
-	t:make_bar("Tidal Waves",	"player",	"buff",		true, 0.0, 0.0, 1.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 277)
-	t:make_bar("Water Shield",	"player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
-	t:make_bar("Earth Shield",	"focus",	"buff",		true, 0.6, 0.6, 0.3, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 305)
-	t:make_bar("Flame Shock",	"target",	"debuff",	true, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 261)
+	recUI.timers:make_bar("Tidal Waves",	"player",	"buff",		true, 0.0, 0.0, 1.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 277)
+	recUI.timers:make_bar("Water Shield",	"player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
+	recUI.timers:make_bar("Earth Shield",	"focus",	"buff",		true, 0.6, 0.6, 0.3, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 305)
+	recUI.timers:make_bar("Flame Shock",	"target",	"debuff",	true, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 261)
 end
 
 -- WARLOCK
 if class == "WARLOCK" then
-	t:make_bar("Immolate",               "target", "debuff", true, .65, .20,   0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
-	t:make_bar("Seed of Corruption",     "target", "debuff", true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
-	t:make_bar("Curse of Agony",         "target", "debuff", true, .43,   0, .40, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 346)
-	t:make_bar("Demonic Circle: Summon", "player", "buff",   true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
-	t:make_bar("Fel Armor",              "player", "buff",   true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 380)
-	t:make_bar("Life Tap",               "player", "buff",   true, .43,   0, .40, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 397)
+	recUI.timers:make_bar("Immolate",               "target", "debuff", true, .65, .20,   0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 312)
+	recUI.timers:make_bar("Seed of Corruption",     "target", "debuff", true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 329)
+	recUI.timers:make_bar("Curse of Agony",         "target", "debuff", true, .43,   0, .40, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 346)
+	recUI.timers:make_bar("Demonic Circle: Summon", "player", "buff",   true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 363)
+	recUI.timers:make_bar("Fel Armor",              "player", "buff",   true,   0, .38, .03, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 380)
+	recUI.timers:make_bar("Life Tap",               "player", "buff",   true, .43,   0, .40, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 397)
 end
 
 -- WARRIOR
 if class == "WARRIOR" then
-	t:make_bar("Battle Shout",       "player", "buff",   false,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 377)
-	t:make_bar("Bloodrage",          "player", "buff",   true,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 394)
-	t:make_bar("Shield Block",       "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 411)
-	t:make_bar("Shield Wall",        "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 428)
-	t:make_bar("Last Stand",         "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 445)
-	t:make_bar("Berserker Rage",     "player", "buff",   true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 462)
-	t:make_bar("Retaliation",        "player", "buff",   true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 479)
-	t:make_bar("Sunder Armor",       "target", "debuff", true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 377)
-	t:make_bar("Rend",               "target", "debuff", true,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 394)
-	t:make_bar("Thunder Clap",       "target", "debuff", false,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 411)
-	t:make_bar("Demoralizing Shout", "target", "debuff", false,	0.00, 0.50, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 428)
-	t:make_bar("Hamstring",          "target", "debuff", false,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 445)
+	recUI.timers:make_bar("Battle Shout",       "player", "buff",   false,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 377)
+	recUI.timers:make_bar("Bloodrage",          "player", "buff",   true,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 394)
+	recUI.timers:make_bar("Shield Block",       "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 411)
+	recUI.timers:make_bar("Shield Wall",        "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 428)
+	recUI.timers:make_bar("Last Stand",         "player", "buff",   true,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 445)
+	recUI.timers:make_bar("Berserker Rage",     "player", "buff",   true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 462)
+	recUI.timers:make_bar("Retaliation",        "player", "buff",   true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", -225, 479)
+	recUI.timers:make_bar("Sunder Armor",       "target", "debuff", true,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 377)
+	recUI.timers:make_bar("Rend",               "target", "debuff", true,	0.59, 0.00, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 394)
+	recUI.timers:make_bar("Thunder Clap",       "target", "debuff", false,	0.60, 0.60, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 411)
+	recUI.timers:make_bar("Demoralizing Shout", "target", "debuff", false,	0.00, 0.50, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 428)
+	recUI.timers:make_bar("Hamstring",          "target", "debuff", false,	0.50, 0.20, 0.00, 230, 10, "BOTTOM", UIParent, "BOTTOM", 225, 445)
 end

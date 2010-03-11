@@ -1,7 +1,8 @@
-local n, t = ...
+local _, recUI = ...
+recUI.tweaks = {}
+local t = recUI.tweaks
 t.events = CreateFrame("Frame")
 
-local n, t = ...
 local function reanchor()
 	local one, two, lfg = AchievementAlertFrame1, AchievementAlertFrame2, DungeonCompletionAlertFrame1
 	if one then
@@ -33,7 +34,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("CHAT_MSG_SYSTEM")
 t.events:RegisterEvent("PLAYER_LOGOUT")
 t.events:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -55,7 +55,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("PLAYER_DEAD")
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_DEAD" then
@@ -65,7 +64,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 -- BuffRemover is essentially a rip of the AntiHawk addon by p3lim, modified
 -- to remove any and all buffs that you do not want on your character.  To use
 -- BuffRemover, simply obtain the spell ID for the buff you want to remove and
@@ -87,7 +85,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("PLAYER_LOGIN")
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_LOGIN" then
@@ -172,7 +169,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("DUEL_REQUESTED")
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "DUEL_REQUESTED" then
@@ -199,7 +195,6 @@ UIErrorsFrame:SetScript("OnEvent", function(self, event, msg, ...)
 	return oUIErrorsFrame_OnEvent(self, event, msg, ...)
 end)
 
-local n, t = ...
 t.events:RegisterEvent("ADDON_LOADED")
 t.events:RegisterEvent("UPDATE_INSTANCE_INFO")
 
@@ -309,7 +304,6 @@ event_frame:SetScript("OnEvent", function(self)
 	event_frame = nil -- Remove frame
 end)
 
-local n, t = ...
 
 -- Auto DE/Greed
 t.events:RegisterEvent("START_LOOT_ROLL")
@@ -550,7 +544,6 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 	macros = nil
 end)
 
-local n, t = ...
 --[[
 	This is where you will add your characters, their realm, and the stock levels
 	of each item they will want auto-stocked.
@@ -665,7 +658,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("MERCHANT_SHOW")
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
@@ -717,7 +709,6 @@ ChatFrameEditBox:HookScript("OnTextChanged", function(self, from_user, ...)
 	end
 end)
 
-local n, t = ...
 t.events:RegisterEvent("MERCHANT_SHOW")
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
@@ -733,7 +724,6 @@ t.events:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local n, t = ...
 
 -- Override Blizzard fade durations
 

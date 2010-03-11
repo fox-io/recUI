@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 local round_off = true			-- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
 
 raid_threat = {}
@@ -15,7 +15,7 @@ local top_threat, overtake_threat, my_threat = 0, -1, -1
 local HIDDEN, TANKING, BLANK = "* %s", ">>> %s <<<", " "
 local WARNING		= [[Interface\AddOns\recThreatMeter\media\_warning.mp3]]
 local AGGRO			= [[Interface\AddOns\recThreatMeter\media\_aggro.mp3]]
-local bar_texture	= ns.media.statusBar
+local bar_texture	= recUI.media.statusBar
 
 local recycle_bin = {}
 local function Recycler(trash_table)
@@ -279,7 +279,7 @@ local function MakeDisplay()
 	f.texture:SetDrawLayer("BACKGROUND")
 
 	f.titletext = f:CreateFontString(nil, "ARTWORK")
-	f.titletext:SetFont(ns.media.font, 8, "THINOUTLINE")
+	f.titletext:SetFont(recUI.media.font, 8, "THINOUTLINE")
 	f.titletext:SetText("Threat")
 	f.titletext:SetPoint("TOP", f, "TOP", 0, 0)
 
@@ -296,11 +296,11 @@ local function MakeDisplay()
 		f.bars[i]:SetPoint("TOPLEFT", i == 1 and f or f.bars[i-1], i == 1 and "TOPLEFT" or "BOTTOMLEFT", i == 1 and 2 or 0, i == 1 and -15 or -1.5)
 		f.bars[i]:SetPoint("TOPRIGHT", i == 1 and f or f.bars[i-1], i == 1 and "TOPRIGHT" or "BOTTOMRIGHT", i == 1 and -2 or 0, i == 1 and -15 or -1.5)
 		f.bars[i].lefttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
-		f.bars[i].lefttext:SetFont(ns.media.font, 8, "THINOUTLINE")
+		f.bars[i].lefttext:SetFont(recUI.media.font, 8, "THINOUTLINE")
 		f.bars[i].lefttext:SetPoint("LEFT", f.bars[i], "LEFT", 0, 2)
 		f.bars[i].lefttext:Show()
 		f.bars[i].righttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
-		f.bars[i].righttext:SetFont(ns.media.font, 8, "THINOUTLINE")
+		f.bars[i].righttext:SetFont(recUI.media.font, 8, "THINOUTLINE")
 		f.bars[i].righttext:SetPoint("RIGHT", f.bars[i], "RIGHT", 0, 2)
 		SetBarValues(i)
 	end

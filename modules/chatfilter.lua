@@ -1,3 +1,4 @@
+local _, recUI = ...
 -- $Id: core.lua 550 2010-03-02 15:27:53Z john.d.mann@gmail.com $
 -- Please place a source's filter in -either- whitelist or blacklist, but not both.
 -- An exception is made for the special source filter "author" and "all_chat".

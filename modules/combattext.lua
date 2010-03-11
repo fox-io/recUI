@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 --Initialization Steps
 
 -- Make our addons namespace.
@@ -134,7 +134,7 @@ RecSCT.show_incoming_source			= 0			-- 0:Show no names, 1:Names that are not you
 RecSCT.show_notification_source		= 0			-- 0:Show no names, 1:Names that are not your target, 2:Show all names
 
 -- Font Settings
-RecSCT.font							= ns.media.font
+RecSCT.font							= recUI.media.font
 RecSCT.font_flags					= "OUTLINE"	-- Some text can be hard to read without it.
 RecSCT.font_size_normal				= 10
 RecSCT.font_size_crit				= 30

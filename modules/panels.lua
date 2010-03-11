@@ -1,4 +1,6 @@
-local _, recPanels = ...
+local _, recUI = ...
+recUI.recPanels = {}
+local recPanels = recUI.recPanels
 
 recPanels.event_frame = CreateFrame("Frame")
 recPanels.panels = {}

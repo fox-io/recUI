@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 local _G = _G
 _G.Feeds = {}
 
@@ -8,7 +8,7 @@ local function CreateFeedFrame(name, from, to, x, y, w, h)
 	f:SetHeight(h)
 	f:SetWidth(w)
 	f:SetPoint(from, UIParent, to, x, y)
-	--f:SetBackdrop({ bgFile = ns.media.bgFile })
+	--f:SetBackdrop({ bgFile = recUI.media.bgFile })
 	--f:SetBackdropColor(0, 0, 0, 1)
 	f.Feeds = {}
 	return f
@@ -16,7 +16,7 @@ end
 
 function Feeds:CreateFeed(name, p, from, to, x, y)
 	local feed = p:CreateFontString(name, "BORDER")
-	feed:SetFont(ns.media.font, 9, nil)
+	feed:SetFont(recUI.media.font, 9, nil)
 	feed:SetJustifyH("CENTER")
 	feed:SetPoint(from, p, to, x, y+1)
 	--feed:SetTextColor(0.27, 0.64, 0.78)

@@ -1,3 +1,4 @@
+local _, recUI = ...
 local recycle_bin = {}
 
 local function Recycler(trash_table)

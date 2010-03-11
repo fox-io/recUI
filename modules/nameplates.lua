@@ -1,10 +1,10 @@
-local _, ns = ...
+local _, recUI = ...
 local recNameplates = CreateFrame("Frame", nil, UIParent)
 recNameplates:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
-local barTexture = ns.media.statusBar
+local barTexture = recUI.media.statusBar
 local overlayTexture = [[Interface\Tooltips\Nameplate-Border]]
-local glowTexture = ns.media.edgeFile
+local glowTexture = recUI.media.edgeFile
 local backdrop = {
 	edgeFile = glowTexture, edgeSize = 3,
 	insets = {left = 3, right = 3, top = 3, bottom = 3}
@@ -177,13 +177,13 @@ local CreateFrame = function(frame)
 
 	local newNameRegion = frame:CreateFontString()
 	newNameRegion:SetPoint("BOTTOM", healthBar, "TOP", 0, 3)
-	newNameRegion:SetFont(ns.media.font, 10, "OUTLINE")
+	newNameRegion:SetFont(recUI.media.font, 10, "OUTLINE")
 	newNameRegion:SetTextColor(0.84, 0.75, 0.65)
 	newNameRegion:SetShadowOffset(1.25, -1.25)
 	frame.name = newNameRegion
 
 	frame.level = levelTextRegion
-	levelTextRegion:SetFont(ns.media.font, 9, "OUTLINE")
+	levelTextRegion:SetFont(recUI.media.font, 9, "OUTLINE")
 	levelTextRegion:SetShadowOffset(1.25, -1.25)
 
 	healthBar:SetStatusBarTexture(barTexture)
@@ -236,7 +236,7 @@ local CreateFrame = function(frame)
 	
 	castBar.time = castBar:CreateFontString(nil, "ARTWORK")
 	castBar.time:SetPoint("RIGHT", spellIconRegion, "LEFT", -2, 1)
-	castBar.time:SetFont(ns.media.font, 9, "OUTLINE")
+	castBar.time:SetFont(recUI.media.font, 9, "OUTLINE")
 	castBar.time:SetTextColor(0.84, 0.75, 0.65)
 	castBar.time:SetShadowOffset(1.25, -1.25)
 

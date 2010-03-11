@@ -1,4 +1,7 @@
-local _, recBossTimers = ...
+local _, recUI = ...
+recUI.recBossTimers = {}
+local recBossTimers = recUI.recBossTimers
+local t = recUI.recBossTimers
 
 recBossTimers.warning_frame = CreateFrame("Frame")
 recBossTimers.warning_frame.warning_timer = 5
@@ -25,7 +28,6 @@ recBossTimers.warning = function(self, message)
 	end)
 end
 
-local _, recBossTimers = ...
 recBossTimers.timers = {}
 
 local function pretty_time(seconds)
@@ -121,7 +123,6 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 	timer:Show()
 end
 
-local _, recBossTimers = ...
 
 local event_frame = CreateFrame("Frame")
 event_frame:RegisterEvent("LFG_PROPOSAL_SHOW")
@@ -140,7 +141,6 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local _, t = ...
 -- malygos = 28859
 -- This frame will not be here in final version.
 local event_frame = CreateFrame("Frame")
@@ -153,21 +153,21 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 		local msg = select(1, ...)
 		if not msg or type(msg) ~= "string" then return end -- grr
 		if msg:find("My patience has reached its limit. I will be rid of you!") then
-			t:create_timer(615, "Enrage", 0, 17)
+			recBossTimers:create_timer(615, "Enrage", 0, 17)
 		end
 		if msg:find("A Power Spark forms from a nearby rift!") then
-			t:warning("Spark")
-			t:create_timer(30, "Next Spark", 0, 30)
+			recBossTimers:warning("Spark")
+			recBossTimers:create_timer(30, "Next Spark", 0, 30)
 		end
 		if msg:find("I had hoped to end your lives quickly") then
-			t:warning("PHASE 2")
+			recBossTimers:warning("PHASE 2")
 		end
 		if msg:find("Now your benefactors make their") then
-			t:warning("PHASE 3")
+			recBossTimers:warning("PHASE 3")
 		end
 		if msg:find("You will not succeed while I draw breath!") then
-			t:warning("Breath")
-			t:create_timer(59, "Next Breath", 0, 13)
+			recBossTimers:warning("Breath")
+			recBossTimers:create_timer(59, "Next Breath", 0, 13)
 		end
 	end
 	
@@ -176,8 +176,8 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 		
 		if event == "SPELL_CAST_SUCCESS" then
 			if spell_id == 56105 then
-				t:create_timer(60, "Vortex CD", 0, 0)
-				t:create_timer(11, "Vortex", 0, 13)
+				recBossTimers:create_timer(60, "Vortex CD", 0, 0)
+				recBossTimers:create_timer(11, "Vortex", 0, 13)
 			end
 		end
 		if event == "SPELL_AURA_APPLIED" then
@@ -185,7 +185,6 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local _, t = ...
 local lord_marrowgar = 36612
 local coldflame_elapsed = 0
 -- This frame will not be here in final version.
@@ -204,25 +203,25 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 		local timestamp, event, source_guid, source_name, source_flags, dest_guid, dest_name, dest_flags, spell_id, spell_name, spell_type = ...
 		if event == "SPELL_CAST_START" then
 			if spell_id == 69057 or spell_id == 70826 then
-				t:warning("Bone Spike")
-				t:create_timer(18, "Bone Spike CD", 0, 0)
+				recBossTimers:warning("Bone Spike")
+				recBossTimers:create_timer(18, "Bone Spike CD", 0, 0)
 			end
 		elseif event == "SPELL_PERIODIC_DAMAGE" then
 			if spell_id == 69146 or spell_id == 70823 or spell_id == 70824 or spell_id == 70825 then
 				if dest_guid == UnitGUID("player") and GetTime() - coldflame_elapsed > 2 then
-					t:warning("COLDFLAME MOVE!")
+					recBossTimers:warning("COLDFLAME MOVE!")
 					coldflame_elapsed = GetTime()
 				end
 			end
 		elseif event == "SPELL_SUMMON" then
 			if spell_id == 69062 or spell_id == 72669 or spell_id == 72670 then
-				t:warning("Impaled!")
+				recBossTimers:warning("Impaled!")
 			end
 		elseif event == "SPELL_AURA_APPLIED" then
 			if spell_id == 69076 then
-				t:warning("WHIRLWIND")
-				t:create_timer(90, "Whirlwind CD", 0, 0)
-				t:create_timer(20, "Whirlwind", 0, 0) -- 40s on heroic mode
+				recBossTimers:warning("WHIRLWIND")
+				recBossTimers:create_timer(90, "Whirlwind CD", 0, 0)
+				recBossTimers:create_timer(20, "Whirlwind", 0, 0) -- 40s on heroic mode
 				-- 10 normal, stop bonespike timer
 			end
 		elseif event == "SPELL_AURA_REMOVED" then
@@ -251,8 +250,8 @@ end)
 --}
 --L:SetOptionLocalization{
 --	specWarnTrap		= "Show special warning for trap activation",
---	SetIconOnDarkReckoning	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69483),
---	SetIconOnDeathPlague	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(72865)
+--	SetIconOnDarkReckoning	= DBM_CORE_AUTO_ICONS_OPTION_TEXrecBossTimers:format(69483),
+--	SetIconOnDeathPlague	= DBM_CORE_AUTO_ICONS_OPTION_TEXrecBossTimers:format(72865)
 --}
 --L:SetMiscLocalization{
 --	WarderTrap1		= "Who... goes there...?",
@@ -260,7 +259,6 @@ end)
 --	WarderTrap3		= "The master's sanctum has been disturbed!"
 --}
 
-local n, t = ...
 -- ANUB'REKHAN
 local anubrekhan = 15956
 local combar_start
@@ -274,15 +272,15 @@ f:SetScript("OnEvent", function(self, event, ...)
 		local timestamp, event, source_guid, source_name, source_flags, dest_guid, dest_name, dest_flags, spell_id, spell_name, spell_type = ...
 		if event == "SPELL_CAST_START" then
 			if spell_id == 28785 or spell_id == 54021 then
-				t:warning("Locust Swarm")
-				t:create_timer(26, "Locust Swarm", 0, 17)
-				-- 25 man t:create_timer(19, "Locust Swarm", 0, 17)
+				recBossTimers:warning("Locust Swarm")
+				recBossTimers:create_timer(26, "Locust Swarm", 0, 17)
+				-- 25 man recBossTimers:create_timer(19, "Locust Swarm", 0, 17)
 			end
 		end
 		if event == "SPELL_AURA_REMOVED" then
 			if spell_id == 28785 or spell_id == 54021 then
-				t:cancel_timer("Locust Swarm")
-				t:create_timer(80, "Next Locust Swarm", 0, 34)
+				recBossTimers:cancel_timer("Locust Swarm")
+				recBossTimers:create_timer(80, "Next Locust Swarm", 0, 34)
 			end
 		end
 	end
@@ -299,13 +297,13 @@ g:SetScript("OnEvent", function(self, event, ...)
 		if event == "SPELL_CAST_SUCCESS" then
 			if spell_id == 28732 or spell_id == 54097 then
 				-- Widow's Embrace
-				t:create_timer(30, "Widow's Embrace", 0, 34)
-				t:warning("Embrace Active")
+				recBossTimers:create_timer(30, "Widow's Embrace", 0, 34)
+				recBossTimers:warning("Embrace Active")
 			end
 		end
 		if event == "SPELL_AURA_APPLIED" then
 			if spell_id == 28798 or spell_id == 54100 then
-				t:warning("ENRAGED")
+				recBossTimers:warning("ENRAGED")
 			end
 		end
 	end
@@ -321,23 +319,22 @@ h:SetScript("OnEvent", function(self, event, ...)
 		if event == "SPELL_CAST_SUCCESS" then
 			if spell_id == 29484 or spell_id == 54125 then
 				-- Web Spray
-				t:warning("Web Spray")
-				t:cancel_timer("BABIES")
-				t:create_timer(30, "BABIES", 0, 34)
-				t:cancel_timer("Next Web Spray")
-				t:create_timer(40.5, "Next Web Spray", 0, 17)
-				t:warning("Embrace Active")
+				recBossTimers:warning("Web Spray")
+				recBossTimers:cancel_timer("BABIES")
+				recBossTimers:create_timer(30, "BABIES", 0, 34)
+				recBossTimers:cancel_timer("Next Web Spray")
+				recBossTimers:create_timer(40.5, "Next Web Spray", 0, 17)
+				recBossTimers:warning("Embrace Active")
 			end
 		end
 		if event == "SPELL_AURA_APPLIED" then
 			if spell_id == 28622 then
-				t:warning("Web Wrap")
+				recBossTimers:warning("Web Wrap")
 			end
 		end
 	end
 end)
 
-local _, recBossTimers = ...
 
 -- ONYXIA
 local onyxia = 10184
@@ -386,7 +383,6 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 	end
 end)
 
-local _, t = ...
 
 -- SARTHARION
 local sartharion = 28860
@@ -405,19 +401,19 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 
 	if event == "CHAT_MSG_RAID_BOSS_EMOTE" or event == "CHAT_MSG_MONSTER_EMOTE" then
 		if msg:find("The lava surrounding %s churns!") then
-			t:warning("Fire Wall")
-			t:create_timer(30, "Next Fire Wall", 0, 34)
+			recBossTimers:warning("Fire Wall")
+			recBossTimers:create_timer(30, "Next Fire Wall", 0, 34)
 			PlaySoundFile("Sound\\Spells\\PVPFlagTaken.wav")
 		elseif msg:find("%s begins to open a Twilight Portal!") then
 			if msg:find("Tenebron") then
 				-- Whelps from this portal.
-				t:warning("Portal")
+				recBossTimers:warning("Portal")
 			--elseif msg:find("Vesperon") then
 				-- No one goes into this portal anymore - warning needed?
-				--t:warning("Portal")
+				--recBossTimers:warning("Portal")
 			elseif msg:find("Shadron") then
 				-- Boss is immune during this portal.
-				t:warning("Portal")
+				recBossTimers:warning("Portal")
 				PlaySoundFile("Sound\\Spells\\PVPFlagTaken.wav")
 			end
 		end
@@ -428,16 +424,15 @@ event_frame:SetScript("OnEvent", function(self, event, ...)
 		if event == "SPELL_CAST_SUCCESS" then
 			if spell_id == 57579 or spell_id == 59127 then
 				-- Void zone created
-				t:warning("Void Zone")
+				recBossTimers:warning("Void Zone")
 				PlaySoundFile("Sound\\Spells\\PVPFlagTaken.wav")
 				-- Void zone collapse
-				t:create_timer(5, "Void Zone Collapse", 0, 51)
+				recBossTimers:create_timer(5, "Void Zone Collapse", 0, 51)
 			end
 		end
 	end
 end)
 
-local _, recBossTimers = ...
 
 -- This frame will not be here in final version.
 --local event_frame = CreateFrame("Frame")
@@ -465,7 +460,6 @@ local _, recBossTimers = ...
 --	end
 --end)
 
-local _, recBossTimers = ...
 
 -- This frame will not be here in final version.
 --local event_frame = CreateFrame("Frame")
@@ -493,7 +487,6 @@ local _, recBossTimers = ...
 --	end
 --end)
 
-local _, recBossTimers = ...
 
 -- FLAME LEVIATHAN
 local event_frame = CreateFrame("Frame")
@@ -573,23 +566,23 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(62680, 63472) then		-- Flame Jets
-		timerFlameJetsCast:Start()
-		warnFlameJetsCast:Show()
+		timerFlameJetsCasrecBossTimers:Start()
+		warnFlameJetsCasrecBossTimers:Show()
 		timerFlameJetsCooldown:Start()
 	end
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(62548, 63474) then	-- Scorch
-		timerScorchCast:Start()
+		timerScorchCasrecBossTimers:Start()
 		timerScorchCooldown:Start()
 	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(62717, 63477) then		-- Slag Pot
-		announceSlagPot:Show(args.destName)
-		timerSlagPot:Start(args.destName)
+		announceSlagPorecBossTimers:Show(args.destName)
+		timerSlagPorecBossTimers:Start(args.destName)
 		if self.Options.SlagPotIcon then
 			self:SetIcon(args.destName, 8, 10)
 		end

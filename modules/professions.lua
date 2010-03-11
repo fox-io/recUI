@@ -1,3 +1,4 @@
+local _, recUI = ...
 -- Options.  Set to true or false.
 local load_report	= true	-- Show a report when logging in?
 local hide_bliz		= true	-- Hide Blizzard default skill gain messages?

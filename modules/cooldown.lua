@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 local day, hour, minute = 86400, 3600, 60
 local format = string.format
 local floor = math.floor
@@ -49,7 +49,7 @@ local function Timer_Create(self)
 	else
 		local text = self:CreateFontString(nil, "OVERLAY")
 		text:SetPoint("CENTER", 0, 1)
-		text:SetFont(ns.media.font, 15, "OUTLINE")
+		text:SetFont(recUI.media.font, 15, "OUTLINE")
 		text:SetTextColor(1, 1, 0)
 		self.text = text
 		self:HookScript("OnHide", function(self) self.text:Hide() end)
