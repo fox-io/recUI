@@ -809,7 +809,7 @@ event:Show()										-- TODO: We need to hide it, and enable it only when event
 event:RegisterEvent("UNIT_PET")
 event:RegisterEvent("PLAYER_ENTERING_WORLD")
 
-if not RecSCT.enable_loot_items  then return end
+--if not RecSCT.enable_loot_items  then return end
 
 local lootItem					= '^'..LOOT_ITEM_SELF:gsub("%%s", "(.*)")..'$'
 local lootCreatedItem			= '^'..LOOT_ITEM_CREATED_SELF:gsub("%%s", ".*")..'$'
@@ -859,7 +859,7 @@ RecSCT.event_handlers["loot_items"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("CHAT_MSG_LOOT")
 
-if not RecSCT.enable_loot_money  then return end
+--if not RecSCT.enable_loot_money  then return end
 
 local gold_pattern = GOLD_AMOUNT:gsub("%%d", "(%%d+)")
 local silver_pattern = SILVER_AMOUNT:gsub("%%d", "(%%d+)")
@@ -902,7 +902,7 @@ RecSCT.event_handlers["loot_money"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("CHAT_MSG_MONEY")
 
-if not RecSCT.enable_combat_notice  then return end
+--if not RecSCT.enable_combat_notice  then return end
 
 local string_format = string.format
 local ENTERED_COMBAT = "PLAYER_REGEN_DISABLED"
@@ -933,7 +933,7 @@ RecSCT.event_handlers["combat_notice"] = {
 RecSCT.event_frame:RegisterEvent(LEFT_COMBAT)
 RecSCT.event_frame:RegisterEvent(ENTERED_COMBAT)
 
-if not RecSCT.enable_experience  then return end
+--if not RecSCT.enable_experience  then return end
 
 local string_find = string.find
 local string_format = string.format
@@ -958,7 +958,7 @@ RecSCT.event_handlers["experience"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN")
 
-if not RecSCT.enable_reputation  then return end
+--if not RecSCT.enable_reputation  then return end
 
 local string_find = string.find
 local string_format = string.format
@@ -992,7 +992,7 @@ RecSCT.event_handlers["reputation"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("CHAT_MSG_COMBAT_FACTION_CHANGE")
 
-if not RecSCT.enable_honor  then return end
+--if not RecSCT.enable_honor  then return end
 
 local string_format = string.format
 local string_lower = string.lower
@@ -1018,7 +1018,7 @@ RecSCT.event_handlers["honor"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("CHAT_MSG_COMBAT_HONOR_GAIN")
 
-if not RecSCT.enable_buffs then return end
+--if not RecSCT.enable_buffs then return end
 
 local string_format = string.format
 local OUTPUT_FORMAT = "|cFF%s%s %s %s %s|r"
@@ -1055,7 +1055,7 @@ RecSCT.event_handlers["buffs"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_damage then return end
+--if not RecSCT.enable_damage then return end
 
 local string_format = string.format
 local OUTPUT_FORMAT = "|cFF%s- %s %s %s %s%s%s%s%s%s%s%s%s|r"
@@ -1115,7 +1115,7 @@ RecSCT.event_handlers["damage"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_healing then return end
+--if not RecSCT.enable_healing then return end
 
 local string_format = string.format
 local OVERHEAL_FORMAT = "(%s overheal)"
@@ -1157,7 +1157,7 @@ RecSCT.event_handlers["healing"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_power then return end
+--if not RecSCT.enable_power then return end
 
 local OUTPUT_FORMAT = "|cFF%s+%s %s %s %s|r"
 local string_format = string.format
@@ -1191,7 +1191,7 @@ RecSCT.event_handlers["power"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_debuffs then return end
+--if not RecSCT.enable_debuffs then return end
 
 local string_format = string.format
 local OUTPUT_FORMAT = "|cFF%s%s%s%s %s|r"
@@ -1232,7 +1232,7 @@ RecSCT.event_handlers["debuffs"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_killing_blow then return end
+--if not RecSCT.enable_killing_blow then return end
 
 local tonum = tonumber
 local string_format = string.format
@@ -1264,7 +1264,7 @@ RecSCT.event_handlers["killing_blow"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_misses then return end
+--if not RecSCT.enable_misses then return end
 
 local string_format = string.format
 local OUTPUT_FORMAT = "|cFF%s%s%s%s%s%s|r"
@@ -1307,7 +1307,7 @@ RecSCT.event_handlers["misses"] = {
 -- Ensure the event frame is set up to get our events.
 RecSCT.event_frame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
-if not RecSCT.enable_environmental then return end
+--if not RecSCT.enable_environmental then return end
 
 local string_format = string.format
 local OUTPUT_FORMAT = "|cFFFF0000- %s %s %s%s%s%s%s%s%s%s"
