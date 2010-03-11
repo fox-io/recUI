@@ -1,5 +1,5 @@
-local _, ns = ...
-local oUF = ns.oUF
+local _, recUI = ...
+local oUF = recUI.oUF
 
 local siValue = function(val)
 	if(val >= 1e6) then
@@ -100,7 +100,7 @@ local PostCastStop = function(self, event, unit)
 end
 
 local PostCreateAuraIcon = function(self, button)
-	button.count:SetFont(ns.media.font, 9, nil)
+	button.count:SetFont(recUI.media.font, 9, nil)
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT")
 	
@@ -144,8 +144,8 @@ local function style(self, unit)
 	self.background:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
 	self.background:SetFrameStrata("BACKGROUND")
 	self.background:SetBackdrop {
-		bgFile = ns.media.bgFile,
-		edgeFile = ns.media.edgeFile, edgeSize = 3,
+		bgFile = recUI.media.bgFile,
+		edgeFile = recUI.media.edgeFile, edgeSize = 3,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	}
 	self.background:SetBackdropColor(0, 0, 0, 1)
@@ -153,7 +153,7 @@ local function style(self, unit)
 	
 -- Health	
 	self.Health = CreateFrame("StatusBar", nil, self)
-	self.Health:SetStatusBarTexture(ns.media.statusBar)
+	self.Health:SetStatusBarTexture(recUI.media.statusBar)
 	self.Health:SetPoint("TOPLEFT", 0,0)
 	self.Health:SetPoint("TOPRIGHT", 0,0)
 	self.Health.frequentUpdates = true
@@ -163,13 +163,13 @@ local function style(self, unit)
 	self.Health.background:SetAllPoints()
 	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
-	self.Health.value:SetFont(ns.media.font, 9, "THINOUTLINE")
+	self.Health.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Health.value:SetPoint("RIGHT", -5, 2)
 	self.Health.value:SetTextColor(1, 1, 1)
 	
 -- Power
 	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetStatusBarTexture(ns.media.statusBar)
+	self.Power:SetStatusBarTexture(recUI.media.statusBar)
 	self.Power:SetPoint("BOTTOMLEFT", 0,0)
 	self.Power:SetPoint("BOTTOMRIGHT", 0,0)
 	self.Power.frequentUpdates = true
@@ -183,7 +183,7 @@ local function style(self, unit)
 	self.Power.background:SetAllPoints()
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
-	self.Power.value:SetFont(ns.media.font, 9, "THINOUTLINE")
+	self.Power.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Power.value:SetPoint("RIGHT", -5, 2)
 	self.Power.value:SetTextColor(1, 1, 1)
 	
@@ -191,22 +191,29 @@ local function style(self, unit)
 	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Name:SetPoint("LEFT", 5, 2)
 	self.Name:SetJustifyH("LEFT")
-	self.Name:SetFont(ns.media.font, 9, "THINOUTLINE")
+	self.Name:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Name:SetTextColor(1, 1, 1)
 	
 -- Castbar
 	if unit == "player" or unit == "target" then
 		self.Castbar = CreateFrame("StatusBar", nil, self)
-		self.Castbar:SetStatusBarTexture(ns.media.statusBar)
+		self.Castbar:SetStatusBarTexture(recUI.media.statusBar)
 		self.Castbar:SetStatusBarColor(.3, .3, .6, 1)
 		self.Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
 		self.Castbar:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
 		self.Castbar:SetToplevel(true)
 		
 		self.Castbar.spellName = self.Castbar:CreateFontString(nil, "OVERLAY")
-		self.Castbar.spellName:SetFont(ns.media.font, 9, "THINOUTLINE")
+		self.Castbar.spellName:SetFont(recUI.media.font, 9, "THINOUTLINE")
 		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
 		self.Castbar.spellName:SetTextColor(1, 1, 1)
+		
+-- Portrait
+		self.Portrait = CreateFrame("PlayerModel", nil, self)
+		self.Portrait:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
+		self.Portrait:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
+		self.Portrait:SetBackdrop({ bgFile = recUI.media.bgFile })
+		self.Portrait:SetBackdropColor(.15, .15, .15, 1)
 	end
 	
 -- Buffs
@@ -256,7 +263,7 @@ local function style(self, unit)
 		self:SetAttribute("initial-height", 40)
 		self:SetAttribute("initial-width", 230)
 		self.Power:SetHeight(10)
-		self.Health:SetHeight(20)
+		self.Health:SetHeight(15)
 	elseif self:GetAttribute("unitsuffix") == "pet" then
 		self:SetAttribute("initial-height", 10)
 		self:SetAttribute("initial-width", 113)
@@ -265,13 +272,13 @@ local function style(self, unit)
 	elseif self:GetParent():GetName():match("oUF_Raid") then
 		self:SetAttribute("initial-height", 28)
 		self:SetAttribute("initial-width", 60)
-		self.Power:SetHeight(2)
-		self.Health:SetHeight(20)
+		self.Power:SetHeight(11)
+		self.Health:SetHeight(15)
 	else
 		self:SetAttribute("initial-height", 22)
 		self:SetAttribute("initial-width", 113)
-		self.Power:SetHeight(2)
-		self.Health:SetHeight(18)
+		self.Power:SetHeight(5)
+		self.Health:SetHeight(15)
 	end
 	
 -- Overrides/Hooks
