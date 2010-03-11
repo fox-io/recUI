@@ -3,6 +3,24 @@ recUI.tweaks = {}
 local t = recUI.tweaks
 t.events = CreateFrame("Frame")
 
+local GetInventoryItemQuality = GetInventoryItemQuality
+local CharacterFrame = CharacterFrame
+local GetContainerItemLink = GetContainerItemLink
+local GetTradeSkillNumReagents = GetTradeSkillNumReagents
+local GetTradeSkillReagentItemLink = GetTradeSkillReagentItemLink
+local MerchantFrame = MerchantFrame
+local GetMerchantNumItems = GetMerchantNumItems
+local GetMerchantItemLink = GetMerchantItemLink
+local ATTACHMENTS_MAX_SEND = ATTACHMENTS_MAX_SEND
+local GetSendMailItem = GetSendMailItem
+local q
+local select = select
+local pairs = pairs
+local type = type
+local numPage = MERCHANT_ITEMS_PER_PAGE
+local GetItemInfo = GetItemInfo
+local GetTradePlayerItemLink = GetTradePlayerItemLink
+
 local function reanchor()
 	local one, two, lfg = AchievementAlertFrame1, AchievementAlertFrame2, DungeonCompletionAlertFrame1
 	if one then
@@ -844,9 +862,6 @@ function ZoneText_OnEvent(self, event, ...)
 	end
 end
 
-
-local type = type
-
 local colorTable = setmetatable({
 	[100] = {r = .9, g = 0, b = 0},
 	[99] = {r = 1, g = 1, b = 0},
@@ -893,12 +908,6 @@ oGlow = setmetatable({
 
 if(select(4, GetAddOnInfo("Fizzle"))) then return end
 
--- Globally used
-local G = getfenv(0)
-local select = select
-local pairs = pairs
-local oGlow = oGlow
-
 local hook = CreateFrame"Frame"
 local items = {
 	"Head",
@@ -922,13 +931,12 @@ local items = {
 	"Tabard",
 }
 
-local q
 local update = function()
 	if(not InspectFrame:IsShown()) then return end
 	local unit = InspectFrame.unit
 	for i, key in pairs(items) do
 		local link = GetInventoryItemLink(unit, i)
-		local self = G["Inspect"..key.."Slot"]
+		local self = _G["Inspect"..key.."Slot"]
 
 		if(link and not oGlow.preventInspect) then
 			q = select(3, GetItemInfo(link))
@@ -963,13 +971,6 @@ else
 end
 
 oGlow.updateInspect = update
-
-local _G = getfenv(0)
-local oGlow = oGlow
-
-local select = select
-local ATTACHMENTS_MAX_SEND = ATTACHMENTS_MAX_SEND
-local GetSendMailItem = GetSendMailItem
 
 local send = function(self, event)
 	if(not SendMailFrame:IsShown()) then return end
@@ -1048,26 +1049,14 @@ addon:RegisterEvent"MAIL_SEND_SUCCESS"
 
 oGlow.updateMail = update
 
--- Globally used
-local G = getfenv(0)
-local oGlow = oGlow
-
--- Merchant
-local GetMerchantNumItems = GetMerchantNumItems
-local GetMerchantItemLink = GetMerchantItemLink
-
-local numPage = MERCHANT_ITEMS_PER_PAGE
-
 -- Addon
-local MerchantFrame = MerchantFrame
-
 local update = function()
 	if(MerchantFrame.selectedTab == 1) then
 		local numItems = GetMerchantNumItems()
 		for i=1, numPage do
 			local index = (((MerchantFrame.page - 1) * numPage) + i)
 			local link = GetMerchantItemLink(index)
-			local button = G["MerchantItem"..i.."ItemButton"]
+			local button = _G["MerchantItem"..i.."ItemButton"]
 
 			if(link and not oGlow.preventMerchant) then
 				local q = select(3, GetItemInfo(link))
@@ -1081,7 +1070,7 @@ local update = function()
 		for i=1, numPage do
 			local index = (((MerchantFrame.page - 1) * numPage) + i)
 			local link = GetBuybackItemLink(index)
-			local button = G["MerchantItem"..i.."ItemButton"]
+			local button = _G["MerchantItem"..i.."ItemButton"]
 
 			if(link and not oGlow.preventBuyback) then
 				local q = select(3, GetItemInfo(link))
@@ -1096,18 +1085,9 @@ end
 hooksecurefunc("MerchantFrame_Update", update)
 oGlow.updateMerchant = update
 
--- Globally used
-local G = getfenv(0)
-local oGlow = oGlow
-
--- Trade
-local GetItemInfo = GetItemInfo
-local GetTradePlayerItemLink = GetTradePlayerItemLink
-
 -- Addon
 local hook = CreateFrame"Frame"
 
-local q
 local setQuality = function(self, link)
 	if(link and not oGlow.preventTrade) then
 		q = select(3, GetItemInfo(link))
@@ -1129,14 +1109,14 @@ hook["TRADE_UPDATE"] = update
 
 local self, link
 hook["TRADE_PLAYER_ITEM_CHANGED"] = function(index)
-	self = G["TradePlayerItem"..index.."ItemButton"]
+	self = _G["TradePlayerItem"..index.."ItemButton"]
 	link = GetTradePlayerItemLink(index)
 
 	setQuality(self, link)
 end
 
 hook["TRADE_TARGET_ITEM_CHANGED"] = function(index)
-	self = G["TradeRecipientItem"..index.."ItemButton"]
+	self = _G["TradeRecipientItem"..index.."ItemButton"]
 	link = GetTradeTargetItemLink(index)
 
 	setQuality(self, link)
@@ -1153,20 +1133,10 @@ hook:RegisterEvent"TRADE_TARGET_ITEM_CHANGED"
 
 oGlow.updateTrade = update
 
--- Globally used
-local G = getfenv(0)
-local select = select
-local oGlow = oGlow
-
 -- Tradeskill
-local GetTradeSkillNumReagents = GetTradeSkillNumReagents
-local GetTradeSkillReagentItemLink = GetTradeSkillReagentItemLink
-
-local GetItemInfo = GetItemInfo
-
-local icon, link, q, frame, point
+local icon, link, frame, point
 local update = function(id)
-	icon = G["TradeSkillSkillIcon"]
+	icon = _G["TradeSkillSkillIcon"]
 	link = GetTradeSkillItemLink(id)
 
 	if(link and not oGlow.preventTradeskill) then
@@ -1177,12 +1147,12 @@ local update = function(id)
 	end
 
 	for i=1, GetTradeSkillNumReagents(id) do
-		frame = G["TradeSkillReagent"..i]
+		frame = _G["TradeSkillReagent"..i]
 		link = GetTradeSkillReagentItemLink(id, i)
 
 		if(link) then
 			q = select(3, GetItemInfo(link))
-			point = G["TradeSkillReagent"..i.."IconTexture"]
+			point = _G["TradeSkillReagent"..i.."IconTexture"]
 
 			oGlow(frame, q, point)
 		elseif(frame.bc) then
@@ -1208,23 +1178,14 @@ end
 
 oGlow.updateTradeskill = update
 
--- Globally used
-local G = getfenv(0)
-local select = select
-local oGlow = oGlow
-
--- Bank
-local GetContainerItemLink = GetContainerItemLink
-local GetItemInfo = GetItemInfo
-
 -- Addon
 local hook = CreateFrame"Frame"
 hook:SetParent"BankFrame"
 
-local self, link, q
+local self, link
 local update = function()
 	for i=1, 28 do
-		self = G["BankFrameItem"..i]
+		self = _G["BankFrameItem"..i]
 		link = GetContainerItemLink(-1, i)
 	
 		if(link and not oGlow.preventBank) then
@@ -1244,15 +1205,7 @@ oGlow.updateBank = update
 
 if(select(4, GetAddOnInfo("Fizzle"))) then return end
 
--- Globally used
-local G = getfenv(0)
-local pairs = pairs
-local oGlow = oGlow
-
 -- Addon
-local GetInventoryItemQuality = GetInventoryItemQuality
-local CharacterFrame = CharacterFrame
-
 local items = {
 	[0] = "Ammo",
 	"Head 1",
@@ -1276,13 +1229,13 @@ local items = {
 	"Tabard",
 }
 
-local q, key, self
+local key, self
 local update = function()
 	if(not CharacterFrame:IsShown()) then return end
 	for i, value in pairs(items) do
 		key, index = string.split(" ", value)
 		q = GetInventoryItemQuality("player", i)
-		self = G["Character"..key.."Slot"]
+		self = _G["Character"..key.."Slot"]
 
 		if(oGlow.preventCharacter) then
 			q = 0
@@ -1304,15 +1257,11 @@ hook:RegisterEvent"UNIT_INVENTORY_CHANGED"
 
 oGlow.updateCharacter = update
 
-local G = getfenv(0)
-local select = select
-local oGlow = oGlow
-
 -- Craft
 
-local frame, link, q, icon
+local frame, link, icon
 local update = function(id)
-	icon = G["CraftIcon"]
+	icon = _G["CraftIcon"]
 	link = GetCraftItemLink(id)
 
 	if(link and not oGlow.preventCraft) then
@@ -1323,12 +1272,12 @@ local update = function(id)
 	end
 
 	for i=1, GetCraftNumReagents(id) do
-		frame = G["CraftReagent"..i]
+		frame = _G["CraftReagent"..i]
 		link = GetCraftReagentItemLink(id, i)
 
 		if(link) then
 			q = select(3, GetItemInfo(link))
-			point = G["CraftReagent"..i.."IconTexture"]
+			point = _G["CraftReagent"..i.."IconTexture"]
 
 			oGlow(frame, q, point)
 		elseif(frame.bc) then
@@ -1353,10 +1302,6 @@ else
 end
 
 oGlow.updateCraft = update
-
-local G = getfenv(0)
-local select = select
-local oGlow = oGlow
 
 local update = function()
 	local tab = GetCurrentGuildBankTab()
