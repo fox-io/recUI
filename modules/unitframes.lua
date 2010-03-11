@@ -162,7 +162,7 @@ local function style(self, unit)
 	self.Health.background:SetAllPoints()
 	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
-	self.Health.value:SetFont(ns.media.font, 9, nil)
+	self.Health.value:SetFont(ns.media.font, 9, "THINOUTLINE")
 	self.Health.value:SetPoint("RIGHT", -5)
 	self.Health.value:SetTextColor(1, 1, 1)
 	
@@ -182,7 +182,7 @@ local function style(self, unit)
 	self.Power.background:SetAllPoints()
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
-	self.Power.value:SetFont(ns.media.font, 9, nil)
+	self.Power.value:SetFont(ns.media.font, 9, "THINOUTLINE")
 	self.Power.value:SetPoint("RIGHT", -5)
 	self.Power.value:SetTextColor(1, 1, 1)
 	
@@ -190,7 +190,7 @@ local function style(self, unit)
 	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Name:SetPoint("LEFT", 5)
 	self.Name:SetJustifyH("LEFT")
-	self.Name:SetFont(ns.media.font, 9, nil)
+	self.Name:SetFont(ns.media.font, 9, "THINOUTLINE")
 	self.Name:SetTextColor(1, 1, 1)
 	
 -- Castbar
@@ -203,7 +203,7 @@ local function style(self, unit)
 		self.Castbar:SetToplevel(true)
 		
 		self.Castbar.spellName = self.Castbar:CreateFontString(nil, "OVERLAY")
-		self.Castbar.spellName:SetFont(ns.media.font, 9, nil)
+		self.Castbar.spellName:SetFont(ns.media.font, 9, "THINOUTLINE")
 		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
 		self.Castbar.spellName:SetTextColor(1, 1, 1)
 	end
