@@ -3,20 +3,6 @@ local _, recPanels = ...
 recPanels.event_frame = CreateFrame("Frame")
 recPanels.panels = {}
 
---[[reference
-recMedia.backdrop_table = {
-	bgFile   = recPanels.media.bgFile,
-	edgeFile = recPanels.media.edgeFile,
-	edgeSize = 4,
-	insets   = {
-		left   = 3,
-		right  = 3,
-		top    = 3,
-		bottom = 3
-	}
-}
---]]
-
 recPanels.create_panel = function(self, name, offsetx, offsety, width, height, point, rpoint, anchor, parent)
 	local id = (#self.panels or 0) + 1
 	self.panels[id] = CreateFrame("Frame", name, parent)
