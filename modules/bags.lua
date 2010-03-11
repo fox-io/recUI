@@ -847,7 +847,7 @@ local function DoSort()
 		collectgarbage("collect")
 
 		-- Inform user
-		print("recBags: Sorting finished.")
+		print("recUI Bags: Sorting finished.")
 		return
 	end
 
@@ -891,7 +891,7 @@ local function DoSort()
 
 		if i == 25 then
 			-- This shouldn't happen anymore, but toss an error if it does, just in case.
-			print(string.format("ERROR: Stuck on %d,%d -> %d,%d", sort_data[1].source_bag, sort_data[1].source_slot, sort_data[1].dest_bag, sort_data[1].dest_slot))
+			print(string.format("recUI Bags: ERROR: Stuck on %d,%d -> %d,%d", sort_data[1].source_bag, sort_data[1].source_slot, sort_data[1].dest_bag, sort_data[1].dest_slot))
 			break
 		end
     end
@@ -1019,7 +1019,7 @@ Sort = function(reverse)
 	end
 
 	-- Start updating to sort!
-	print("recBags: Sort in progress, please wait...")
+	print("recUI Bags: Sort in progress, please wait...")
 	sort_frame:SetScript("OnEvent", SortEvent)
 	sort_frame:RegisterEvent("BAG_UPDATE")
 	sort_frame:SetScript("OnUpdate", DoSort)
@@ -1082,7 +1082,7 @@ BankSort = function(reverse)
 	end
 
 	-- Start updating to sort!
-	print("recBags: Sort in progress, please wait...")
+	print("recUI Bags: Sort in progress, please wait...")
 	sort_frame:SetScript("OnEvent", SortEvent)
 	sort_frame:RegisterEvent("BAG_UPDATE")
 	sort_frame:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
