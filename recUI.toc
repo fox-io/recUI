@@ -1,6 +1,6 @@
 ## Interface: 30300
 ## Title: recUI
 ## Author: Recluse
-## Version: 3.3.2.01
+## Version: 3.3.2 b1
 
 recUI.xml
