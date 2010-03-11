@@ -14,7 +14,7 @@ recPanels.create_panel = function(self, name, offsetx, offsety, width, height, p
 	
 	self.panels[id]:SetBackdrop({
 		bgFile = nil,
-		edgeFile = recPanels.media.edgeFile,
+		edgeFile = recUI.media.edgeFile,
 		edgeSize = 4,
 	})
 	self.panels[id]:SetBackdropBorderColor(0,0,0)
