@@ -1,3 +1,4 @@
+local _, ns = ...
 local f = CreateFrame("Frame")
 f:RegisterEvent("PLAYER_ENTERING_WORLD")
 f:RegisterEvent("WORLD_MAP_UPDATE")
@@ -10,22 +11,22 @@ local function MapInitialize(self)
 	end
 
 	-- Prevent unwanted frames from showing
-	recLib.Kill(BlackoutWorld)
-	recLib.Kill(WorldMapQuestDetailScrollFrame)
-	recLib.Kill(WorldMapQuestRewardScrollFrame)
-	recLib.Kill(WorldMapQuestScrollFrame)
-	recLib.Kill(WorldMapBlobFrame)
-	recLib.Kill(WorldMapQuestShowObjectives)
-	recLib.Kill(WorldMapFrameSizeDownButton)
-	recLib.Kill(WorldMapFrameCloseButton)
-	recLib.Kill(WorldMapZoneMinimapDropDown)
-	recLib.Kill(WorldMapZoomOutButton)
-	recLib.Kill(WorldMapLevelDropDown)
-	recLib.Kill(WorldMapFrameTitle)
-	recLib.Kill(WorldMapContinentDropDown)
-	recLib.Kill(WorldMapZoneDropDown)
-	recLib.Kill(WorldMapLevelUpButton)
-	recLib.Kill(WorldMapLevelDownButton)
+	ns.Kill(BlackoutWorld)
+	ns.Kill(WorldMapQuestDetailScrollFrame)
+	ns.Kill(WorldMapQuestRewardScrollFrame)
+	ns.Kill(WorldMapQuestScrollFrame)
+	ns.Kill(WorldMapBlobFrame)
+	ns.Kill(WorldMapQuestShowObjectives)
+	ns.Kill(WorldMapFrameSizeDownButton)
+	ns.Kill(WorldMapFrameCloseButton)
+	ns.Kill(WorldMapZoneMinimapDropDown)
+	ns.Kill(WorldMapZoomOutButton)
+	ns.Kill(WorldMapLevelDropDown)
+	ns.Kill(WorldMapFrameTitle)
+	ns.Kill(WorldMapContinentDropDown)
+	ns.Kill(WorldMapZoneDropDown)
+	ns.Kill(WorldMapLevelUpButton)
+	ns.Kill(WorldMapLevelDownButton)
 
 	-- Move map to the top left of the screen
 	WorldMapPositioningGuide:ClearAllPoints()
@@ -41,7 +42,7 @@ local function MapInitialize(self)
 	-- Resize the map.
 	WorldMapFrame:SetScale(0.6)
 	WorldMapFrame.scale = 1
-	WorldMapFrame.SetScale = recLib.NullFunction
+	WorldMapFrame.SetScale = ns.NullFunction
 
 	-- Set our map scale and position
 	WorldMapDetailFrame:SetScale(1)
@@ -49,12 +50,12 @@ local function MapInitialize(self)
 
 	-- Sets the button scale - this affects many map addon displays for some reason.
 	WorldMapButton:SetScale(1)
-	WorldMapButton.SetScale = recLib.NullFunction
+	WorldMapButton.SetScale = ns.NullFunction
 
 	-- Scale the POI frame so icons appear in the proper location.
 	WorldMapPOIFrame:SetScale(1)
 	WorldMapPOIFrame.ratio = 1
-	WorldMapPOIFrame.SetScale = recLib.NullFunction
+	WorldMapPOIFrame.SetScale = ns.NullFunction
 	WorldMapFrame_SetPOIMaxBounds()
 	
 	-- Force tooltips to hide when leaving a POI
@@ -64,13 +65,13 @@ local function MapInitialize(self)
 
 	-- Make the map slightly transparent.
 	WorldMapFrame:SetAlpha(0.5)
-	WorldMapFrame.SetAlpha = recLib.NullFunction
+	WorldMapFrame.SetAlpha = ns.NullFunction
 
 	-- Let you have character control
 	WorldMapFrame:EnableKeyboard(false)
 	WorldMapFrame:EnableMouse(false)
-	WorldMapFrame.EnableKeyboard = recLib.NullFunction
-	WorldMapFrame.EnableMouse = recLib.NullFunction
+	WorldMapFrame.EnableKeyboard = ns.NullFunction
+	WorldMapFrame.EnableMouse = ns.NullFunction
 
 	-- Spoof map into thinking it does not need to be resized.
 	WorldMapFrame.sizedDown = true
@@ -90,7 +91,7 @@ local function MapInitialize(self)
 	WorldMapDetailFrame.bg:SetPoint("BOTTOMRIGHT", 10, -10)
 	WorldMapDetailFrame.bg:SetBackdrop({
 		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-		edgeFile = [[Interface\Addons\recMedia\caellian\glowtex]], edgeSize = 4,
+		edgeFile = ns.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	})
 	WorldMapDetailFrame.bg:SetFrameStrata("BACKGROUND")
@@ -98,11 +99,11 @@ local function MapInitialize(self)
 	WorldMapDetailFrame.bg:SetBackdropBorderColor(0, 0, 0)
 
 	-- Override Blizzard's function with one that keeps the extra panels from showing.
-	WorldMapFrame_AdjustMapAndQuestList = recLib.NullFunction
+	WorldMapFrame_AdjustMapAndQuestList = ns.NullFunction
 	
 	WorldMapButton.cursor_coordinates = WorldMapButton:CreateFontString(nil, "ARTWORK")
 	WorldMapButton.cursor_coordinates:SetPoint("BOTTOMLEFT", WorldMapButton, "BOTTOMLEFT", 5, 5)
-	WorldMapButton.cursor_coordinates:SetFont(recMedia.fontFace.NORMAL, 18, "OUTLINE")
+	WorldMapButton.cursor_coordinates:SetFont(ns.media.font, 18, "OUTLINE")
 	WorldMapButton.cursor_coordinates:SetTextColor(0.84, 0.75, 0.65)
 	WorldMapButton.timer = 0.125
 	

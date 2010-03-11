@@ -1,3 +1,4 @@
+local _, ns = ...
 local _G = _G
 _G.Feeds = {}
 
@@ -15,7 +16,7 @@ end
 
 function Feeds:CreateFeed(name, p, from, to, x, y)
 	local feed = p:CreateFontString(name, "BORDER")
-	feed:SetFont(recMedia.fontFace.NORMAL, 9, nil)
+	feed:SetFont(ns.media.font, 9, nil)
 	feed:SetJustifyH("CENTER")
 	feed:SetPoint(from, p, to, x, y+1)
 	--feed:SetTextColor(0.27, 0.64, 0.78)
@@ -486,14 +487,14 @@ mailFeed:EnableMouse(true)
 
 mailFeed.icon = mailFeed:CreateTexture(nil, "OVERLAY")
 mailFeed.icon:SetAllPoints()
-mailFeed.icon:SetTexture([[Interface\Addons\recMedia\icons\mail]])
+mailFeed.icon:SetTexture([[Interface\Addons\recUI\media\texture\mail]])
 mailFeed.icon:SetVertexColor(1,.3,.3,1)
 
 local has
 local function Update()
 	if HasNewMail() then
 		if not has then
-			PlaySoundFile("Interface\AddOns\recDataFeeds\media\Mail.mp3")
+			PlaySoundFile("Interface\AddOns\recUI\media\sound\Mail.mp3")
 			has = true
 		end
 		mailFeed.icon:SetVertexColor(.3,1,.3,1)

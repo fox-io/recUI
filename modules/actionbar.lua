@@ -1,3 +1,4 @@
+local _, ns = ...
 local mouseOverBar1 = 0
 local mouseOverBar2 = 0
 local mouseOverBar3 = 0
@@ -437,17 +438,17 @@ HideDefaultFrames()
   
   --TEXTURES
   --default border texture  
-  local rb2_normal_texture    = [[Interface\AddOns\recMedia\raction\gloss]]
+  local rb2_normal_texture    = [[Interface\AddOns\recUI\media\texture\gloss]]
   --texture when a button flashs --> button becomes ready
-  local rb2_flash_texture     = [[Interface\AddOns\recMedia\raction\flash]]
+  local rb2_flash_texture     = [[Interface\AddOns\recUI\media\texture\flash]]
   --hover textures
-  local rb2_hover_texture     = [[Interface\AddOns\recMedia\raction\hover]]
+  local rb2_hover_texture     = [[Interface\AddOns\recUI\media\texture\hover]]
   --texture if you push that button
-  local rb2_pushed_texture    = [[Interface\AddOns\recMedia\raction\pushed]]
+  local rb2_pushed_texture    = [[Interface\AddOns\recUI\media\texture\pushed]]
   --texture that is active when the button is in active state (next melee swing attacks mostly)
-  local rb2_checked_texture   = [[Interface\AddOns\recMedia\raction\checked]] 
+  local rb2_checked_texture   = [[Interface\AddOns\recUI\media\texture\checked]] 
   --texture used for equipped items, this can differ since you may want to apply a different vertexcolor
-  local rb2_equipped_texture  = [[Interface\AddOns\recMedia\raction\gloss_grey]]
+  local rb2_equipped_texture  = [[Interface\AddOns\recUI\media\texture\gloss_grey]]
   
   --hide the hotkey? 0/1
   local hide_hotkey = 1
@@ -518,9 +519,9 @@ HideDefaultFrames()
     nt:SetPoint("Center", 0, 0)
     bo:Hide()
     
-    ho:SetFont(recMedia.fontFace.NORMAL, 14, "OUTLINE")
-    co:SetFont(recMedia.fontFace.NORMAL, 14, "OUTLINE")
-    na:SetFont(recMedia.fontFace.NORMAL, 14, "OUTLINE")
+    ho:SetFont(ns.media.font, 14, "OUTLINE")
+    co:SetFont(ns.media.font, 14, "OUTLINE")
+    na:SetFont(ns.media.font, 14, "OUTLINE")
     if hide_hotkey == 1 then
       ho:Hide()
     end

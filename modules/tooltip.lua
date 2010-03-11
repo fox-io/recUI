@@ -1,3 +1,4 @@
+local _, ns = ...
 local anchor_from_point		= "BOTTOM"
 local anchor_to_point		= "BOTTOM"
 local anchor_to_frame		= "UIParent"
@@ -272,14 +273,14 @@ for v,_ in pairs(TooltipList) do
 
 	-- Change our tooltips to match the UI theme.
 	tt:SetBackdrop(nil)
-	tt.SetBackdrop = recLib.NullFunction
+	tt.SetBackdrop = ns.NullFunction
 	--tt:SetBackdropColor(0, 0, 0, 0)
 	--tt:SetBackdropBorderColor(0, 0, 0, 0)
-	tt.SetBackdropBorderColor = recLib.NullFunction
+	tt.SetBackdropBorderColor = ns.NullFunction
 	tt.bg = CreateFrame("Frame", nil, tt)
 	tt.bg:SetPoint("TOPLEFT")
 	tt.bg:SetPoint("BOTTOMRIGHT")
-	tt.bg:SetBackdrop(recMedia.backdrop_table)
+	tt.bg:SetBackdrop(ns.backdrop_table)
 	tt.bg:SetFrameStrata("FULLSCREEN_DIALOG")
 	tt.bg:SetBackdropBorderColor(0, 0, 0)
 	tt.bg:SetBackdropColor(0, 0, 0, .5)
@@ -296,10 +297,13 @@ for v,_ in pairs(TooltipList) do
 	tt:HookScript("OnTooltipSetUnit", GTTOnTooltipSetUnit)
 end
 
+local GTTFont = CreateFont("GTTFont")
+GTTFont:SetFont(ns.media.font, 9, "OUTLINE")
+
 -- Resize tooltip fonts
-_G.GameTooltipHeaderText:SetFontObject(recMedia.fontObject("NORMAL", 9, "OUTLINE"))
-_G.GameTooltipText:SetFontObject(recMedia.fontObject("NORMAL", 9, "OUTLINE"))
-_G.GameTooltipTextSmall:SetFontObject(recMedia.fontObject("NORMAL", 9, "OUTLINE"))
+_G.GameTooltipHeaderText:SetFontObject(GTTFont)
+_G.GameTooltipText:SetFontObject(GTTFont)
+_G.GameTooltipTextSmall:SetFontObject(GTTFont)
 
 -- Override the real anchoring function with our own so we can anchor where we want
 function GameTooltip_SetDefaultAnchor(tt, parent)

@@ -1,3 +1,4 @@
+local _, ns = ...
 --This is a heavily modified version of gotChat.
 --
 --Support is provided by the compilation's author and not by the author(s) of the individual addons.
@@ -7,7 +8,7 @@ local format = string.format
 local _G = _G
 local cftbb = CreateFrame("Frame", "RecChatButtonBar", UIParent)
 
-local font = recMedia.fontFace
+local font = ns.media.font
 
 local function GetChatFrameID(...)
 	-- Gets the current chat frame's id.
@@ -144,7 +145,7 @@ local function OnEvent(self, event, ...)
 			
 			cf:SetParent(TestTextureFrame)
 			
-			cf:SetFont(font.NORMAL, 9, nil)
+			cf:SetFont(ns.media.font, 9, nil)
 			
 			-- Disable/Hide chat tabs
 			local cft = _G[format("ChatFrame%sTab", i)]
@@ -158,11 +159,11 @@ local function OnEvent(self, event, ...)
 			cftf:SetScript("OnShow", nil)
 			cftf:SetScript("OnHide", nil)
 			cftf:GetRegions():SetTexture(nil)
-			recLib.Kill(_G[format("ChatFrame%sTabLeft", i)])
-			recLib.Kill(_G[format("ChatFrame%sTabMiddle", i)])
-			recLib.Kill(_G[format("ChatFrame%sTabRight", i)])
-			recLib.Kill(_G[format("ChatFrame%sTabText", i)])
-			recLib.Kill(_G["ChatFrame"..i.."TabDockRegionHighlight"])
+			ns.Kill(_G[format("ChatFrame%sTabLeft", i)])
+			ns.Kill(_G[format("ChatFrame%sTabMiddle", i)])
+			ns.Kill(_G[format("ChatFrame%sTabRight", i)])
+			ns.Kill(_G[format("ChatFrame%sTabText", i)])
+			ns.Kill(_G["ChatFrame"..i.."TabDockRegionHighlight"])
 
 			-- Enable Mousewheel scrolling
 			cf:SetScript("OnMouseWheel", function(self, v)
@@ -183,9 +184,9 @@ local function OnEvent(self, event, ...)
 			cf:EnableMouseWheel(true)
 
 			-- Disable side scroll buttons
-			recLib.Kill(_G[format("ChatFrame%sUpButton", i)])
-			recLib.Kill(_G[format("ChatFrame%sDownButton", i)])
-			recLib.Kill(_G[format("ChatFrame%sBottomButton", i)])
+			ns.Kill(_G[format("ChatFrame%sUpButton", i)])
+			ns.Kill(_G[format("ChatFrame%sDownButton", i)])
+			ns.Kill(_G[format("ChatFrame%sBottomButton", i)])
 
 			-- Disable fading
 			cf:SetFading(nil)
@@ -241,7 +242,7 @@ local function OnEvent(self, event, ...)
 				GameTooltip:Hide()
 			end)
 			btn.t = btn:CreateFontString(nil, "OVERLAY")
-			btn.t:SetFont(font.SMALL, 9, nil)
+			btn.t:SetFont(ns.media.font, 9, nil)
 			btn.t:SetPoint("CENTER")
 			btn.t:SetTextColor(1, 1, 1)
 			btn.t:SetText(txt)
@@ -273,7 +274,7 @@ local function OnEvent(self, event, ...)
 		l:Hide()
 		m:Hide()
 		r:Hide()
-		cfeb:SetFont(font.NORMAL, 9, nil)
+		cfeb:SetFont(ns.media.font, 9, nil)
 		cfeb:SetHeight(20)
 		cfeb:HookScript("OnShow", function(self)
 			color_border(EditBoxPanel)

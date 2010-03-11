@@ -7,7 +7,7 @@ recBossTimers.warning_frame:SetHeight(50)
 recBossTimers.warning_frame:SetPoint("CENTER", UIParent, "CENTER", 0, 50)
 
 recBossTimers.warning_frame.warning_message = recBossTimers.warning_frame:CreateFontString(nil, "OVERLAY")
-recBossTimers.warning_frame.warning_message:SetFont(recMedia.fontFace.LARGE, 18, "OUTLINE")
+recBossTimers.warning_frame.warning_message:SetFont(recBossTimers.media.font, 18, "OUTLINE")
 recBossTimers.warning_frame.warning_message:SetPoint("CENTER")
 
 recBossTimers.warning = function(self, message)
@@ -73,7 +73,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		
 		timer.tx = timer:CreateTexture(nil, "ARTWORK")
 		timer.tx:SetAllPoints()
-		timer.tx:SetTexture([=[Interface\AddOns\recMedia\caellian\normtexa.tga]=])
+		timer.tx:SetTexture([=[Interface\AddOns\recUI\media\texture\normtexa.tga]=])
 		timer.tx:SetVertexColor(1, 0, 0, 1)
 		timer:SetStatusBarTexture(timer.tx)
 
@@ -82,7 +82,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		timer.soft_edge:SetPoint("BOTTOMRIGHT", 4, -4)
 		timer.soft_edge:SetBackdrop({
 			bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-			edgeFile = [=[Interface\Addons\recMedia\caellian\glowtex]=], edgeSize = 4,
+			edgeFile = [=[Interface\Addons\recUI\media\texture\glowtex]=], edgeSize = 4,
 			insets = {left = 3, right = 3, top = 3, bottom = 3}
 		})
 		timer.soft_edge:SetFrameStrata("BACKGROUND")
@@ -92,7 +92,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		timer.bg = timer:CreateTexture(nil, "BORDER")
 		timer.bg:SetPoint("TOPLEFT")
 		timer.bg:SetPoint("BOTTOMRIGHT")
-		timer.bg:SetTexture([=[Interface\AddOns\recMedia\caellian\normtexa.tga]=])
+		timer.bg:SetTexture([=[Interface\AddOns\recUI\media\texture\normtexa.tga]=])
 		timer.bg:SetVertexColor(0.25, 0.25, 0.25, 1)
 	
 		timer.icon = timer:CreateTexture(nil, "BORDER")
@@ -102,7 +102,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		timer.icon:SetTexture(nil)
 		
 		timer.lbl = timer:CreateFontString(nil, "OVERLAY")
-		timer.lbl:SetFont(recMedia.fontFace.SMALL, 8, "OUTLINE")
+		timer.lbl:SetFont(recBossTimers.media.font, 8, "OUTLINE")
 		timer.lbl:SetPoint("CENTER", timer, "CENTER", 0, 1)
 		
 		timer:SetPoint("CENTER", UIParent, "CENTER", x_offset, y_offset)

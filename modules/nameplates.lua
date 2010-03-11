@@ -1,10 +1,10 @@
-local _, addon = ...
+local _, ns = ...
 local recNameplates = CreateFrame("Frame", nil, UIParent)
 recNameplates:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 
-local barTexture = recMedia.texture.STATUSBAR
+local barTexture = ns.media.statusBar
 local overlayTexture = [[Interface\Tooltips\Nameplate-Border]]
-local glowTexture = recMedia.texture.BORDER
+local glowTexture = ns.media.edgeFile
 local backdrop = {
 	edgeFile = glowTexture, edgeSize = 3,
 	insets = {left = 3, right = 3, top = 3, bottom = 3}
@@ -151,9 +151,6 @@ end
 local OnHide = function(self)
 	self.highlight:Hide()
 	self.healthBar.hpGlow:SetBackdropBorderColor(0, 0, 0)
-	if addon.flash then
-		addon.flash.Stop(self.healthBar)
-	end
 end
 
 local OnEvent = function(self, event, unit)
@@ -180,13 +177,13 @@ local CreateFrame = function(frame)
 
 	local newNameRegion = frame:CreateFontString()
 	newNameRegion:SetPoint("BOTTOM", healthBar, "TOP", 0, 3)
-	newNameRegion:SetFont(recMedia.fontFace.PIXEL, 10, "OUTLINE")
+	newNameRegion:SetFont(ns.media.font, 10, "OUTLINE")
 	newNameRegion:SetTextColor(0.84, 0.75, 0.65)
 	newNameRegion:SetShadowOffset(1.25, -1.25)
 	frame.name = newNameRegion
 
 	frame.level = levelTextRegion
-	levelTextRegion:SetFont(recMedia.fontFace.TINY_PIXEL, 9, "OUTLINE")
+	levelTextRegion:SetFont(ns.media.font, 9, "OUTLINE")
 	levelTextRegion:SetShadowOffset(1.25, -1.25)
 
 	healthBar:SetStatusBarTexture(barTexture)
@@ -239,7 +236,7 @@ local CreateFrame = function(frame)
 	
 	castBar.time = castBar:CreateFontString(nil, "ARTWORK")
 	castBar.time:SetPoint("RIGHT", spellIconRegion, "LEFT", -2, 1)
-	castBar.time:SetFont(recMedia.fontFace.TINY_PIXEL, 9, "OUTLINE")
+	castBar.time:SetFont(ns.media.font, 9, "OUTLINE")
 	castBar.time:SetTextColor(0.84, 0.75, 0.65)
 	castBar.time:SetShadowOffset(1.25, -1.25)
 

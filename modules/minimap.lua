@@ -1,3 +1,4 @@
+local _, ns = ...
 local event_frame = CreateFrame("Frame")
 
 -- Objects which we want to get rid of.
@@ -37,7 +38,7 @@ event_frame:SetScript("OnEvent", function(self, event)
 	
 	-- Remove unwanted objects
 	for _, object in pairs(unwanted_objects) do
-		recLib.Kill(object)
+		ns.Kill(object)
 	end
 	unwanted_objects = nil
 	
@@ -56,7 +57,7 @@ end)
 event_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local coordinate_text = Minimap:CreateFontString(nil, "OVERLAY")
-coordinate_text:SetFont(recMedia.fontFace.NORMAL, 9, "OUTLINE")
+coordinate_text:SetFont(ns.media.font, 9, "OUTLINE")
 coordinate_text:SetPoint("BOTTOM", 0, 4)
 local coordinate_formatting = "%0.1f, %0.1f"
 
@@ -93,7 +94,7 @@ local button    = _G.MiniMapTrackingButton
 
 -- Rather than use an icon, we crete a fontstring which will tell us what we are tracking.
 local text = Minimap:CreateFontString(nil, "OVERLAY")
-text:SetFont(recMedia.fontFace.NORMAL, 9, "OUTLINE")
+text:SetFont(ns.media.font, 9, "OUTLINE")
 text:SetPoint("CENTER", button)
 
 -- Rawr! GTFO POI tracking!  Default _Init, with filter for only find/track/quest entries.
@@ -189,8 +190,8 @@ local function setup_tracking()
 	button:SetScript("OnLeave", nil)
 	
 	-- Remove the shine animation on tracking change
-	MiniMapTrackingShineFadeIn = recLib.NullFunction
-	MiniMapTrackingShineFadeOut = recLib.NullFunction
+	MiniMapTrackingShineFadeIn = ns.NullFunction
+	MiniMapTrackingShineFadeOut = ns.NullFunction
 end
 
 Minimap:RegisterEvent("PLAYER_LOGIN")
