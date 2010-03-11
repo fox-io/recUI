@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 -- Test: /script MirrorTimer1:Show(); MirrorTimer2:Show(); MirrorTimer3:Show()
 
 for i=1,3 do
@@ -16,12 +16,12 @@ for i=1,3 do
 	mirror_frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", (i == 1 and -394) or (i == 2 and -317.5) or (i == 3 and -239), 313.5)
 	mirror_frame:SetPoint("TOPRIGHT", UIParent, "BOTTOM", (i == 1 and -319) or (i == 2 and -240.5) or (i == 3 and -164), 315.5)
 
-	ns.Kill(mirror_default_backdrop)	-- Remove the default backdrop
-	ns.Kill(mirror_default_border)		-- Remove the default border
-	ns.Kill(mirror_bar_text)			-- Remove the bar text
+	recUI.Kill(mirror_default_backdrop)	-- Remove the default backdrop
+	recUI.Kill(mirror_default_border)	-- Remove the default border
+	recUI.Kill(mirror_bar_text)			-- Remove the bar text
 
 	-- Reskin the status bar
-	mirror_bar:SetStatusBarTexture(ns.media.statusBar)
+	mirror_bar:SetStatusBarTexture(recUI.media.statusBar)
 	mirror_bar:ClearAllPoints()
 	mirror_bar:SetAllPoints(mirror_frame)
 
@@ -30,7 +30,7 @@ for i=1,3 do
 	mirror_border:SetPoint("BOTTOMRIGHT", mirror_frame, "BOTTOMRIGHT", 5, -5)
 	mirror_border:SetFrameStrata("BACKGROUND")
 	mirror_border:SetBackdrop {
-		edgeFile = ns.media.edgeFile, edgeSize = 4,
+		edgeFile = recUI.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	}
 	mirror_border:SetBackdropColor(0, 0, 0, 0)
