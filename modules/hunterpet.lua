@@ -62,7 +62,7 @@ local best, conj, diet = {}, {}, {}
 
 ------------------------------------------------------------------------
 
-recPetCare = CreateFrame("Frame")
+local recPetCare = CreateFrame("Frame")
 recPetCare:SetScript("OnEvent", function(self, event, ...) if self[event] then return self[event](self, ...) end end)
 recPetCare:RegisterEvent("ADDON_LOADED")
 
