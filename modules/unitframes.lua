@@ -210,10 +210,13 @@ local function style(self, unit)
 		
 -- Portrait
 		self.Portrait = CreateFrame("PlayerModel", nil, self)
-		self.Portrait:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
+		self.Portrait:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -3)
 		self.Portrait:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
-		self.Portrait:SetBackdrop({ bgFile = recUI.media.bgFile })
-		self.Portrait:SetBackdropColor(.15, .15, .15, 1)
+		
+		self.Portrait.backdrop = self.Portrait:CreateTexture(nil, "BACKGROUND")
+		self.Portrait.backdrop:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
+		self.Portrait.backdrop:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
+		self.Portrait.backdrop:SetTexture(.15, .15, .15, 1)
 	end
 	
 -- Buffs
