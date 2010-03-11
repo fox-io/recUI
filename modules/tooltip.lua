@@ -1,4 +1,4 @@
-local _, ns = ...
+local _, recUI = ...
 local anchor_from_point		= "BOTTOM"
 local anchor_to_point		= "BOTTOM"
 local anchor_to_frame		= "UIParent"
@@ -273,14 +273,14 @@ for v,_ in pairs(TooltipList) do
 
 	-- Change our tooltips to match the UI theme.
 	tt:SetBackdrop(nil)
-	tt.SetBackdrop = ns.NullFunction
+	tt.SetBackdrop = recUI.lib.NullFunction
 	--tt:SetBackdropColor(0, 0, 0, 0)
 	--tt:SetBackdropBorderColor(0, 0, 0, 0)
-	tt.SetBackdropBorderColor = ns.NullFunction
+	tt.SetBackdropBorderColor = recUI.lib.NullFunction
 	tt.bg = CreateFrame("Frame", nil, tt)
 	tt.bg:SetPoint("TOPLEFT")
 	tt.bg:SetPoint("BOTTOMRIGHT")
-	tt.bg:SetBackdrop(ns.backdrop_table)
+	tt.bg:SetBackdrop(recUI.media.backdropTable)
 	tt.bg:SetFrameStrata("FULLSCREEN_DIALOG")
 	tt.bg:SetBackdropBorderColor(0, 0, 0)
 	tt.bg:SetBackdropColor(0, 0, 0, .5)
@@ -298,7 +298,7 @@ for v,_ in pairs(TooltipList) do
 end
 
 local GTTFont = CreateFont("GTTFont")
-GTTFont:SetFont(ns.media.font, 9, "OUTLINE")
+GTTFont:SetFont(recUI.media.font, 9, "OUTLINE")
 
 -- Resize tooltip fonts
 _G.GameTooltipHeaderText:SetFontObject(GTTFont)
