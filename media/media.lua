@@ -35,7 +35,7 @@ recUI.media.backdropTable = {
 	}
 }
 
-recUI.border_table = {
+recUI.media.borderTable = {
 	bgFile   = nil,
 	edgeFile = recUI.media.edgeFile,
 	edgeSize = 4,
@@ -47,17 +47,17 @@ recUI.border_table = {
 	}
 }
 
-recUI.backdrop = function(object, remove_backdrop)
+recUI.media.backdrop = function(object, remove_backdrop)
 	if not object then return end
 	if type(object) == "frame" then
-		object:SetBackdrop((not remove_backdrop) and recUI.backdrop_table or recUI.border_table)
+		object:SetBackdrop((not remove_backdrop) and recUI.media.backdropTable or recUI.media.borderTable)
 		object:SetBackdropBorderColor(0, 0, 0)
 		object:SetBackdropColor(.25,.25,.25, .5)
 	else
 		object.bg = CreateFrame("Frame", nil, object)
 		object.bg:SetPoint("TOPLEFT")
 		object.bg:SetPoint("BOTTOMRIGHT")
-		object.bg:SetBackdrop((not remove_backdrop) and recUI.backdrop_table or recUI.border_table)
+		object.bg:SetBackdrop((not remove_backdrop) and recUI.media.backdropTable or recUI.media.borderTable)
 		object.bg:SetFrameStrata("BACKGROUND")
 		object.bg:SetBackdropBorderColor(0, 0, 0)
 		object.bg:SetBackdropColor(.25,.25,.25, .5)
