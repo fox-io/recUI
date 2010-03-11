@@ -1418,3 +1418,5 @@ event:RegisterEvent"GUILDBANKFRAME_CLOSED"
 event:Hide()
 
 oGlow.updateGBank = update
+
+-- no oGlow bags, already supported internally
