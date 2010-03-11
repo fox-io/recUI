@@ -50,7 +50,7 @@ cfg.slot_backdrop_b = 1
 cfg.slot_backdrop_a = 1
 
 cfg.bag_bg_file			= ns.media.bgFile
-cfg.bag_edge_file		= ns.media.edgeFilt
+cfg.bag_edge_file		= ns.media.edgeFile
 
 cfg.backpack_texture	= [[Interface\Buttons\Button-Backpack-Up]]
 cfg.empty_bag_texture	= [[interface\paperdoll\UI-PaperDoll-Slot-Bag]]
@@ -1216,8 +1216,9 @@ local function CreateBagSlot(bag_id, slot_id)
 
 	-- Assign count attributes
 	b.Count = _G[string.format("%sCount", name)]
-	b.Count:SetFont("Fonts\\ARIALN.TTF", 14, "OUTLINE")
-	b.Count:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 0, 3)
+	b.Count:SetFont("Fonts\\ARIALN.TTF", 10, "OUTLINE")
+	b.Count:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", 0, 4)
+	b.Count:SetDrawLayer("OVERLAY")
 
 	-- Assign icon attributes
 	b.Icon = _G[string.format("%sIconTexture", name)]
