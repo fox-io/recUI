@@ -163,7 +163,7 @@ local function style(self, unit)
 	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Health.value:SetFont(ns.media.font, 9, "THINOUTLINE")
-	self.Health.value:SetPoint("RIGHT", -5)
+	self.Health.value:SetPoint("RIGHT", -5, 2)
 	self.Health.value:SetTextColor(1, 1, 1)
 	
 -- Power
@@ -183,12 +183,12 @@ local function style(self, unit)
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
 	self.Power.value:SetFont(ns.media.font, 9, "THINOUTLINE")
-	self.Power.value:SetPoint("RIGHT", -5)
+	self.Power.value:SetPoint("RIGHT", -5, 2)
 	self.Power.value:SetTextColor(1, 1, 1)
 	
 -- Name	
 	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
-	self.Name:SetPoint("LEFT", 5)
+	self.Name:SetPoint("LEFT", 5, 2)
 	self.Name:SetJustifyH("LEFT")
 	self.Name:SetFont(ns.media.font, 9, "THINOUTLINE")
 	self.Name:SetTextColor(1, 1, 1)
