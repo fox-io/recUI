@@ -159,7 +159,7 @@ local function style(self, unit)
 	self.Health.frequentUpdates = true
 	
 	self.Health.background = self.Health:CreateTexture(nil, "BACKGROUND")
-	self.Health.background:SetTexture(.25, .15, .15, 1)
+	self.Health.background:SetTexture(.25, .25, .25, 1)
 	self.Health.background:SetAllPoints()
 	
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
@@ -179,7 +179,7 @@ local function style(self, unit)
 	self.Power.colorReaction = true
 	
 	self.Power.background = self.Power:CreateTexture(nil, "BACKGROUND")
-	self.Power.background:SetTexture(.15, .15, .25, 1)
+	self.Power.background:SetTexture(.25, .25, .25, 1)
 	self.Power.background:SetAllPoints()
 	
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
