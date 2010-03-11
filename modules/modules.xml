@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='panels.lua' />
 	<Script file='actionbar.lua' />
 	<Script file='alts.lua' />
 	<Script file='bags.lua' />
@@ -14,7 +15,6 @@
 	<Script file='minimap.lua' />
 	<Script file='mirrorbar.lua' />
 	<Script file='nameplates.lua' />
-	<Script file='panels.lua' />
 	<Script file='professions.lua' />
 	<Script file='questobjectives.lua' />
 	<Script file='raidtimers.lua' />
