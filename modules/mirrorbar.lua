@@ -13,8 +13,8 @@ for i=1,3 do
 
 	-- Frame position
 	mirror_frame:ClearAllPoints()
-	mirror_frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", (i == 1 and -394) or (i == 2 and -317.5) or (i == 3 and -239), 326.5)
-	mirror_frame:SetPoint("TOPRIGHT", UIParent, "BOTTOM", (i == 1 and -319) or (i == 2 and -240.5) or (i == 3 and -164), 328.5)
+	mirror_frame:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", (i == 1 and -394) or (i == 2 and -317.5) or (i == 3 and -239), 313.5)
+	mirror_frame:SetPoint("TOPRIGHT", UIParent, "BOTTOM", (i == 1 and -319) or (i == 2 and -240.5) or (i == 3 and -164), 315.5)
 
 	ns.Kill(mirror_default_backdrop)	-- Remove the default backdrop
 	ns.Kill(mirror_default_border)		-- Remove the default border
