@@ -1,3 +1,8 @@
+local _, recUI = ...
+
+local recUIFontObject = CreateFont("recUIFontObject")
+recUIFontObject:SetFont(recUI.media.font, 10, nil)
+	
 local incoming = ">"
 local outgoing = "<"
 local message_pattern = "%s[%s] %s %s"
@@ -60,8 +65,8 @@ local function get_chat_window(target_name)
 	f.bg:SetPoint("TOPLEFT", -14, 13.5)
 	f.bg:SetPoint("BOTTOMRIGHT", 14, -14)
 	f.bg:SetBackdrop({
-		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeFile = [=[Interface\Addons\recMedia\caellian\glowtex]=], edgeSize = 4,
+		bgFile = recUI.media.bgFile,
+		edgeFile = recUI.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	})
 	f.bg:SetFrameStrata("BACKGROUND")
@@ -81,15 +86,15 @@ local function get_chat_window(target_name)
 	f.title_button:SetPoint("BOTTOMLEFT", f.bg, "TOPLEFT")
 	f.title_button:SetPoint("BOTTOMRIGHT", f.bg, "TOPRIGHT", -23, 0)
 	f.title_button:SetHeight(20)
-	f.title_button:SetNormalFontObject(recMedia.fontObject("NORMAL", 10, ""))
+	f.title_button:SetNormalFontObject(recUIFontObject)
 	f.title_button:SetText(target_name)
 	
 	f.title_button.bg = CreateFrame("Frame", nil, f.title_button)
 	f.title_button.bg:SetPoint("TOPLEFT")
 	f.title_button.bg:SetPoint("BOTTOMRIGHT")
 	f.title_button.bg:SetBackdrop({
-		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeFile = [=[Interface\Addons\recMedia\caellian\glowtex]=], edgeSize = 4,
+		bgFile = recUI.media.bgFile,
+		edgeFile = recUI.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	})
 	f.title_button.bg:SetFrameStrata("BACKGROUND")
@@ -99,15 +104,15 @@ local function get_chat_window(target_name)
 	f.close_button = CreateFrame("Button", string.format("recWhispers%dCloseButton", new_id), f)
 	--f.close_button:SetWidth(28)
 	--f.close_button:SetHeight(28)
-	f.close_button:SetNormalFontObject(recMedia.fontObject("NORMAL", 10, ""))
+	f.close_button:SetNormalFontObject(recUIFontObject)
 	f.close_button:SetText("X")
 	
 	f.close_button.bg = CreateFrame("Frame", nil, f.close_button)
 	f.close_button.bg:SetPoint("TOPLEFT")
 	f.close_button.bg:SetPoint("BOTTOMRIGHT")
 	f.close_button.bg:SetBackdrop({
-		bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=],
-		edgeFile = [=[Interface\Addons\recMedia\caellian\glowtex]=], edgeSize = 4,
+		bgFile = recUI.media.bgFile,
+		edgeFile = recUI.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	})
 	f.close_button.bg:SetFrameStrata("BACKGROUND")
@@ -127,7 +132,7 @@ local function get_chat_window(target_name)
 	
 	f:SetHeight(150)
 	f:SetWidth(300)
-	f:SetFont(recMedia.fontFace.NORMAL, 9, nil)
+	f:SetFont(recUI.media.font, 10, nil)
 	f:SetTextColor(1, .7, 1)
 	f:SetJustifyH("LEFT")
 	f:SetPoint("RIGHT", UIParent, "RIGHT", -20, 0)
