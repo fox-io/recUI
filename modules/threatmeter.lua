@@ -1,3 +1,4 @@
+local _, ns = ...
 local round_off = true			-- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
 
 raid_threat = {}
@@ -14,7 +15,7 @@ local top_threat, overtake_threat, my_threat = 0, -1, -1
 local HIDDEN, TANKING, BLANK = "* %s", ">>> %s <<<", " "
 local WARNING		= [[Interface\AddOns\recThreatMeter\media\_warning.mp3]]
 local AGGRO			= [[Interface\AddOns\recThreatMeter\media\_aggro.mp3]]
-local bar_texture	= [[Interface\AddOns\recThreatMeter\media\minimalist.tga]]
+local bar_texture	= ns.media.statusBar
 
 local recycle_bin = {}
 local function Recycler(trash_table)
