@@ -35,12 +35,12 @@ recRunes.opt = {
 recRunes.gcd_reference_spell = [[Death Coil]]
 
 if not recMedia then
-	recRunes.font_face         = [[Interface\AddOns\recRunes\media\pf_tempesta_five_condensed.ttf]]
+	recRunes.font_face         = recRunes.media.font
 	recRunes.font_size         = 10
 	recRunes.font_flags        = "OUTLINE"
-	recRunes.bg_file           = [[Interface\ChatFrame\ChatFrameBackground]]
-	recRunes.edge_file         = [[Interface\AddOns\recRunes\media\glowtex]]
-	recRunes.statusbar_texture = [[Interface\AddOns\recRunes\media\normtexa]]
+	recRunes.bg_file           = recRunes.media.bgFile
+	recRunes.edge_file         = recRunes.media.edgeFile
+	recRunes.statusbar_texture = recRunes.media.statusBar
 else
 	recRunes.font_face         = recMedia.fontFace.TINY_PIXEL
 	recRunes.font_size         = 10
@@ -208,7 +208,7 @@ rp:SetStatusBarColor(0, 0, 1, 0.5)
 
 rp.tx = rp:CreateTexture(nil, "ARTWORK")
 rp.tx:SetAllPoints()
-rp.tx:SetTexture([[Interface\AddOns\recRunes\media\normtexa.tga]])
+rp.tx:SetTexture(recRunes.media.statusBar)
 rp.tx:SetVertexColor(.5, .75, 1, 1)
 rp:SetStatusBarTexture(rp.tx)
 
@@ -220,8 +220,8 @@ rp.soft_edge = CreateFrame("Frame", nil, rp)
 rp.soft_edge:SetPoint("TOPLEFT", -4, 3.5)
 rp.soft_edge:SetPoint("BOTTOMRIGHT", 4, -4)
 rp.soft_edge:SetBackdrop({
-	bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
-	edgeFile = [[Interface\Addons\recRunes\media\glowtex]], edgeSize = 4,
+	bgFile = recRunes.media.bgFile,
+	edgeFile = recRunes.media.edgeFile, edgeSize = 4,
 	insets = {left = 3, right = 3, top = 3, bottom = 3}
 })
 rp.soft_edge:SetFrameStrata("BACKGROUND")
@@ -230,7 +230,7 @@ rp.soft_edge:SetBackdropBorderColor(0, 0, 0)
 
 rp.bg = rp:CreateTexture(nil, "BORDER")
 rp.bg:SetAllPoints()
-rp.bg:SetTexture([[Interface\AddOns\recRunes\media\normtexa.tga]])
+rp.bg:SetTexture(recRunes.media.statusBar)
 rp.bg:SetVertexColor(0.25, 0.25, 0.25, 1)
 
 local timer = 0

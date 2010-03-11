@@ -90,7 +90,7 @@ local function MapInitialize(self)
 	WorldMapDetailFrame.bg:SetPoint("TOPLEFT", -10, 10)
 	WorldMapDetailFrame.bg:SetPoint("BOTTOMRIGHT", 10, -10)
 	WorldMapDetailFrame.bg:SetBackdrop({
-		bgFile = [[Interface\ChatFrame\ChatFrameBackground]],
+		bgFile = ns.media.bgFile,
 		edgeFile = ns.media.edgeFile, edgeSize = 4,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	})

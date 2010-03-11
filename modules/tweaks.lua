@@ -205,7 +205,7 @@ t.events:RegisterEvent("UPDATE_INSTANCE_INFO")
 
 t.events:HookScript("OnEvent", function(self, event, ...)
 	if event == "ADDON_LOADED" then
-		if ... == "recConfig" then
+		if ... == "recUI" then
 			RequestRaidInfo()
 		end
 	end
@@ -790,9 +790,9 @@ function SetZoneText(showZone)
 	SubZoneTextString:SetTextColor(1, 1, 1)
 	--end
 	
-	ZoneTextString:SetFont(    ns.media.font, 18, "OUTLINE" )
-	SubZoneTextString:SetFont( ns.media.font, 18, "OUTLINE" )
-	pvpTextString:SetFont(     ns.media.font, 18, "OUTLINE" )
+	ZoneTextString:SetFont(    t.media.font, 18, "OUTLINE" )
+	SubZoneTextString:SetFont( t.media.font, 18, "OUTLINE" )
+	pvpTextString:SetFont(     t.media.font, 18, "OUTLINE" )
 	
 	ZoneTextString:SetJustifyH("CENTER")
 	ZoneTextString:ClearAllPoints()
