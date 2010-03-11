@@ -73,7 +73,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		
 		timer.tx = timer:CreateTexture(nil, "ARTWORK")
 		timer.tx:SetAllPoints()
-		timer.tx:SetTexture([=[Interface\AddOns\recUI\media\texture\normtexa.tga]=])
+		timer.tx:SetTexture(recBossTimers.media.statusBar)
 		timer.tx:SetVertexColor(1, 0, 0, 1)
 		timer:SetStatusBarTexture(timer.tx)
 
@@ -92,7 +92,7 @@ recBossTimers.create_timer = function(self, duration, timer_name, x_offset, y_of
 		timer.bg = timer:CreateTexture(nil, "BORDER")
 		timer.bg:SetPoint("TOPLEFT")
 		timer.bg:SetPoint("BOTTOMRIGHT")
-		timer.bg:SetTexture([=[Interface\AddOns\recUI\media\texture\normtexa.tga]=])
+		timer.bg:SetTexture(recBossTimers.media.statusBar)
 		timer.bg:SetVertexColor(0.25, 0.25, 0.25, 1)
 	
 		timer.icon = timer:CreateTexture(nil, "BORDER")
