@@ -46,7 +46,7 @@ bar45Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 35)
 local petBarHolder = CreateFrame("Frame","PetBarHolder",UIParent)
 petBarHolder:SetWidth(120)
 petBarHolder:SetHeight(47)
-petBarHolder:SetPoint("BOTTOM", UIParent, "BOTTOM", -337, 359)
+petBarHolder:SetPoint("BOTTOM", UIParent, "BOTTOM", -337, 344)
   
 -- Frame to hold the shapeshift bars  
 local shiftBarHolder = CreateFrame("Frame","ShapeShiftHolder",UIParent)
@@ -499,11 +499,22 @@ HideDefaultFrames()
     local na  = _G[name.."Name"]
     local fl  = _G[name.."Flash"]
     local nt  = _G[name.."NormalTexture"]
+	
+	bu:SetBackdrop({
+		bgFile = recUI.media.buttonBackdrop,
+		edgeFile = nil,
+		edgeSize = 0,
+		insets = { left = 0, right = 0, top = 0, bottom = 0 }
+	})
+	bu:SetBackdropColor(1, 1, 1, 1)
     
     nt:SetHeight(bu:GetHeight())
     nt:SetWidth(bu:GetWidth())
-    nt:SetPoint("Center", 0, 0)
-    bo:Hide()
+    nt:SetPoint("CENTER")
+	nt:SetDrawLayer("OVERLAY")
+	
+	bo:SetTexture(recUI.media.buttonBorder)
+	bo:SetDrawLayer("OVERLAY")
     
     ho:SetFont(recUI.media.font, 14, "OUTLINE")
     co:SetFont(recUI.media.font, 14, "OUTLINE")
@@ -514,17 +525,19 @@ HideDefaultFrames()
     na:Hide()
   
     fl:SetTexture(recUI.media.buttonFlash)
+	fl:SetDrawLayer("OVERLAY")
     bu:SetHighlightTexture(recUI.media.buttonHighlight)
     bu:SetPushedTexture(recUI.media.buttonPushed)
     bu:SetCheckedTexture(recUI.media.buttonChecked)
     bu:SetNormalTexture(recUI.media.buttonNormal)
   
     ic:SetTexCoord(0.1,0.9,0.1,0.9)
-    ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
-    ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+    ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 3, -3)
+    ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -3, 3)
+	ic:SetDrawLayer("BORDER")
   
     if ( IsEquippedAction(action) ) then
-      bu:SetNormalTexture(recUI.media.buttonNormal)
+      bu:SetNormalTexture(recUI.media.buttonEquipped)
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
       bu:SetNormalTexture(recUI.media.buttonNormal)
@@ -542,6 +555,17 @@ HideDefaultFrames()
       local ic  = _G[name.."Icon"]
       local fl  = _G[name.."Flash"]
       local nt  = _G[name.."NormalTexture2"]
+	  
+	bu:SetBackdrop({
+		bgFile = recUI.media.buttonBackdrop,
+		edgeFile = nil,
+		edgeSize = 0,
+		insets = { left = 0, right = 0, top = 0, bottom = 0 }
+	})
+	bu:SetBackdropColor(1, 1, 1, 1)
+	fl:SetDrawLayer("OVERLAY")
+	nt:SetDrawLayer("OVERLAY")
+	ic:SetDrawLayer("BORDER")
   
       nt:SetHeight(bu:GetHeight())
       nt:SetWidth(bu:GetWidth())
@@ -570,7 +594,18 @@ HideDefaultFrames()
       local ic  = _G[name.."Icon"]
       local fl  = _G[name.."Flash"]
       local nt  = _G[name.."NormalTexture"]
-  
+
+	bu:SetBackdrop({
+		bgFile = recUI.media.buttonBackdrop,
+		edgeFile = nil,
+		edgeSize = 0,
+		insets = { left = 0, right = 0, top = 0, bottom = 0 }
+	})
+	bu:SetBackdropColor(1, 1, 1, 1)
+	fl:SetDrawLayer("OVERLAY")
+	nt:SetDrawLayer("OVERLAY")
+	ic:SetDrawLayer("BORDER")
+	
       nt:ClearAllPoints()
       nt:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
       nt:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 0, 0)
