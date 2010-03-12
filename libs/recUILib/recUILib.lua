@@ -5,6 +5,9 @@ recUI.lib = {}
 
 local lib = recUI.lib
 
+-- Used for stat output
+lib.status = {}
+
 -- Used for lib modules.
 lib.frame = CreateFrame("Frame")
 
@@ -26,3 +29,10 @@ lib.Kill = function(object)
 end
 
 lib.playerClass = select(2, UnitClass("player"))
+
+SLASH_RECUILIB1 = "/recuilib"
+SlashCmdList.RECUILIB = function()
+	for _, statusFunc in pairs(lib.status) do
+		statusFunc()
+	end
+end

@@ -55,3 +55,11 @@ lib.unscheduleUpdate = function(updateName)
 		end
 	end
 end
+
+lib.status.libupdates = function()
+	local numOnUpdates = 0
+	for k,v in pairs(scheduledUpdates) do
+		numOnUpdates = numOnUpdates + 1
+	end
+	print(format("recUILib is processing %d OnUpdate scripts.", numOnUpdates))
+end

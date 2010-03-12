@@ -58,3 +58,15 @@ lib.unregisterEvent = function(event, handlerName)
 		end
 	end
 end
+
+lib.status.libevents = function()
+	local numEvents = 0
+	local numHandlers = 0
+	for k,v in pairs(events) do
+		numEvents = numEvents + 1
+		for f,b in pairs(v) do
+			numHandlers = numHandlers + 1
+		end
+	end
+	print(format("recUILib is handling %d events with %d handlers.", numEvents, numHandlers))
+end
