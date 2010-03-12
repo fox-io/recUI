@@ -674,7 +674,9 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 				reagents = nil
 			end
 		end
-		buy_reagents()
+		if my_reagents then
+			buy_reagents()
+		end
 	end
 end)
 
