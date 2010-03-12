@@ -21,10 +21,6 @@ local items = {
 }
 local dirty
 
-------------------------------
---      Util Functions      --
-------------------------------
-
 local function TableStuffer(...)
 	local t = {}
 	for i=1,select("#", ...) do
@@ -50,36 +46,21 @@ for i,v in pairs(items) do
 	items[i] = TableStuffer(string.split(" ,", v))
 end
 
------------------------------
---      Event Handler      --
------------------------------
+local function Edit(name, substring, food, pot, stone, shift)
+	local macroid = GetMacroIndexByName(name)
+	if not macroid then return end
 
-recBuffet = CreateFrame("frame")
-recBuffet:SetScript("OnEvent", function(self, event, ...) if self[event] then return self[event](self, event, ...) end end)
-recBuffet:RegisterEvent("PLAYER_LOGIN")
+	local body = "/use "
+	if shift then body = body .. "[mod:shift,target=player] item:"..shift.."; " end
+	if (pot and not stone) or (stone and not pot) then body = body .. "[combat] item:"..(pot or stone).."; " end
+	body = body .. (pot and stone and "[nocombat] " or "").."item:"..(food or "6948")
 
-function recBuffet:PLAYER_LOGIN()
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("BAG_UPDATE")
-	self:RegisterEvent("PLAYER_LEVEL_UP")
+	if pot and stone then body = body .. "\n/castsequence [combat,nomod] reset="..(stone == 22044 and "120/" or "").."combat item:"..stone..", item:"..pot end
 
-	self:Scan()
-
-	self:UnregisterEvent("PLAYER_LOGIN")
-	self.PLAYER_LOGIN = nil
+	EditMacro(macroid, name, 1, substring:gsub("%%MACRO%%", body), 1)
 end
 
-function recBuffet:PLAYER_REGEN_ENABLED()
-	if dirty then self:Scan() end
-end
-
-function recBuffet:BAG_UPDATE()
-	dirty = true
-	if not InCombatLockdown() then self:Scan() end
-end
-recBuffet.PLAYER_LEVEL_UP = recBuffet.BAG_UPDATE
-
-function recBuffet:Scan()
+local function Scan()
 	-- Remove everything in bests{}
 	for _,t in pairs(bests) do
 		for i in pairs(t) do
@@ -109,21 +90,24 @@ function recBuffet:Scan()
 	end
 	
 	-- Change macros
-	self:Edit("AutoHP", macroHP, bests.conjfood.id or bests.percfood.id or bests.food.id or bests.hstone.id or bests.hppot.id, bests.hppot.id, bests.hstone.id, bests.bandage.id)
-	self:Edit("AutoMP", macroMP, bests.conjwater.id or bests.percwater.id or bests.water.id or bests.mstone.id or bests.mppot.id, bests.mppot.id, bests.mstone.id)
+	Edit("AutoHP", macroHP, bests.conjfood.id or bests.percfood.id or bests.food.id or bests.hstone.id or bests.hppot.id, bests.hppot.id, bests.hstone.id, bests.bandage.id)
+	Edit("AutoMP", macroMP, bests.conjwater.id or bests.percwater.id or bests.water.id or bests.mstone.id or bests.mppot.id, bests.mppot.id, bests.mstone.id)
 	dirty = false
 end
 
-function recBuffet:Edit(name, substring, food, pot, stone, shift)
-	local macroid = GetMacroIndexByName(name)
-	if not macroid then return end
+recUI.lib.registerEvent("PLAYER_LOGIN", "recUIModuleConsumables", function()
+	Scan()
+	recUI.lib.unregisterEvent("PLAYER_LOGIN", "recUIModuleConsumables")
+end)
 
-	local body = "/use "
-	if shift then body = body .. "[mod:shift,target=player] item:"..shift.."; " end
-	if (pot and not stone) or (stone and not pot) then body = body .. "[combat] item:"..(pot or stone).."; " end
-	body = body .. (pot and stone and "[nocombat] " or "").."item:"..(food or "6948")
+recUI.lib.registerEvent("PLAYER_REGEN_ENABLED", "recUIModuleConsumables", function()
+	if dirty then Scan() end
+end)
 
-	if pot and stone then body = body .. "\n/castsequence [combat,nomod] reset="..(stone == 22044 and "120/" or "").."combat item:"..stone..", item:"..pot end
-
-	EditMacro(macroid, name, 1, substring:gsub("%%MACRO%%", body), 1)
+local function ForceUpdate()
+	dirty = true
+	if not InCombatLockdown() then Scan() end
 end
+
+recUI.lib.registerEvent("BAG_UPDATE", "recUIModuleConsumables", ForceUpdate)
+recUI.lib.registerEvent("PLAYER_LEVEL_UP", "recUIModuleConsumables", ForceUpdate)
