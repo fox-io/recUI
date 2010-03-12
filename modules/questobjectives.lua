@@ -200,9 +200,14 @@ local function CheckForProgress()
 	end
 end
 
+local CheckUpdate
+
 local function UpdateQuestLog()	
 	-- If we need to wait, then turn on our update pause timer
-	if update_in_progress then return update_pause:Show() end
+	if update_in_progress then
+		recUI.lib.scheduleUpdate("recUIQuestObjectives", .5, CheckUpdate)
+		return
+	end
 
 	-- prevent more updates from running until we are done with this update
 	update_in_progress = true
@@ -280,39 +285,16 @@ local function UpdateQuestLog()
 
 end
 
--- Check if updating is done every .5 seconds
-local time_to_update = 0.5
+CheckUpdate = function()
+	if update_in_progress then
+		-- Wait another .5 seconds and check again
+		return
+	else
+		recUI.lib.unscheduleUpdate("recUIQuestObjectives")
+		-- Attempt to update
+		UpdateQuestLog()
 
-local function CheckUpdate(self, elapsed)
-
-	time_to_update = time_to_update - elapsed
-
-	if time_to_update <= 0 then
-
-		-- Reset timer duration
-		time_to_update = 0.5
-
-		if update_in_progress then
-
-			-- Wait another .5 seconds and check again
-			return
-
-		else
-
-			-- Hide frame to stop updating
-			self:Hide()
-
-			-- Attempt to update
-			UpdateQuestLog()
-
-		end
 	end
 end
 
--- Hide frame so it does not run it's onupdate
--- This gets shown if a QLU event fires before the previous QLU has finished processing its data.
-update_pause:Hide()
-update_pause:SetScript("OnUpdate", CheckUpdate)
--- Our event to check for quest progress on.
-update_pause:SetScript("OnEvent", UpdateQuestLog)
-update_pause:RegisterEvent("QUEST_LOG_UPDATE")
+recUI.lib.registerEvent("QUEST_LOG_UPDATE", "recUIQuestObjectives", UpdateQuestLog)
