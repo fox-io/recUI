@@ -1,9 +1,23 @@
-h2. recUI
-
 h3. Recluse's World of Warcraft UI
 
-p. recUI is under development.  While written from the ground up, many of Recluse's _recFoo_ series of addons will be used as a base or in part to move towards a stable state.
+p. recUI is under development - expect instability.  This UI is written with the intention of being a single, all-purpose UI.  While some features may be basic, the goal is to simply provide all of the functionality with as little overhead as possible.
 
-p. This incarnation of recUI will be hosted at "GitHub (recUI@GitHub)":http://www.github.com/Recluse/recUI
+p. Included you will find most of the familiar UI components that are considered staples of a UI.
+
+* Scrolling combat text
+* Custom action bar
+* Damage meter
+* Threat meter
+* Custom, square minimap
+* Raid timers (under development)
+* Custom world map
+* Instant messenger style whispers
+* Custom unit frames
+* Buff/debuff timers
+* All-in-one bag addon (with detached ammo/shards)
+* Custom chat frame
+* ...And much more!
+
+p. This incarnation of recUI development is hosted at "GitHub (recUI@GitHub)":http://www.github.com/Recluse/recUI
 
 p. ~recUI (c)2009-2010 "Recluse (Send E-Mail)":mailto:john.d.mann@gmail.com~
