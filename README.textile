@@ -2,7 +2,7 @@ h3. Recluse's World of Warcraft UI
 
 p. recUI is under development - expect instability.  This UI is written with the intention of being a single, all-purpose UI.  While some features may be basic, the goal is to simply provide all of the functionality with as little overhead as possible.
 
-p. Included you will find most of the familiar UI components that are considered staples of a UI.
+p. Included you will find most of the familiar UI components that are considered staples of a custom UI.
 
 * Scrolling combat text
 * Custom action bar
@@ -11,7 +11,6 @@ p. Included you will find most of the familiar UI components that are considered
 * Custom, square minimap
 * Raid timers (under development)
 * Custom world map
-* Instant messenger style whispers
 * Custom unit frames
 * Buff/debuff timers
 * All-in-one bag addon (with detached ammo/shards)
