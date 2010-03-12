@@ -1,13 +1,13 @@
 local _, recUI = ...
 local oUF = recUI.oUF
 
-local siValue = function(val)
-	if(val >= 1e6) then
-		return ('%.1f'):format(val / 1e6):gsub('%.', 'm')
-	elseif(val >= 1e4) then
-		return ("%.1f"):format(val / 1e3):gsub('%.', 'k')
+local ShortValue = function(value)
+	if value >= 1e6 then
+		return ("%.1fm"):format(value / 1e6):gsub("%.?0+([km])$", "%1")
+	elseif value >= 1e3 or value <= -1e3 then
+		return ("%.1fk"):format(value / 1e3):gsub("%.?0+([km])$", "%1")
 	else
-		return val
+		return value
 	end
 end
 
@@ -43,7 +43,7 @@ local updateName = function(self, event, unit)
 			self.Name:SetTextColor(r, g, b)
 		end
 		if self:GetParent():GetName():match("oUF_Raid") then
-			self.Name:SetText(string.sub(UnitName(unit), 0, 4))
+			self.Name:SetText(string.sub(UnitName(unit), 0, 3))
 		else
 			self.Name:SetText(UnitName(unit))
 		end
@@ -60,12 +60,12 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if(min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
+				bar.value:SetFormattedText("%s | %s", ShortValue(min), ShortValue(max))
 			else
 				bar.value:SetText(max)
 			end
 		else
-			bar.value:SetText()
+			bar.value:SetText(ShortValue(min))
 		end
 	end
 
@@ -83,7 +83,7 @@ local PostUpdatePower = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if (min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", siValue(min), siValue(max))
+				bar.value:SetFormattedText("%s | %s", ShortValue(min), ShortValue(max))
 			else
 				bar.value:SetText(max)
 			end
