@@ -77,18 +77,17 @@ veb:SetNormalTexture([[Interface\Vehicles\UI-Vehicles-Button-Exit-Up]])
 veb:SetPushedTexture([[Interface\Vehicles\UI-Vehicles-Button-Exit-Down]])
 veb:SetHighlightTexture([[Interface\Vehicles\UI-Vehicles-Button-Exit-Down]])
 veb:SetScript("OnClick", function(self) VehicleExit() end)
-veb:RegisterEvent("UNIT_ENTERING_VEHICLE")
-veb:RegisterEvent("UNIT_ENTERED_VEHICLE")
-veb:RegisterEvent("UNIT_EXITING_VEHICLE")
-veb:RegisterEvent("UNIT_EXITED_VEHICLE")
-veb:SetScript("OnEvent", function(self,event,...)
-	local arg1 = ...
-	if(((event=="UNIT_ENTERING_VEHICLE") or (event=="UNIT_ENTERED_VEHICLE")) and arg1 == "player") then
+local function OnVehicle(self, event, unit)
+	if(((event=="UNIT_ENTERING_VEHICLE") or (event=="UNIT_ENTERED_VEHICLE")) and unit == "player") then
 		veb:SetAlpha(1)
-	elseif(((event=="UNIT_EXITING_VEHICLE") or (event=="UNIT_EXITED_VEHICLE")) and arg1 == "player") then
+	elseif(((event=="UNIT_EXITING_VEHICLE") or (event=="UNIT_EXITED_VEHICLE")) and unit == "player") then
 		veb:SetAlpha(0)
 	end
-end)
+end
+recUI.lib.registerEvent("UNIT_ENTERING_VEHICLE", "recUIActionBar", OnVehicle)
+recUI.lib.registerEvent("UNIT_ENTERED_VEHICLE", "recUIActionBar", OnVehicle)
+recUI.lib.registerEvent("UNIT_EXITING_VEHICLE", "recUIActionBar", OnVehicle)
+recUI.lib.registerEvent("UNIT_EXITED_VEHICLE", "recUIActionBar", OnVehicle)
  
 ---------------------------------------------------
 -- MOVE STUFF INTO POSITION
