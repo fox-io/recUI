@@ -275,8 +275,8 @@ local function style(self, unit)
 	elseif self:GetParent():GetName():match("oUF_Raid") then
 		self:SetAttribute("initial-height", 28)
 		self:SetAttribute("initial-width", 60)
-		self.Power:SetHeight(11)
-		self.Health:SetHeight(15)
+		self.Power:SetHeight(6)
+		self.Health:SetHeight(20)
 	else
 		self:SetAttribute("initial-height", 22)
 		self:SetAttribute("initial-width", 113)
