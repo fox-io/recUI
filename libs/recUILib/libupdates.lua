@@ -49,8 +49,11 @@ lib.unscheduleUpdate = function(updateName)
 		scheduledUpdates[updateName] = nil
 		
 		-- Stop updating if there are no scheduled updates.
-		local remainingUpdates = #scheduledUpdates
-		if not(remainingUpdates) or (remainingUpdates == 0) then
+		local numUpdates = 0
+		for k,v in pairs(scheduledUpdates) do
+			numUpdates = numUpdates + 1
+		end
+		if numUpdates == 0 then
 			updateFrame:SetScript("OnUpdate", nil)
 		end
 	end

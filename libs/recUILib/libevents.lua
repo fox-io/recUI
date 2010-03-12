@@ -51,8 +51,11 @@ lib.unregisterEvent = function(event, handlerName)
 		events[event][handlerName] = nil
 		
 		-- Remove event entry if final handler was removed.
-		local remainingHandlers = #events[event]
-		if not(remainingHandlers) or (remainingHandlers == 0) then
+		local numHandlers = 0
+		for k,v in pairs(events[event]) do
+			numHandlers = numHandlers + 1
+		end
+		if numHandlers == 0 then
 			eventFrame:UnregisterEvent(event)
 			events[event] = nil
 		end
