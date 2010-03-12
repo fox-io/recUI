@@ -4,16 +4,12 @@
 	<Script file='bags.lua' />
 	<Script file='chat.lua' />
 	<Script file='combattext.lua' />
-	<Script file='consumables.lua' />
 	<Script file='cooldown.lua' />
 	<Script file='damagemeter.lua' />
 	<Script file='datafeeds.lua' />
-	<Script file='hunterpet.lua' />
 	<Script file='minimap.lua' />
 	<Script file='mirrorbar.lua' />
 	<Script file='nameplates.lua' />
-	<Script file='professions.lua' />
-	<Script file='questobjectives.lua' />
 	<Script file='raidtimers.lua' />
 	<Script file='runes.lua' />
 	<Script file='threatmeter.lua' />
@@ -22,6 +18,5 @@
 	<Script file='totems.lua' />
 	<Script file='tweaks.lua' />
 	<Script file='unitframes.lua' />
-	<Script file='whispers.lua' />
 	<Script file='worldmap.lua' />
 </Ui>

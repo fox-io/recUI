@@ -22,6 +22,7 @@ local numPage = MERCHANT_ITEMS_PER_PAGE
 local GetItemInfo = GetItemInfo
 local GetTradePlayerItemLink = GetTradePlayerItemLink
 
+-- Move achievement/dungeon completions to center of screen.
 local function reanchor()
 	local one, two, lfg = AchievementAlertFrame1, AchievementAlertFrame2, DungeonCompletionAlertFrame1
 	if one then
@@ -53,6 +54,12 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+
+
+
+
+-- Toggle name on head when afk
 recUI.tweaks.eventFrame:RegisterEvent("CHAT_MSG_SYSTEM")
 recUI.tweaks.eventFrame:RegisterEvent("PLAYER_LOGOUT")
 recUI.tweaks.eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -74,6 +81,11 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+
+
+
+-- Auto release in battlegrounds
 recUI.tweaks.eventFrame:RegisterEvent("PLAYER_DEAD")
 recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_DEAD" then
@@ -83,27 +95,11 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
--- BuffRemover is essentially a rip of the AntiHawk addon by p3lim, modified
--- to remove any and all buffs that you do not want on your character.  To use
--- BuffRemover, simply obtain the spell ID for the buff you want to remove and
--- enter it in the list below.
-local unwanted_buffs = {
-	[58493] = true,	-- Mr. T mohawk
-}
 
-recUI.tweaks.eventFrame:RegisterEvent("UNIT_AURA")
-recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
-	if event == "UNIT_AURA" then
-		if unit == "player" then
-			for k,_ in pairs(unwanted_buffs) do
-				if UnitAura(unit, GetSpellInfo(k)) then
-					CancelUnitBuff(unit, GetSpellInfo(k))
-				end
-			end
-		end
-	end
-end)
 
+
+
+-- Setup many cvars
 recUI.tweaks.eventFrame:RegisterEvent("PLAYER_LOGIN")
 recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "PLAYER_LOGIN" then
@@ -188,6 +184,13 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+
+
+
+
+
+-- Cancel incoming duels.
 recUI.tweaks.eventFrame:RegisterEvent("DUEL_REQUESTED")
 recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "DUEL_REQUESTED" then
@@ -195,46 +198,21 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+
+
+
+
+
 -- Block errors
 UIErrorsFrame:UnregisterEvent("UI_ERROR_MESSAGE")
 
-local useless_messages = {
-	"fish are hooked",
-	"Mail sent",
-	"Discovered: "
-}
--- Filter out messages we don't care about.
-local oUIErrorsFrame_OnEvent = UIErrorsFrame:GetScript("OnEvent")
-UIErrorsFrame:SetScript("OnEvent", function(self, event, msg, ...)
-	if event == "UI_INFO_MESSAGE" then
-		for _, keyword in pairs(useless_messages) do
-			if msg:find(keyword) then return end
-		end
-	end
 
-	return oUIErrorsFrame_OnEvent(self, event, msg, ...)
-end)
 
-recUI.tweaks.eventFrame:RegisterEvent("ADDON_LOADED")
-recUI.tweaks.eventFrame:RegisterEvent("UPDATE_INSTANCE_INFO")
 
-recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
-	if event == "ADDON_LOADED" then
-		if ... == "recUI" then
-			RequestRaidInfo()
-		end
-	end
-	
-	if event == "UPDATE_INSTANCE_INFO" then
-		for i = 1, GetNumSavedInstances() do
-			local name, _, _, _, is_locked, is_extended = GetSavedInstanceInfo(i)
-			if (name == "The Oculus" or name == "The Culling of Stratholme") and is_locked and (not is_extended) then
-				SetSavedInstanceExtend(i, true)
-			end
-		end
-	end
-end)
 
+
+-- Ensure Keybinds
 local bindings = {
                  ["W"] = "MOVEFORWARD",
                  ["S"] = "MOVEBACKWARD",
@@ -325,6 +303,14 @@ event_frame:SetScript("OnEvent", function(self)
 end)
 
 
+
+
+
+
+
+
+
+
 -- Auto DE/Greed
 recUI.tweaks.eventFrame:RegisterEvent("START_LOOT_ROLL")
 recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, id)
@@ -340,7 +326,17 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, id)
 	end
 end)
 
--- Move/scale frame
+
+
+
+
+
+
+
+
+
+
+-- Move/scale loot frame
 local function on_show(self, ...)
 	self:ClearAllPoints()
 	if self:GetName() == "GroupLootFrame1" then
@@ -367,202 +363,16 @@ GroupLootFrame2:SetScript("OnShow", on_show)
 GroupLootFrame3:SetScript("OnShow", on_show)
 GroupLootFrame4:SetScript("OnShow", on_show)
 
-LoadAddOn("Blizzard_MacroUI")
 
--- Sample.  Need to create table and loop, class checks etc.
-local btn = CreateFrame("Button", "ViperHawkButton", UIParent, "SecureUnitButtonTemplate")
-btn:SetAttribute("type", "macro")
-btn:SetAttribute("macrotext", [[/castsequence !Aspect of the Hawk, !Aspect of the Viper]])
-ClearOverrideBindings(btn)
-SetOverrideBindingClick(btn, false, [[`]], btn:GetName())
 
--- Snatched via Cael's copy of Gotai's macro code.
--- Modified to be a bit less featureful, but still do what needs to be done.
--- Unless you edit this, you do not want this to run on your system, I think.
--- IF YOU RUN THIS CODE, ALL MACROS NOT IN THIS LIST WILL BE DELETED!
---local i_understand = true
--- Uncomment the line above to enable this module.  You have been warned.
-local macros = {
-	["AutoHP"] = {
-		body = [[]],
-	},
-	["AutoMP"] = {
-		body = [[]],
-	},
-	["AutoPet"] = {
-		class = "HUNTER",
-		body = [[]],
-	},
-	["Icy Touch"] = {
-		class = "DEATHKNIGHT",
-		body = [[
-#showtooltip
-/cast Icy Touch
-/cast !Rune Strike
-/startattack
-]],
-	},
-	["Plague Strike"] = {
-		class = "DEATHKNIGHT",
-		body = [[
-#showtooltip
-/cast Plague Strike
-/cast !Rune Strike
-/startattack
-]],
-	},
-	["Heart Strike"] = {
-		class = "DEATHKNIGHT",
-		body = [[
-#showtooltip
-/cast Heart Strike
-/cast !Rune Strike
-/startattack
-]],
-	},
-	["Death Coil"] = {
-		class = "DEATHKNIGHT",
-		body = [[
-#showtooltip
-/cast Death Coil
-/cast !Rune Strike
-/startattack
-]],
-	},
-	["Death Strike"] = {
-		class = "DEATHKNIGHT",
-		body = [[
-#showtooltip
-/cast Death Strike
-/cast !Rune Strike
-/startattack
-]],
-	},
-	["EoEDrakes"] = {
-		body = [[/raid ==DPS Drakes==
-/raid Target Malygos
-/raid 11112 11112
-/raid 1115 if targeted
-/raid ==Heal Drakes==
-/raid Target Self
-/raid 333334 333334
-/raid 3335 if targeted]],
-	},
-	["FishAttack"] = {
-		body = [[#showtooltip
-/cast [equipped:Fishing Pole] Fishing; [equipped:Wand] Shoot; [noequipped:Fishing Pole, noequipped:Wand, nomodifier:ctrl] Auto Attack; [modifier:ctrl] Pick Lock;
-               ]],
-	},
-	["Focus"] = {
-		body = [[/stopmacro [target=focus,dead] [noexists]
-/target focus
-/focus [target=lasttarget]
-               ]],
-	},
-	["Thaddius"] = {
-		body = [[/raid NEG  <--  boss  -->   POS]],
-	},
-	["QuestTurnIn"] = {
-		body = [[/run SelectGossipActiveQuest(1); CompleteQuest(); GetQuestReward()]],
-	},
-}
 
-local function CreateBlizzardMacro(name, perChar, icon)
-	if icon then
-		if type(icon) == "string" then
-			local path = icon:match("Interface.Icons.(.+)") or icon
-			path = "Interface\\Icons\\"..path       -- Allow discrepancies in given path.
-			
-			for i=1, GetNumMacroIcons() do
-				if GetMacroIconInfo(i) == path then
-					icon = i
-					break
-				end
-			end
-		end
-		
-		if type(icon) ~= "number" then
-			icon = nil
-		end
-	end
-	
-	local macroname = name:sub(1,13)
-	local show = macros[name].show
-	local macrobody = macros[name].body
-	
-	if show then
-		show = string.format("#showtooltip %s\n", show)
-		if show:len()+macrobody:len() <= 255 then
-			macrobody = show..macrobody
-		end
-	end
-	
-	local index = GetMacroIndexByName(macroname)
-	if index > 0 then
-		EditMacro(index, nil, icon or 1, macrobody, 1)
-	else
-		local Macros, PerCharMacros = GetNumMacros()
-		if perChar and PerCharMacros >= 18 then -- MAX_CHARACTER_MACROS
-			perChar = nil
-		end
-		
-		if not perChar and Macros >= 36 then -- MAX_ACCOUNT_MACROS
-			return -- full
-		end
-		
-		CreateMacro(macroname, icon or 1, macrobody, perChar)
-	end
-end
 
-local event_frame = CreateFrame("Frame")
-event_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-event_frame:SetScript("OnEvent", function(self, event, ...)
-	if i_understand then
-		local _, playerClass = UnitClass("player")
-		local playerName = UnitName("player")
-		
-		if InCombatLockdown() then
-			return self:RegisterEvent("PLAYER_REGEN_ENABLED")
-		end
-		
-		-- Remove all macros
-		local NumMacros, NumMacrosPerChar = GetNumMacros()
 
-		local name
-		
-		for i=NumMacros, 1, -1 do
-			name = GetMacroInfo(i)
-			if not macros[name] then
-				DeleteMacro(i)
-			end
-		end
-		
-		for i=37+(NumMacrosPerChar-1 or 0), 37, -1 do
-			name = GetMacroInfo(i)
-			if not macros[name] then
-				DeleteMacro(i)
-			end
-		end
 
-		-- Insert recUI macros
-		for k,v in pairs(macros) do
-			if v.class and v.class:find(playerClass) then
-				CreateBlizzardMacro(k, true, v.icon)
-			else
-				if v.char and v.char:find(playerName) then
-					CreateBlizzardMacro(k, true, v.icon)
-				else
-					CreateBlizzardMacro(k, false, v.icon)
-				end
-			end
-		end
-	end
-	
-	self:UnregisterEvent(event)
-	self:SetScript("OnEvent", nil)
-	event_frame = nil
-	macros = nil
-end)
+
+
+
+-- Auto reagent purchasing
 
 --[[
 	This is where you will add your characters, their realm, and the stock levels
@@ -693,6 +503,15 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	end
 end)
 
+
+
+
+
+
+
+
+-- Handy slash commands
+
 SLASH_RECUI_RELOAD1 = "/rl"
 SlashCmdList["RECUI_RELOAD"] = function() ReloadUI() end
 
@@ -731,6 +550,12 @@ ChatFrameEditBox:HookScript("OnTextChanged", function(self, from_user, ...)
 	end
 end)
 
+
+
+
+
+
+-- Auto sell grey items
 recUI.tweaks.eventFrame:RegisterEvent("MERCHANT_SHOW")
 recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 	if event == "MERCHANT_SHOW" then
@@ -747,124 +572,14 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 end)
 
 
--- Override Blizzard fade durations
-FadingFrame_SetFadeInTime(  ZoneTextFrame,    2)
-FadingFrame_SetHoldTime(    ZoneTextFrame,    0)
-FadingFrame_SetFadeOutTime( ZoneTextFrame,    5)
-FadingFrame_SetFadeInTime(  SubZoneTextFrame, 2)
-FadingFrame_SetHoldTime(    SubZoneTextFrame, 0)
-FadingFrame_SetFadeOutTime( SubZoneTextFrame, 5)
 
--- Override Blizzard function to set custom colors/fonts/anchors.
-function SetZoneText(showZone)
-	local pvpType, isSubZonePvP, factionName = GetZonePVPInfo()
-	PVPArenaTextString:SetText("")
-	PVPInfoTextString:SetText("")
-	local pvpTextString = PVPInfoTextString
-	if ( isSubZonePvP ) then
-		pvpTextString = PVPArenaTextString
-	end
 
-	--[[if ( pvpType == "sanctuary" ) then
-		pvpTextString:SetText(SANCTUARY_TERRITORY)
-		pvpTextString:SetTextColor(0.41, 0.8, 0.94)
-		ZoneTextString:SetTextColor(0.41, 0.8, 0.94)
-		SubZoneTextString:SetTextColor(0.41, 0.8, 0.94)
-	elseif ( pvpType == "arena" ) then
-		pvpTextString:SetText(FREE_FOR_ALL_TERRITORY)
-		pvpTextString:SetTextColor(1.0, 0.1, 0.1)
-		ZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-		SubZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-	elseif ( pvpType == "friendly" ) then
-		pvpTextString:SetFormattedText(FACTION_CONTROLLED_TERRITORY, factionName)
-		pvpTextString:SetTextColor(0.1, 1.0, 0.1)
-		ZoneTextString:SetTextColor(0.1, 1.0, 0.1)
-		SubZoneTextString:SetTextColor(0.1, 1.0, 0.1)
-	elseif ( pvpType == "hostile" ) then
-		pvpTextString:SetFormattedText(FACTION_CONTROLLED_TERRITORY, factionName)
-		pvpTextString:SetTextColor(1.0, 0.1, 0.1)
-		ZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-		SubZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-	elseif ( pvpType == "contested" ) then
-		pvpTextString:SetText(CONTESTED_TERRITORY)
-		pvpTextString:SetTextColor(1.0, 0.7, 0)
-		ZoneTextString:SetTextColor(1.0, 0.7, 0)
-		SubZoneTextString:SetTextColor(1.0, 0.7, 0)
-	elseif ( pvpType == "combat" ) then
-		pvpTextString:SetText(COMBAT_ZONE)
-		pvpTextString:SetTextColor(1.0, 0.1, 0.1)
-		ZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-		SubZoneTextString:SetTextColor(1.0, 0.1, 0.1)
-	else--]]
-	
-	ZoneTextString:SetTextColor(1, 1, 1)
-	SubZoneTextString:SetTextColor(1, 1, 1)
-	--end
-	
-	ZoneTextString:SetFont(    recUI.media.font, 18, "OUTLINE" )
-	SubZoneTextString:SetFont( recUI.media.font, 18, "OUTLINE" )
-	pvpTextString:SetFont(     recUI.media.font, 18, "OUTLINE" )
-	
-	ZoneTextString:SetJustifyH("CENTER")
-	ZoneTextString:ClearAllPoints()
-	ZoneTextString:SetPoint("CENTER", UIParent, "CENTER", 0, -10)
-	SubZoneTextString:SetJustifyH("CENTER")
-	SubZoneTextString:ClearAllPoints()
-	SubZoneTextString:SetPoint("TOPLEFT", ZoneTextString, "BOTTOMLEFT", 0, -3)
-	pvpTextString:SetJustifyH("CENTER")
-	pvpTextString:ClearAllPoints()
-	pvpTextString:SetPoint("TOPLEFT", SubZoneTextString, "BOTTOMLEFT", 0, -3)
 
-	--if ( ZonePVPType ~= pvpType ) then
-		--ZonePVPType = pvpType
---		FadingFrame_Show(ZoneTextFrame)
-	--elseif ( not showZone ) then
-		--PVPInfoTextString:SetText("")
-		--SubZoneTextString:SetPoint("TOP", "ZoneTextString", "BOTTOM", 0, 0)
-	--end
 
-	--if ( PVPInfoTextString:GetText() == "" ) then
-		--SubZoneTextString:SetPoint("TOP", "ZoneTextString", "BOTTOM", 0, 0)
-	--else
-		--SubZoneTextString:SetPoint("TOP", "PVPInfoTextString", "BOTTOM", 0, 0)
-	--end
-end
 
--- TODO: Override event handler
-function ZoneText_OnEvent(self, event, ...)
-	local showZoneText = false
-	local zoneText = GetZoneText()
-	if ( (zoneText ~= self.zoneText) or (event == "ZONE_CHANGED_NEW_AREA") ) then
-		self.zoneText = zoneText
-		ZoneTextString:SetText( zoneText )
-		showZoneText = true
-		SetZoneText( showZoneText )
-		FadingFrame_Show( self )
-	end
-	
-	local subzoneText = GetSubZoneText()
-	if ( subzoneText == "" and not showZoneText) then
-		subzoneText = zoneText
-	end
-	SubZoneTextString:SetText( "" )
 
-	if ( subzoneText == zoneText ) then
-		showZoneText = false
-		if ( not self:IsShown() ) then
-			SubZoneTextString:SetText( subzoneText )
-			SetZoneText( showZoneText )
-			FadingFrame_Show( SubZoneTextFrame )
-		end
-	else
-		if (self:IsShown()) then
-			showZoneText = true
-		end
-		SubZoneTextString:SetText( subzoneText )
-		SetZoneText( showZoneText )
-		FadingFrame_Show( SubZoneTextFrame )
-	end
-end
 
+--oGlow
 local colorTable = setmetatable({
 	[100] = {r = .9, g = 0, b = 0},
 	[99] = {r = 1, g = 1, b = 0},
