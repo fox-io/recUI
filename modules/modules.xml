@@ -3,13 +3,11 @@
 	<Script file='actionbar.lua' />
 	<Script file='bags.lua' />
 	<Script file='chat.lua' />
-	<Script file='chatfilter.lua' />
 	<Script file='combattext.lua' />
 	<Script file='consumables.lua' />
 	<Script file='cooldown.lua' />
 	<Script file='damagemeter.lua' />
 	<Script file='datafeeds.lua' />
-	<Script file='dressingroom.lua' />
 	<Script file='hunterpet.lua' />
 	<Script file='minimap.lua' />
 	<Script file='mirrorbar.lua' />
