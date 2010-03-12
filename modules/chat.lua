@@ -127,6 +127,9 @@ recUI.lib.registerEvent("VARIABLES_LOADED", "recUIModuleChatOnLoad", function(se
 	-- the default chat tabs prevents this from being called correctly.
 	ChatConfigFrame_OnEvent(nil, "PLAYER_ENTERING_WORLD", ...)
 	
+	-- Random error from within this function.  It is not needed, so dispose of it.
+	FCF_UpdateButtonSide = function() end
+	
 	local cf1 = _G["ChatFrame1"]
 	local cfmb = _G["ChatFrameMenuButton"]
 	
