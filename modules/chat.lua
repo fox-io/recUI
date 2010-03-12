@@ -3,7 +3,6 @@ local _, recUI = ...
 --
 --Support is provided by the compilation's author and not by the author(s) of the individual addons.
 
-local f = CreateFrame("Frame", "RecChat", UIParent, nil)
 local format = string.format
 local _G = _G
 local cftbb = CreateFrame("Frame", "RecChatButtonBar", UIParent)
@@ -406,21 +405,17 @@ ChatTypeInfo.BATTLEGROUND.sticky = 1
 ChatTypeInfo.WHISPER.sticky = 1
 ChatTypeInfo.CHANNEL.sticky = 1
 
-local color_delay = 10
-f:SetScript("OnUpdate", function(self, elapsed)
-	color_delay = color_delay - elapsed
-	if color_delay <= 0 then
-		join_zone_channels()
-		ChangeChatColor("CHANNEL1", 1, .75, .75)	-- General
-		ChangeChatColor("CHANNEL2", 1, .75, .75)	-- Trade
-		ChangeChatColor("CHANNEL3", 1, .75, .75)	-- LocalDefense
-		ChangeChatColor("CHANNEL4", 1, .75, .75)	-- GuildRecruitment
-		ChangeChatColor("CHANNEL5", 1, .75, .75)	-- LookingForGroup
-		ChangeChatColor("WHISPER", 1, .7, 1)		-- Incoming Whispers
-		ChangeChatColor("WHISPER_INFORM", 1, .7, 1)	-- Outgoing Whispers
-		color_delay = nil
-		self:SetScript("OnUpdate", nil)
-	end
+recUI.lib.scheduleUpdate("recUIModuleChatColors", 10, function()
+	join_zone_channels()
+	ChangeChatColor("CHANNEL1", 1, .75, .75)	-- General
+	ChangeChatColor("CHANNEL2", 1, .75, .75)	-- Trade
+	ChangeChatColor("CHANNEL3", 1, .75, .75)	-- LocalDefense
+	ChangeChatColor("CHANNEL4", 1, .75, .75)	-- GuildRecruitment
+	ChangeChatColor("CHANNEL5", 1, .75, .75)	-- LookingForGroup
+	ChangeChatColor("WHISPER", 1, .7, 1)		-- Incoming Whispers
+	ChangeChatColor("WHISPER_INFORM", 1, .7, 1)	-- Outgoing Whispers
+	print("recUI Chat: Setup completed.")
+	recUI.lib.unscheduleUpdate("recUIModuleChatColors")
 end)
 
 -- If caelCombatLog is installed, configure it.
