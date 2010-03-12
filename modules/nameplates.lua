@@ -292,25 +292,17 @@ local CreateFrame = function(frame)
 end
 
 local numKids = 0
-local lastUpdate = 0
-local OnUpdate = function(self, elapsed)
-	lastUpdate = lastUpdate + elapsed
+local OnUpdate = function()
+	local newNumKids = WorldFrame:GetNumChildren()
+	if newNumKids ~= numKids then
+		for i = numKids+1, newNumKids do
+			frame = select(i, WorldFrame:GetChildren())
 
-	if lastUpdate > 0.1 then
-		lastUpdate = 0
-
-		local newNumKids = WorldFrame:GetNumChildren()
-		if newNumKids ~= numKids then
-			for i = numKids+1, newNumKids do
-				frame = select(i, WorldFrame:GetChildren())
-
-				if IsValidFrame(frame) then
-					CreateFrame(frame)
-				end
+			if IsValidFrame(frame) then
+				CreateFrame(frame)
 			end
-			numKids = newNumKids
 		end
+		numKids = newNumKids
 	end
 end
-
-recNameplates:SetScript("OnUpdate", OnUpdate)
+recUI.lib.scheduleUpdate("recUINameplates", 0.1, OnUpdate)
