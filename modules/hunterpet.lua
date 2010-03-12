@@ -88,6 +88,7 @@ local function IsSpecialBag(bag)
 end
 
 local function Edit()
+	
 	if InCombatLockdown() then return end
 
 	local macroID = GetMacroIndexByName("AutoPet")
@@ -117,7 +118,6 @@ local function Edit()
 			body = body.."\n/use [nomod] "..best.bag.." "..best.slot
 		end
 	end
-
 	EditMacro(macroID, "AutoPet", 1, body, 1, 1)
 end
 
