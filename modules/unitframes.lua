@@ -42,9 +42,8 @@ local updateName = function(self, event, unit)
 		if(r) then
 			self.Name:SetTextColor(r, g, b)
 		end
+		self.Name:SetText(UnitName(unit))
 	end
-	
-	self.Name:SetText(UnitName(unit))
 end
 
 local PostUpdateHealth = function(self, event, unit, bar, min, max)
