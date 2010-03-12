@@ -1,7 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file='panels.lua' />
 	<Script file='actionbar.lua' />
-	<Script file='alts.lua' />
 	<Script file='bags.lua' />
 	<Script file='chat.lua' />
 	<Script file='chatfilter.lua' />
