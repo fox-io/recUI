@@ -1,5 +1,4 @@
 local _, recUI = ...
-local event_frame = CreateFrame("Frame")
 
 -- Objects which we want to get rid of.
 local unwanted_objects = {
@@ -19,11 +18,7 @@ local unwanted_objects = {
 	MinimapNorthTag
 }
 
-event_frame:SetScript("OnEvent", function(self, event)
-	-- Only have to run this once.
-	self:UnregisterEvent(event)
-	self:SetScript("OnEvent", nil)
-	
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIMinimap", function()
 	-- Make Minimap square
 	Minimap:SetMaskTexture([[Interface\AddOns\recUI\media\texture\minimapsquare]])
 	
@@ -51,10 +46,8 @@ event_frame:SetScript("OnEvent", function(self, event)
 	end)
 	Minimap:EnableMouseWheel(true)
 	
-	event_frame = nil
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIMinimap")
 end)
-
-event_frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 local coordinate_text = Minimap:CreateFontString(nil, "OVERLAY")
 coordinate_text:SetFont(recUI.media.font, 9, "OUTLINE")
@@ -71,22 +64,8 @@ local function update_coordinate_text()
 	end
 end
 
-local t = 0
-local function on_update(self, elapsed)
-	t = t - elapsed
-	if t < 0 then
-		t = 1
-		update_coordinate_text()
-	end
-end
-
-Minimap:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-Minimap:HookScript("OnEvent", function(self, event, ...)
-	if event == "ZONE_CHANGED_NEW_AREA" then
-		SetMapToCurrentZone()
-	end
-end)
-Minimap:HookScript("OnUpdate", on_update)
+recUI.lib.scheduleUpdate("recUIMinimap", 1, update_coordinate_text)
+recUI.lib.registerEvent("ZONE_CHANGED_NEW_AREA", "recUIMinimap", SetMapToCurrentZone)
 
 -- Shortcut references.
 local container = _G.MiniMapTracking
@@ -194,13 +173,13 @@ local function setup_tracking()
 	MiniMapTrackingShineFadeOut = recUI.lib.NullFunction
 end
 
-Minimap:RegisterEvent("PLAYER_LOGIN")
-Minimap:RegisterEvent("MINIMAP_UPDATE_TRACKING")
-Minimap:HookScript("OnEvent", function(self, event, ...)
+local function TrackingUpdate(self, event, ...)
 	if event == "PLAYER_LOGIN" then
 		setup_tracking()
 		setup_tracking = nil
+		recUI.lib.unregisterEvent("PLAYER_LOGIN", "recUIMinimap")
 	end
-	
 	text.update()
-end)
+end
+recUI.lib.registerEvent("PLAYER_LOGIN", "recUIMinimap", TrackingUpdate)
+recUI.lib.registerEvent("MINIMAP_UPDATE_TRACKING", "recUIMinimap", TrackingUpdate)
