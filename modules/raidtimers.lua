@@ -1,4 +1,8 @@
 local _, recUI = ...
+-- Incomplete
+if not recUI.bossTimers then
+	return
+end
 recUI.recBossTimers = {}
 local recBossTimers = recUI.recBossTimers
 local t = recUI.recBossTimers
