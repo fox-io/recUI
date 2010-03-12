@@ -583,3 +583,11 @@ function ZoneText_OnEvent(self, event, ...)
 		FadingFrame_Show( SubZoneTextFrame )
 	end
 end
+
+if recUI.lib.playerClass == "HUNTER" then
+	local btn = CreateFrame("Button", "ViperHawkButton", UIParent, "SecureUnitButtonTemplate")
+	btn:SetAttribute("type", "macro")
+	btn:SetAttribute("macrotext", [[/castsequence !Aspect of the Hawk, !Aspect of the Viper]])
+	ClearOverrideBindings(btn)
+	SetOverrideBindingClick(btn, false, [[`]], btn:GetName())
+end

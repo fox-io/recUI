@@ -137,7 +137,7 @@ RecSCT.show_notification_source		= 0			-- 0:Show no names, 1:Names that are not 
 RecSCT.font							= recUI.media.font
 RecSCT.font_flags					= "OUTLINE"	-- Some text can be hard to read without it.
 RecSCT.font_size_normal				= 10
-RecSCT.font_size_crit				= 30
+RecSCT.font_size_crit				= 20
 
 -- Scrollframe Settings
 RecSCT.scrollframe_height			= 200		-- Height of each scrollframe.
@@ -613,7 +613,7 @@ function RecSCT:AddText(text, crit, scrollarea)
 	end
 
 	-- Settings which need to be set/reset on each fontstring after it is created/obtained
-	t.fontSize = t.crit and RecSCT.font_size_crit or RecSCT.font_size_normal
+	t.fontSize = crit and RecSCT.font_size_crit or RecSCT.font_size_normal
 	t.crit = crit
 	t.text:SetFont(RecSCT.font, t.fontSize, RecSCT.font_flags)
 	t.text:SetText(text)
