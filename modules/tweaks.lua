@@ -526,7 +526,7 @@ function SetZoneText(showZone)
 	
 	ZoneTextString:SetJustifyH("CENTER")
 	ZoneTextString:ClearAllPoints()
-	ZoneTextString:SetPoint("CENTER", UIParent, "CENTER", 0, -10)
+	ZoneTextString:SetPoint("CENTER", UIParent, "CENTER", 0, 50)
 	SubZoneTextString:SetJustifyH("CENTER")
 	SubZoneTextString:ClearAllPoints()
 	SubZoneTextString:SetPoint("TOPLEFT", ZoneTextString, "BOTTOMLEFT", 0, -3)
