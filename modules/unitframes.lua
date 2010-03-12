@@ -44,6 +44,8 @@ local updateName = function(self, event, unit)
 		end
 		if self:GetParent():GetName():match("oUF_Raid") then
 			self.Name:SetText(string.sub(UnitName(unit), 0, 3))
+		elseif unit == "focus" or unit == "targettarget" or unit == "pet" or unit == "focustarget" then
+			self.Name:SetText(string.sub(UnitName(unit), 0, 6))
 		else
 			self.Name:SetText(UnitName(unit))
 		end
