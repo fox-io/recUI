@@ -2,7 +2,6 @@ local _, recUI = ...
 recUI.recPanels = {}
 local recPanels = recUI.recPanels
 
-recPanels.event_frame = CreateFrame("Frame")
 recPanels.panels = {}
 
 recPanels.create_panel = function(self, name, offsetx, offsety, width, height, point, rpoint, anchor, parent)
@@ -89,11 +88,6 @@ textureFrame.texture:SetDrawLayer("BORDER")
 for _, panel in pairs(recPanels.panels) do
 	panel.backdrop:SetVertexColor(texture.panel.r, texture.panel.g, texture.panel.b, texture.panel.a)
 end
-
-
-
-
-
 
 --[[recPanels.on_raid = function(self, num_members)
 	RaidPanel:SetWidth(282)
