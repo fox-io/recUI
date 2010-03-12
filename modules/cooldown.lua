@@ -44,12 +44,12 @@ end
 
 local function Timer_Create(self)
 	local scale = min(self:GetParent():GetWidth() / 32, 1)
-	if scale < .5 then
+	if scale < .8 then
 		self.noOCC = true
 	else
 		local text = self:CreateFontString(nil, "OVERLAY")
 		text:SetPoint("CENTER", 0, 1)
-		text:SetFont(recUI.media.font, 15, "OUTLINE")
+		text:SetFont(recUI.media.font, 15 * scale, "OUTLINE")
 		text:SetTextColor(1, 1, 0)
 		self.text = text
 		self:HookScript("OnHide", function(self) self.text:Hide() end)
