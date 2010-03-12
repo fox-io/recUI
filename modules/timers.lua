@@ -3,16 +3,22 @@ local _, recUI = ...
 if recUI.lib.playerClass == "HUNTER" then
 	local recAutoShot = CreateFrame("StatusBar")
 	recAutoShot:SetStatusBarTexture(recUI.media.statusBar)
-	recAutoShot:SetStatusBarColor(1, .3, .3, .8)
+	recAutoShot:SetStatusBarColor(.4, 0, 0, 1)
 	recAutoShot:SetPoint("CENTER")
 	recAutoShot:SetSize(200, 10)
 	recAutoShot:Hide()
 
-	recAutoShot.backdrop = recAutoShot:CreateTexture(nil, "BACKGROUND")
-	recAutoShot.backdrop:SetPoint("TOPLEFT", -2, 2)
-	recAutoShot.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
-	recAutoShot.backdrop:SetTexture(recUI.media.bgFile)
-	recAutoShot.backdrop:SetVertexColor(0, 0, 0, .5)
+	recAutoShot.backdrop = CreateFrame("Frame", nil, recAutoShot)
+	recAutoShot.backdrop:SetPoint("TOPLEFT", -4, 4)
+	recAutoShot.backdrop:SetPoint("BOTTOMRIGHT", 4, -4)
+	recAutoShot.backdrop:SetBackdrop({
+		bgFile = recUI.media.bgFile,
+		edgeFile = recUI.media.edgeFile, edgeSize = 4,
+		insets = {left = 3, right = 3, top = 3, bottom = 3}
+	})
+	recAutoShot.backdrop:SetFrameStrata("BACKGROUND")
+	recAutoShot.backdrop:SetBackdropColor(0.15, 0.15, 0.15, 1)
+	recAutoShot.backdrop:SetBackdropBorderColor(0, 0, 0)
 
 	recAutoShot.label = recAutoShot:CreateFontString(nil, "OVERLAY")
 	recAutoShot.label:SetPoint("LEFT", 5)
@@ -161,7 +167,7 @@ recUI.timers.make_bar = function(self, spell_name, unit, buff_type, only_self, r
 	bars[new_id].tx = bars[new_id]:CreateTexture(nil, "ARTWORK")
 	bars[new_id].tx:SetAllPoints()
 	bars[new_id].tx:SetTexture(texture)
-	-- Color bar with user values unless they enter nil values.  If so, then we color bar based on aura type
+	-- Color bar with user values unless they enter nil values.  If not, then we color bar based on aura type
 	if r and g and b then
 		bars[new_id].tx:SetVertexColor(r, g, b, 1)
 	else
