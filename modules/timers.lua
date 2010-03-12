@@ -70,10 +70,6 @@ local aura_colors  = {
 	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
 }
 
-if recMedia then
-	font_face, font_size, font_outline = recMedia.fontFace.SMALL, 8, "THINOUTLINE"
-end
-
 local bars = {}
 
 local function pretty_time(s)
