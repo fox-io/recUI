@@ -37,6 +37,19 @@ lib.registerEvent = function(event, handlerName, eventHandler)
 	end
 end
 lib.unregisterEvent = function(event, handlerName)
+	-- Unregister all events if requested
+	-- TODO: test...
+	if event == "all" then
+		for event, handlers in pairs(events) do
+			for handler, _ in pairs(handlers) do
+				if handler == handlerName then
+					lib.unregisterEvent(event, handler)
+				end
+			end
+		end
+		return
+	end
+	
 	-- Inform on bad event.
 	if not events[event] then
 		print(format("recUI: Attempt to unregister non-existant event - %s", event))
