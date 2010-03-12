@@ -185,7 +185,7 @@ local out = _G["Feeds_1"].Feeds.Durability
 
 local slots = { "Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand", "Ranged" }
 
-local function Update()
+local function DurabilityUpdate()
 	local num_items, perc = 0, 100
 	for _,v in pairs(slots) do
 		local current_durability, max_durability = GetInventoryItemDurability(GetInventorySlotInfo(v.."Slot"))
@@ -216,18 +216,15 @@ local function Update()
 	Feeds:Update()
 end
 
-local events = CreateFrame("Frame")
-events:RegisterEvent("MERCHANT_CLOSED")
-events:RegisterEvent("UNIT_DIED")
-events:RegisterEvent("PLAYER_REGEN_ENABLED")
-events:RegisterEvent("PLAYER_ENTERING_WORLD")
-events:SetScript("OnEvent", Update)
-
-Update()
+recUI.lib.registerEvent("MERCHANT_CLOSED", "recUIModuleDataFeedsDurability", DurabilityUpdate)
+recUI.lib.registerEvent("UNIT_DIED", "recUIModuleDataFeedsDurability", DurabilityUpdate)
+recUI.lib.registerEvent("PLAYER_REGEN_ENABLED", "recUIModuleDataFeedsDurability", DurabilityUpdate)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIModuleDataFeedsDurability", DurabilityUpdate)
+DurabilityUpdate()
 
 -- Cancel loading this feed if player is level 80.
-local player_level = UnitLevel("player")
-if player_level == 80 then return end
+--local player_level = UnitLevel("player")
+--if player_level == 80 then return end
 
 local strfind = strfind
 local tonumber = tonumber
@@ -237,9 +234,8 @@ _G["Feeds_1"].Feeds.Experience = Feeds:CreateFeed("Feeds_Experience", _G["Feeds_
 local out = _G["Feeds_1"].Feeds.Experience
 out:SetText("---")
 
-local event = CreateFrame("Frame")
 local lastxp, a, b = 0
-local function Update(retval, self, event, ...)
+local function ExperienceUpdate(retval, self, event, ...)
 	if event == "CHAT_MSG_COMBAT_XP_GAIN" then
 		_, _, lastxp = strfind(select(1, ...), ".*gain (.*) experience.*")
 		lastxp = tonumber(lastxp)
@@ -289,45 +285,38 @@ local function ShowTooltip(self, ...)
 	GameTooltip:Show()
 end
 
-event:SetScript("OnEvent", function(s,e,...) Update(false, s,e,...) end)
-event:RegisterEvent("PLAYER_ENTERING_WORLD")
-event:RegisterEvent("CHAT_MSG_COMBAT_XP_GAIN")
-event:RegisterEvent("PLAYER_XP_UPDATE")
-event:RegisterEvent("UNIT_PET")
-event:RegisterEvent("UNIT_EXPERIENCE")
-event:RegisterEvent("UNIT_LEVEL")
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedsExperience", ExperienceUpdate)
+recUI.lib.registerEvent("CHAT_MSG_COMBAT_XP_GAIN", "recUIDataFeedsExperience", ExperienceUpdate)
+recUI.lib.registerEvent("UNIT_PET", "recUIDataFeedsExperience", ExperienceUpdate)
+recUI.lib.registerEvent("UNIT_EXPERIENCE", "recUIDataFeedsExperience", ExperienceUpdate)
+recUI.lib.registerEvent("UNIT_LEVEL", "recUIDataFeedsExperience", ExperienceUpdate)
+recUI.lib.registerEvent("PLAYER_XP_UPDATE", "recUIDataFeedsExperience", ExperienceUpdate)
+
 out.b = CreateFrame("Button", out)
 out.b:SetAllPoints(out)
 out.b:SetScript("OnEnter", ShowTooltip)
 out.b:SetScript("OnLeave", function(...) GameTooltip:Hide() end)
-Update()
+ExperienceUpdate()
 
 _G["Feeds_1"].Feeds.Framerate = Feeds:CreateFeed("Feeds_Framerate", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Framerate
 
 local framerate
-local function Update()
+local function FramerateUpdate()
 	framerate = floor((tonumber(_G.GetFramerate()) or 0))
 	out:SetText(framerate.."fps")
 	-- out:SetTextColor(Feeds:Gradient(framerate, 0, 60))
 	Feeds:Update()
 end
 
-local t = 1
-local function Timer(...)
-	t = t - select(2, ...)
-	if t <= 0 then t = 1; Update()end
-end
-
-local event = CreateFrame("Frame")
-event:SetScript("OnUpdate", Timer)
-Update()
+recUI.lib.scheduleUpdate("recUIDataFeedsFramerate", 2, FramerateUpdate)
+FramerateUpdate()
 
 _G["Feeds_1"].Feeds.Latency = Feeds:CreateFeed("Feeds_Latency", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Latency
 
 local lat, clat = 0, 0
-local function Update()
+local function LatencyUpdate()
 	clat = select(3, GetNetStats())
 	if type(clat) == "number" then lat = clat end
 	out:SetText(lat.."ms")
@@ -335,15 +324,8 @@ local function Update()
 	Feeds:Update()
 end
 
-local t = 60
-local function Timer(...)
-	t = t - select(2, ...)
-	if t <= 0 then t = 60; Update() end
-end
-
-local event = CreateFrame("Frame")
-event:SetScript("OnUpdate", Timer)
-Update()
+recUI.lib.scheduleUpdate("recUIDataFeedsLatency", 60, LatencyUpdate)
+LatencyUpdate()
 
 local _G						= _G
 local s_lfg						= "LFG"
@@ -374,7 +356,7 @@ local lfg_roles_format			= "|cFF00FF00LFG:|r %s%s%s%s%s %s"
 _G["Feeds_1"].Feeds.LFG = Feeds:CreateFeed("Feeds_LFG", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.LFG
 
-local function Update()
+local function LFGUpdate()
 	MiniMapLFGFrame:UnregisterAllEvents()
 	MiniMapLFGFrame:Hide()
 	MiniMapLFGFrame.Show = function() end
@@ -432,14 +414,14 @@ end
 
 out.b = CreateFrame("Button", out)
 out.b:SetAllPoints(out)
-out.b:RegisterEvent("PLAYER_ENTERING_WORLD")
-out.b:RegisterEvent("LFG_QUEUE_STATUS_UPDATE")
-out.b:RegisterEvent("LFG_UPDATE")
-out.b:RegisterEvent("UPDATE_LFG_LIST")
-out.b:RegisterEvent("LFG_ROLE_CHECK_UPDATE")
-out.b:RegisterEvent("LFG_PROPOSAL_UPDATE")
-out.b:RegisterEvent("PARTY_MEMBERS_CHANGED")
-out.b:SetScript("OnEvent", Update)
+
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("LFG_QUEUE_STATUS_UPDATE", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("LFG_UPDATE", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("UPDATE_LFG_LIST", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("LFG_ROLE_CHECK_UPDATE", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("LFG_PROPOSAL_UPDATE", "recUIDataFeedsLFG", LFGUpdate)
+recUI.lib.registerEvent("PARTY_MEMBERS_CHANGED", "recUIDataFeedsLFG", LFGUpdate)
 out.b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
 out.b:SetScript("OnClick", function(self, button, ...)
 	-- Toggle the LFD/R window on left click.
@@ -468,7 +450,7 @@ out.b:SetScript("OnClick", function(self, button, ...)
 	end
 end)
 
-Update()
+LFGUpdate()
 
 --_G["Feeds_1"].Feeds.Mail = Feeds:CreateFeed("Feeds_Mail", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 --local out = _G["Feeds_1"].Feeds.Mail
@@ -485,7 +467,7 @@ mailFeed.icon:SetTexture([[Interface\Addons\recUI\media\texture\mail]])
 mailFeed.icon:SetVertexColor(1,.3,.3,1)
 
 local has
-local function Update()
+local function MailUpdate()
 	if HasNewMail() then
 		if not has then
 			PlaySoundFile("Interface\AddOns\recUI\media\sound\Mail.mp3")
@@ -498,9 +480,9 @@ local function Update()
 	end
 end
 
-mailFeed:RegisterEvent("UPDATE_PENDING_MAIL")
-mailFeed:RegisterEvent("MAIL_CLOSED")
-mailFeed:SetScript("OnEvent", Update)
+recUI.lib.registerEvent("UPDATE_PENDING_MAIL", "recUIDataFeedsMail", MailUpdate)
+recUI.lib.registerEvent("MAIL_CLOSED", "recUIDataFeedsMail", MailUpdate)
+
 mailFeed:SetScript("OnEnter", function(self)
 	--if IsShiftKeyDown() then
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -509,7 +491,7 @@ mailFeed:SetScript("OnEnter", function(self)
 	--end
 end)
 mailFeed:SetScript("OnLeave", function() GameTooltip:Hide() end)
-Update()
+MailUpdate()
 
 _G["Feeds_1"].Feeds.Memory = Feeds:CreateFeed("Feeds_Memory", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Memory
@@ -522,7 +504,7 @@ local function PrettyMemory(n)
 	end
 end
 
-local function Update()
+local function MemoryUpdate()
 	UpdateAddOnMemoryUsage()
 	local usage = 0
 	for i=1,GetNumAddOns() do
@@ -535,16 +517,10 @@ local function Update()
 	Feeds:Update()
 end
 
-local t = 10
-local function Timer(...)
-	t = t - select(2, ...)
-	if t <= 0 then t = 10; Update() end
-end
-
 local function OnClick()
 	GameTooltip:Hide()
 	collectgarbage("collect")
-	Update()
+	MemoryUpdate()
 end
 
 local function MemSort(x,y)
@@ -588,16 +564,14 @@ out.b:SetScript("OnClick", OnClick)
 out.b:SetScript("OnEnter", OnEnter)
 out.b:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-event = CreateFrame("Frame")
-event:SetScript("OnUpdate", Timer)
-Update()
+recUI.lib.scheduleUpdate("recUIDataFeedsMemory", 10, MemoryUpdate)
+MemoryUpdate()
 
 _G["Feeds_1"].Feeds.Money = Feeds:CreateFeed("Feeds_Money", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Money
 out:SetText("---")
 
-local event = CreateFrame("Frame")
-local function Update()
+local function MoneyUpdate()
 	local gold, silver, copper
 	copper = GetMoney()
 
@@ -608,19 +582,15 @@ local function Update()
 	out:SetText(string.format("|cFFFFD700%dg|r |cFFC7C7CF%ds|r |cFFEDA55F%dc|r", gold or 0, silver or 0, copper or 0))
 	Feeds:Update()
 end
-event:SetScript("OnEvent", Update)
-event:RegisterEvent("PLAYER_ENTERING_WORLD")
-event:RegisterEvent("PLAYER_MONEY")
-Update()
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedMoney", MoneyUpdate)
+recUI.lib.registerEvent("PLAYER_MONEY", "recUIDataFeedMoney", MoneyUpdate)
+MoneyUpdate()
 
 
 _G["Feeds_1"].Feeds.PvP = Feeds:CreateFeed("Feeds_PvP", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.PvP
 
-local h, ap
-local t = 1
-
-local function Update()
+local function PvPUpdate()
 	out:SetText("PvP")
 	if MiniMapBattlefieldFrame.tooltip and string.find(MiniMapBattlefieldFrame.tooltip, "You are in the queue") then
 		out:SetTextColor(0, 1, 0)
@@ -633,15 +603,14 @@ end
 --"You are in the queue for Battleground Name\nAverage wait time: < 1 minute (Last 10 players)\nTime in queue: |4Sec:Sec\nYou are in the queue........\n|cffffffff<Right Click> for PvP Options|r"
 
 local event = CreateFrame("Frame")
-event:RegisterEvent("PLAYER_ENTERING_WORLD")
-event:RegisterEvent("PLAYER_ENTERING_WORLD")
-event:RegisterEvent("BATTLEFIELDS_SHOW")
-event:RegisterEvent("BATTLEFIELDS_CLOSED")
-event:RegisterEvent("UPDATE_BATTLEFIELD_STATUS")
-event:RegisterEvent("PARTY_LEADER_CHANGED")
-event:RegisterEvent("ZONE_CHANGED")
-event:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-event:SetScript("OnEvent", Update)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("BATTLEFIELDS_SHOW", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("BATTLEFIELDS_CLOSED", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("UPDATE_BATTLEFIELD_STATUS", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("PARTY_LEADER_CHANGED", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("ZONE_CHANGED", "recUIDataFeedPvP", PvPUpdate)
+recUI.lib.registerEvent("ZONE_CHANGED_NEW_AREA", "recUIDataFeedPvP", PvPUpdate)
 
 out.b = CreateFrame("Button", out)
 out.b:SetAllPoints(out)
@@ -667,13 +636,12 @@ out.b:SetScript("OnClick", function(self, button, ...)
 	end
 end)
 
-
-Update()
+PvPUpdate()
 
 _G["Feeds_1"].Feeds.Reputation = Feeds:CreateFeed("Feeds_Reputation", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Reputation
 
-local function Update(retval)
+local function ReputationUpdate(retval)
 	if(not GetWatchedFactionInfo()) then
 		out:SetText("...")
 		return
@@ -705,24 +673,20 @@ out.b:SetScript("OnClick", function()
 	ToggleCharacter("ReputationFrame")
 end)
 
-local events = CreateFrame("Frame")
-events:RegisterEvent("UPDATE_FACTION")
-events:RegisterEvent("PLAYER_ENTERING_WORLD")
-events:SetScript("OnEvent", Update)
+recUI.lib.registerEvent("UPDATE_FACTION", "recUIDataFeedReputation", ReputationUpdate)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedReputation", ReputationUpdate)
 
-Update()
+ReputationUpdate()
 
 
 _G["Feeds_1"].Feeds.Guild = Feeds:CreateFeed("Feeds_Guild", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Guild
 	out.b = CreateFrame("Button", out)
 	out.b:SetAllPoints(out)
-local timer = 0
 local num_friends = 0
 local num_online_friends = 0
 local num_guild_members = 0
 local num_online_guild_members = 0
-local event_frame = CreateFrame("Frame")
 
 local function on_enter()
 	if not IsShiftKeyDown() then return end
@@ -779,18 +743,14 @@ local function on_click()
 	end
 end
 
-local function on_update(self, elapsed)
-	timer = timer - elapsed
-	if timer <= 0 then
-		if IsInGuild("player") then
-			GuildRoster()
-		end
-		timer = 15
+recUI.lib.scheduleUpdate("recUIDataFeedGuild", 15, function()
+	if IsInGuild("player") then
+		GuildRoster()
 	end
-end
+end)
 
 local guild_text, friend_text
-local function on_event(self, event)
+local function DFGEvent(self, event)
 	if event == "GUILD_ROSTER_UPDATE" then
 		if IsInGuild("player") then
         		num_online_guild_members = 0
@@ -830,11 +790,9 @@ local function on_event(self, event)
 	Feeds:Update()
 end
 
+recUI.lib.registerEvent("GUILD_ROSTER_UPDATE", "recUIDataFeedGuild", DFGEvent)
+recUI.lib.registerEvent("FRIENDLIST_UPDATE", "recUIDataFeedGuild", DFGEvent)
 out.b:SetScript("OnClick", on_click)
 out.b:SetScript("OnEnter", on_enter)
 out.b:SetScript("OnLeave", function() GameTooltip:Hide() end)
-event_frame:RegisterEvent("GUILD_ROSTER_UPDATE")
-event_frame:RegisterEvent("FRIENDLIST_UPDATE")
-event_frame:SetScript("OnEvent", on_event)
-event_frame:SetScript("OnUpdate", on_update)
-on_event()
+DFGEvent()
