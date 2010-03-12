@@ -1,0 +1,5 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file='recUILib.lua' />
+	<Script file='libevents.lua' />
+	<Script file='libupdates.lua' />
+</Ui>

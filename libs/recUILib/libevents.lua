@@ -1,0 +1,60 @@
+-------------------
+-- EVENT HANDLER --
+-------------------
+local _, recUI = ...
+local lib = recUI.lib
+local eventFrame = lib.frame
+
+local events = {}
+eventFrame:SetScript("OnEvent", function(self, event, ...)
+	-- If no handlers are assigned, bail.
+	if not events[event] then
+		print(format("recUI: Unhandled event - %s", event))
+		return
+	end
+	
+	-- Call each event handler.
+	for _, eventHandler in pairs(events[event]) do
+		eventHandler(self, event, ...)
+	end
+end)
+lib.registerEvent = function(event, handlerName, eventHandler)
+	-- Create this event in our handler table if it doesn't exist yet.
+	if not events[event] then
+		events[event] = {}
+	end
+	
+	-- Inform if handler already exists.
+	if events[event][handlerName] then
+		print(format("recUI: Attempt to register duplicate event handler - %s", handlerName))
+		return
+		
+	-- Insert handler
+	else
+		eventFrame:RegisterEvent(event)
+		events[event][handlerName] = eventHandler
+		return
+	end
+end
+lib.unregisterEvent = function(event, handlerName)
+	-- Inform on bad event.
+	if not events[event] then
+		print(format("recUI: Attempt to unregister non-existant event - %s", event))
+		return
+		
+	-- Inform on bad handler name.
+	elseif not events[event][handlerName] then
+		print(format("recUI: Attempt to unregister non-existant event handler - %s", handerName))
+		return
+	else
+		-- Remove handler
+		events[event][handlerName] = nil
+		
+		-- Remove event entry if final handler was removed.
+		local remainingHandlers = #events[event]
+		if not(remainingHandlers) or (remainingHandlers == 0) then
+			eventFrame:UnregisterEvent(event)
+			events[event] = nil
+		end
+	end
+end
