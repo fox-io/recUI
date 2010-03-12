@@ -167,7 +167,7 @@ end
 
 local function RequestReport(self, event, message)
 	if event == 'PLAYER_ALIVE' then
-		self:UnregisterEvent('PLAYER_ALIVE')
+		recUI.lib.unregisterEvent('PLAYER_ALIVE', "recUIProfessions")
 	end
 	for skill, _ in pairs(db) do
 		if skill ~= 'color' and (((event == 'PLAYER_ALIVE' and load_report) or (not message) or (message and string.find(message, skill)))) then
@@ -177,9 +177,7 @@ local function RequestReport(self, event, message)
 	return hide_bliz
 end
 
-local su = CreateFrame('Frame')
-su:SetScript('OnEvent', RequestReport)
-su:RegisterEvent('PLAYER_ALIVE')
+recUI.lib.registerEvent("PLAYER_ALIVE", "recUIProfessions", RequestReport)
 
 ChatFrame_AddMessageEventFilter('CHAT_MSG_SKILL', RequestReport)
 
