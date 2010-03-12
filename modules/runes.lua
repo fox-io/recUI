@@ -1,5 +1,9 @@
 local _, recUI = ...
 
+if recUI.lib.playerClass ~= "DEATHKNIGHT" then
+	return
+end
+
 recUI.runes = {}
 
 recUI.runes.opt = {

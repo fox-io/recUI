@@ -1,5 +1,9 @@
 local _, recUI = ...
 
+if recUI.lib.playerClass ~= "HUNTER" then
+	return
+end
+
 local db = {
 		["warnFood"] = true,
 		["useBonus"] = false,
