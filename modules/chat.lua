@@ -23,8 +23,8 @@ color_border = function(object)
 	-- Blizzard's code for reverting sticky targets that do not exist.
 	if ( ChatFrameEditBox:GetAttribute("chatType") == ChatFrameEditBox:GetAttribute("stickyType") ) then
 		if (ChatFrameEditBox:GetAttribute("stickyType") == "GUILD" and not GetGuildInfo("player")) or ( (ChatFrameEditBox:GetAttribute("stickyType") == "PARTY") and (GetNumPartyMembers() == 0) ) or ( (ChatFrameEditBox:GetAttribute("stickyType") == "RAID") and (GetNumRaidMembers() == 0) ) or ( (ChatFrameEditBox:GetAttribute("stickyType") == "BATTLEGROUND") and (GetNumRaidMembers() == 0) ) then
-			ChatFrameEditBox:SetAttribute("chatType", "SAY");
-			ChatEdit_UpdateHeader(ChatFrameEditBox);
+			ChatFrameEditBox:SetAttribute("chatType", "SAY")
+			ChatEdit_UpdateHeader(ChatFrameEditBox)
 		end
 	end
 	
@@ -43,20 +43,11 @@ local function ShowChatFrame(self)
 		_G[format("ChatFrame%s", i)]:Hide()
 	end
 
-	-- If caelCombatLog is installed hide it too.
-	if caelCombatLog then caelCombatLog:Hide() end
-
 	-- Change our tab to a colored version so the user can see which tab is selected.
 	color_border(_G[format("ChatTab%sPanel", self.id)])
 
-	-- If this is not the combat log, or if caelCombatLog is not installed, then show the chat frame.
-	if (self.id == 2 and not(caelCombatLog)) or self.id ~= 2 then
-		_G[format("ChatFrame%s", self.id)]:Show()
-		
-	-- If caelCombatLog is installed, show it instead of the Blizzard default one.
-	elseif self.id == 2 and caelCombatLog then
-		caelCombatLog:Show()
-	end
+	-- If this is not the combat log, then show the chat frame.
+	_G[format("ChatFrame%s", self.id)]:Show()
 end
 
 function remove_chat(i)
@@ -419,12 +410,3 @@ recUI.lib.scheduleUpdate("recUIModuleChatColors", 10, function()
 	ChangeChatColor("WHISPER_INFORM", 1, .7, 1)	-- Outgoing Whispers
 	recUI.lib.unscheduleUpdate("recUIModuleChatColors")
 end)
-
--- If caelCombatLog is installed, configure it.
-if caelCombatLog then
-	caelCombatLog:ClearAllPoints()
-	caelCombatLog:SetPoint("BOTTOMLEFT", UIParent, "BOTTOM", 260, 49)
-	caelCombatLog:SetWidth(391)
-	caelCombatLog:SetHeight(110)
-	caelCombatLog:Hide()
-end
