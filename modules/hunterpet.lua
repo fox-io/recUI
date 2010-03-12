@@ -1,5 +1,18 @@
 local _, recUI = ...
 
+local db = {
+		["warnFood"] = true,
+		["useBonus"] = false,
+		["useRaw"] = false,
+		["showFood"] = true,
+		["mendThreshold"] = 0.75,
+		["useConjured"] = true,
+		["mendModifier"] = "shift",
+		["warnHungry"] = true,
+		["useCombo"] = false,
+		["feedHappy"] = true,
+		["dismissModifier"] = "ctrl",
+	}
 local data = {
 	["Bread"] = {
 		["Basic"] = {4540,4541,4542,4544,4601,8950,16169,19301,19696,20857,23160,24072,27855,28486,29394,29449,30816,33246,33449,35950,38428,42428,42429,42430,42431,42432,42433,42434,42778,44609},
@@ -61,261 +74,54 @@ local combat, dead, dirty, debuffed, feeding, happy, improved, mending, pet, wou
 local best, conj, diet = {}, {}, {}
 
 ------------------------------------------------------------------------
+local BAGTYPE_AMMO = select(7, GetAuctionItemClasses())
+local BAGTYPE_CONTAINER = select(3, GetAuctionItemClasses())
+local BAGTYPE_SUBTYPE = select(1, GetAuctionItemSubClasses(3))
 
-local recPetCare = CreateFrame("Frame")
-recPetCare:SetScript("OnEvent", function(self, event, ...) if self[event] then return self[event](self, ...) end end)
-recPetCare:RegisterEvent("ADDON_LOADED")
+local function IsSpecialBag(bag)
+	if bag <= 0 then return end
+	local link = GetInventoryItemLink("player", ContainerIDToInventoryID(bag))
+	if link then
+		local type, subtype = select(6, GetItemInfo(link))
+		return (type == BAGTYPE_AMMO) or (type == BAGTYPE_CONTAINER and subtype ~= BAGTYPE_SUBTYPE)
+	end
+end
 
-function recPetCare:ADDON_LOADED(addon)
-	if addon ~= "recUI" then return end
-	
-	if select(2, UnitClass("player")) ~= "HUNTER" then
-		self:UnregisterAllEvents()
-		return DisableAddOn("recPetCare")
+local function Edit()
+	if InCombatLockdown() then return end
+
+	local macroID = GetMacroIndexByName("AutoPet")
+	if not macroID then
+		return
 	end
 
-	self.db = {
-		["warnFood"] = true,
-		["useBonus"] = false,
-		["useRaw"] = false,
-		["showFood"] = true,
-		["mendThreshold"] = 0.75,
-		["useConjured"] = true,
-		["mendModifier"] = "shift",
-		["warnHungry"] = true,
-		["useCombo"] = false,
-		["feedHappy"] = true,
-		["dismissModifier"] = "ctrl",
-	}
-
-	if recPetCareStrings then recPetCareStrings = nil end
-
-	self:UnregisterEvent("ADDON_LOADED")
-	self.ADDON_LOADED = nil
-
-	if IsLoggedIn() then
-		self:PLAYER_LOGIN(true)
+	local body = "#showtooltip"
+	if UnitAffectingCombat("player") then
+		body = body.."\n/cast [target=pet,dead][nopet,mod:"..db.mendModifier.."] "..REVIVE_PET.."; [nopet] "..CALL_PET.."; [mod:"..db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
+	elseif dead then
+		body = body.."\n/cast "..REVIVE_PET
+	elseif not pet or not select(2, HasPetUI()) then
+		body = body.."\n/cast [target=pet,dead][mod:"..db.mendModifier.."] "..REVIVE_PET.."; "..CALL_PET
+	elseif debuffed and not (improved or (mending and (GetTime() - mending < 0))) then
+		body = body.."\n/cast [mod:"..db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
+	elseif wounded and not (mending and (GetTime() - mending < 0)) then
+		body = body.."\n/cast [mod:"..db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
 	else
-		self:RegisterEvent("PLAYER_LOGIN")
-	end
-end
-
-function recPetCare:PLAYER_LOGIN(delayed)
-
-	warned = GetTime()
-
-	self:RegisterEvent("BAG_UPDATE")
-	self:RegisterEvent("CHARACTER_POINTS_CHANGED")
-	self:RegisterEvent("PLAYER_TALENT_UPDATE")
-	self:RegisterEvent("PLAYER_ALIVE")
-	self:RegisterEvent("PLAYER_REGEN_DISABLED")
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("PLAYER_UNGHOST")
-	self:RegisterEvent("UI_ERROR_MESSAGE")
-	self:RegisterEvent("UNIT_HEALTH")
-	self:RegisterEvent("UNIT_PET")
-
-	if not InCombatLockdown() then
-		self:RegisterEvent("UNIT_AURA")
-		self:RegisterEvent("UNIT_HAPPINESS")
-	end
-
-	if delayed then
-		self:UNIT_PET("player")
-		self:BAG_UPDATE()
-	end
-
-	self:CHARACTER_POINTS_CHANGED()
-
-	self:UnregisterEvent("PLAYER_LOGIN")
-	self.PLAYER_LOGIN = nil
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:BAG_UPDATE()
-
-	dirty = true
-	if not InCombatLockdown() then
-		self:Scan()
-	end
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:CHARACTER_POINTS_CHANGED()
-
-	improved = select(5, GetTalentInfo(1, 10)) > 0
-
-end
-
-recPetCare.PLAYER_TALENT_UPDATE = recPetCare.CHARACTER_POINTS_CHANGED
-
-------------------------------------------------------------------------
-
-function recPetCare:PLAYER_ALIVE()
-	if UnitIsGhost("player") then return end
-
-	self:Edit()
-end
-
-recPetCare.PLAYER_UNGHOST = recPetCare.PLAYER_ALIVE
-
-------------------------------------------------------------------------
-
-function recPetCare:PLAYER_REGEN_DISABLED()
-
-	self:UnregisterEvent("UNIT_AURA")
-	self:UnregisterEvent("UNIT_HAPPINESS")
-
-	combat = true
-	self:Edit()
-end
-
-function recPetCare:PLAYER_REGEN_ENABLED()
-
-	self:RegisterEvent("UNIT_AURA")
-	self:RegisterEvent("UNIT_HAPPINESS")
-
-	combat = false
-	self:UNIT_AURA("pet")
-	self:UNIT_HAPPINESS("pet")
-	self:UNIT_HEALTH("pet")
-	self:Edit()
-end
-
-------------------------------------------------------------------------
-
-local ERR_PET_SPELL_NOTDEAD = PETTAME_NOTDEAD.."."
-function recPetCare:UI_ERROR_MESSAGE(message)
-
-	if message == ERR_PET_SPELL_DEAD then
-		dead = true
-		self:Edit()
-	elseif message == ERR_PET_SPELL_NOTDEAD then
-		dead = false
-		self:Edit()
-	end
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:UNIT_AURA(unit)
-	if unit ~= "pet" then return end
-
-	local wasFeeding, wasMending = feeding, mending
-	feeding, mending = nil, nil
-
-	feeding = select(7, UnitBuff("pet", FEED_PET_EFFECT))
-	mending = select(7, UnitBuff("pet", MEND_PET))
-
-	if wasFeeding and not feeding then
-		self:UNIT_HAPPINESS("pet")
-		self:Edit()
-	end
-	if wasMending and not mending then
-		self:UNIT_HEALTH("pet")
-		self:Edit()
-	end
-
-	if improved then
-		if UnitDebuff("pet", 1, 1) then
-			if not debuffed then
-				debuffed = true
-				self:Edit()
-			end
-		else
-			if debuffed then
-				debuffed = false
-				self:Edit()
-			end
+		local happiness = GetPetHappiness() or 0
+		local eating = feeding and (GetTime() - feeding < 0)
+		if not eating and best.id and db.showFood and (happiness < 3 or db.feedHappy) then
+			body = body.." [mod:"..db.dismissModifier.."] "..DISMISS_PET.."; [mod:"..db.mendModifier.."] "..MEND_PET.."; item:"..best.id
 		end
-	end
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:UNIT_HAPPINESS(unit)
-	if unit ~= "pet" or dead or (feeding and (GetTime() - feeding < 0)) then return end
-
-	local happiness = GetPetHappiness()
-	if not happiness then return end
-	if self.db.warnHungry then
-		if happiness == 1 then
-			if (GetTime() - warned) > 60 then
-				print(format("|cFFABD473recUI Pet:|r %s is very hungry!", UnitName("pet")))
-				warned = GetTime()
-			end
-		elseif happiness == 2 then
-			if (GetTime() - warned) > 120 then
-				print(format("|cFFABD473recUI Pet:|r %s is hungry.", UnitName("pet")))
-				warned = GetTime()
-			end
+		body = body.."\n/cast [mod:"..db.dismissModifier.."] "..DISMISS_PET.."; [mod:"..db.mendModifier.."] "..MEND_PET.."; "..FEED_PET
+		if not eating and best.bag and best.slot and (happiness < 3 or db.feedHappy) then
+			body = body.."\n/use [nomod] "..best.bag.." "..best.slot
 		end
 	end
 
-	if not happy then
-		happy = happiness
-		self:Edit()
-	elseif happy ~= happiness then
-		self:Edit()
-	end
+	EditMacro(macroID, "AutoPet", 1, body, 1, 1)
 end
 
-------------------------------------------------------------------------
-
-function recPetCare:UNIT_HEALTH(unit)
-	if unit ~= "pet" then return end
-
-	local hp, maxhp = UnitHealth("pet"), UnitHealthMax("pet")
-	if not dead and hp <= 0 and UnitIsDead("pet") then
-		dead = true
-		self:Edit()
-	elseif dead and hp > 0 then
-		dead = false
-		self:Edit()
-	elseif not wounded and hp / maxhp <= self.db.mendThreshold then
-		wounded = true
-		self:Edit()
-	elseif wounded and hp / maxhp > self.db.mendThreshold then
-		wounded = false
-		self:Edit()
-	end
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:UNIT_PET(unit)
-	if unit ~= "player" then return end
-
-	local family = UnitCreatureFamily("pet")
-	if family and select(2, HasPetUI()) then
-		if family ~= pet then
-			pet = family
-			self:Diet()
-		else
-			local count = 0
-			for k in pairs(diet) do
-				count = count + 1
-			end
-			if count == 0 then
-				self:Diet()
-			end
-		end
-		self:UNIT_HEALTH("pet")
-		if not InCombatLockdown() then
-			self:Scan()
-		else
-			self:BAG_UPDATE()
-		end
-	else
-		self:Edit()
-	end
-end
-
-------------------------------------------------------------------------
-
-function recPetCare:Diet()
+local function Diet()
 	local foods = { GetPetFoodTypes() }
 	if #foods == 0 then
 		return
@@ -332,22 +138,22 @@ function recPetCare:Diet()
 				diet[id] = true
 			end
 		end
-		if self.db.useBonus and data[v]["Bonus"] then
+		if db.useBonus and data[v]["Bonus"] then
 			for j, id in ipairs(data[v]["Bonus"]) do
 				diet[id] = true
 			end
 		end
-		if self.db.useCombo and data[v]["Combo"] then
+		if db.useCombo and data[v]["Combo"] then
 			for j, id in ipairs(data[v]["Combo"]) do
 				diet[id] = true
 			end
 		end
-		if self.db.useRaw and data[v]["Raw"] then
+		if db.useRaw and data[v]["Raw"] then
 			for j, id in ipairs(data[v]["Raw"]) do
 				diet[id] = true
 			end
 		end
-		if self.db.useConjured then
+		if db.useConjured then
 			if data[v]["Conjured"] then
 				for j, id in ipairs(data[v]["Conjured"]) do
 					diet[id] = true
@@ -360,29 +166,13 @@ function recPetCare:Diet()
 			end
 		end
 	end
-
 end
 
-------------------------------------------------------------------------
-
-local BAGTYPE_AMMO = select(7, GetAuctionItemClasses())
-local BAGTYPE_CONTAINER = select(3, GetAuctionItemClasses())
-local BAGTYPE_SUBTYPE = select(1, GetAuctionItemSubClasses(3))
-
-local function IsSpecialBag(bag)
-	if bag <= 0 then return end
-	local link = GetInventoryItemLink("player", ContainerIDToInventoryID(bag))
-	if link then
-		local type, subtype = select(6, GetItemInfo(link))
-		return (type == BAGTYPE_AMMO) or (type == BAGTYPE_CONTAINER and subtype ~= BAGTYPE_SUBTYPE)
-	end
-end
-
-function recPetCare:Scan()
+local function Scan()
 	local petlvl = UnitLevel("pet")
 	if petlvl and petlvl > 0 then
 		if diet == {} then
-			self:Diet()
+			Diet()
 		end
 		for k, v in pairs(best) do best[k] = nil end
 		for bag = 0, 4 do
@@ -411,48 +201,201 @@ function recPetCare:Scan()
 				end
 			end
 		end
-		if not best.id and UnitName("pet") ~= "Unknown" and self.db.warnFood and GetTime() - warned > 240 then
+		if not best.id and UnitName("pet") ~= "Unknown" and db.warnFood and GetTime() - warned > 240 then
 			print(format("|cFFABD473recUI Pet:|r You don't have any food for %s.", UnitName("pet")))
 			warned = GetTime()
 		end
-		self:Edit()
+		Edit()
 	end
 end
 
-------------------------------------------------------------------------
-
-function recPetCare:Edit()
-	if InCombatLockdown() then return end
-
-	local macroID = GetMacroIndexByName("AutoPet")
-	if not macroID then
+recUI.lib.registerEvent("VARIABLES_LOADED", "recUIHunterPet", function()
+	if recUI.lib.playerClass ~= "HUNTER" then
+		db = nil
+		data = nil
+		recUI.lib.unregisterEvent("all", "recUIHunterPet")
 		return
 	end
+end)
 
-	local body = "#showtooltip"
-	if UnitAffectingCombat("player") then
-		body = body.."\n/cast [target=pet,dead][nopet,mod:"..self.db.mendModifier.."] "..REVIVE_PET.."; [nopet] "..CALL_PET.."; [mod:"..self.db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
-	elseif dead then
-		body = body.."\n/cast "..REVIVE_PET
-	elseif not pet or not select(2, HasPetUI()) then
-		body = body.."\n/cast [target=pet,dead][mod:"..self.db.mendModifier.."] "..REVIVE_PET.."; "..CALL_PET
-	elseif debuffed and not (improved or (mending and (GetTime() - mending < 0))) then
-		body = body.."\n/cast [mod:"..self.db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
-	elseif wounded and not (mending and (GetTime() - mending < 0)) then
-		body = body.."\n/cast [mod:"..self.db.dismissModifier.."] "..DISMISS_PET.."; "..MEND_PET
-	else
-		local happiness = GetPetHappiness() or 0
-		local eating = feeding and (GetTime() - feeding < 0)
-		if not eating and best.id and self.db.showFood and (happiness < 3 or self.db.feedHappy) then
-			body = body.." [mod:"..self.db.dismissModifier.."] "..DISMISS_PET.."; [mod:"..self.db.mendModifier.."] "..MEND_PET.."; item:"..best.id
-		end
-		body = body.."\n/cast [mod:"..self.db.dismissModifier.."] "..DISMISS_PET.."; [mod:"..self.db.mendModifier.."] "..MEND_PET.."; "..FEED_PET
-		if not eating and best.bag and best.slot and (happiness < 3 or self.db.feedHappy) then
-			body = body.."\n/use [nomod] "..best.bag.." "..best.slot
+local function bagUpdate()
+	dirty = true
+	if not InCombatLockdown() then
+		Scan()
+	end
+end
+
+local function characterPointsChanged()
+	improved = select(5, GetTalentInfo(1, 10)) > 0
+end
+
+local function playerAlive()
+	if UnitIsGhost("player") then return end
+
+	Edit()
+end
+
+local ERR_PET_SPELL_NOTDEAD = PETTAME_NOTDEAD.."."
+local function UIErrorMessage(self, event, message)
+	if message == ERR_PET_SPELL_DEAD then
+		dead = true
+		Edit()
+	elseif message == ERR_PET_SPELL_NOTDEAD then
+		dead = false
+		Edit()
+	end
+end
+
+local function unitHappiness(self, event, unit)
+	if unit ~= "pet" or dead or (feeding and (GetTime() - feeding < 0)) then return end
+
+	local happiness = GetPetHappiness()
+	if not happiness then return end
+	if db.warnHungry then
+		if happiness == 1 then
+			if (GetTime() - warned) > 60 then
+				print(format("|cFFABD473recUI Pet:|r %s is very hungry!", UnitName("pet")))
+				warned = GetTime()
+			end
+		elseif happiness == 2 then
+			if (GetTime() - warned) > 120 then
+				print(format("|cFFABD473recUI Pet:|r %s is hungry.", UnitName("pet")))
+				warned = GetTime()
+			end
 		end
 	end
 
-	EditMacro(macroID, "AutoPet", 1, body, 1, 1)
+	if not happy then
+		happy = happiness
+		Edit()
+	elseif happy ~= happiness then
+		Edit()
+	end
 end
 
-------------------------------------------------------------------------
+local function unitHealth(self, event, unit)
+	if unit ~= "pet" then return end
+
+	local hp, maxhp = UnitHealth("pet"), UnitHealthMax("pet")
+	if not dead and hp <= 0 and UnitIsDead("pet") then
+		dead = true
+		Edit()
+	elseif dead and hp > 0 then
+		dead = false
+		Edit()
+	elseif not wounded and hp / maxhp <= db.mendThreshold then
+		wounded = true
+		Edit()
+	elseif wounded and hp / maxhp > db.mendThreshold then
+		wounded = false
+		Edit()
+	end
+end
+
+local function unitAura(self, event, unit)
+	if unit ~= "pet" then return end
+
+	local wasFeeding, wasMending = feeding, mending
+	feeding, mending = nil, nil
+
+	feeding = select(7, UnitBuff("pet", FEED_PET_EFFECT))
+	mending = select(7, UnitBuff("pet", MEND_PET))
+
+	if wasFeeding and not feeding then
+		unitHappiness("pet")
+		Edit()
+	end
+	if wasMending and not mending then
+		unitHealth("pet")
+		Edit()
+	end
+
+	if improved then
+		if UnitDebuff("pet", 1, 1) then
+			if not debuffed then
+				debuffed = true
+				Edit()
+			end
+		else
+			if debuffed then
+				debuffed = false
+				Edit()
+			end
+		end
+	end
+end
+
+local function playerRegenEnabled()
+	recUI.lib.registerEvent("UNIT_AURA", "recUIHunterPet", unitAura)
+	recUI.lib.registerEvent("UNIT_HAPPINESS", "recUIHunterPet", unitHappiness)
+
+	combat = false
+	unitAura("pet")
+	unitHappiness("pet")
+	unitHealth("pet")
+	Edit()
+end
+
+local function playerRegenDisabled()
+	recUI.lib.unregisterEvent("UNIT_AURA", "recUIHunterPet")
+	recUI.lib.unregisterEvent("UNIT_HAPPINESS", "recUIHunterPet")
+
+	combat = true
+	Edit()
+end
+
+local function unitPet(self, event, unit)
+	if unit ~= "player" then return end
+
+	local family = UnitCreatureFamily("pet")
+	if family and select(2, HasPetUI()) then
+		if family ~= pet then
+			pet = family
+			Diet()
+		else
+			local count = 0
+			for k in pairs(diet) do
+				count = count + 1
+			end
+			if count == 0 then
+				Diet()
+			end
+		end
+		unitHealth("pet")
+		if not InCombatLockdown() then
+			Scan()
+		else
+			bagUpdate()
+		end
+	else
+		Edit()
+	end
+end
+
+recUI.lib.registerEvent("PLAYER_LOGIN", "recUIHunterPet", function()
+
+	warned = GetTime()
+
+	recUI.lib.registerEvent("BAG_UPDATE", "recUIHunterPet", bagUpdate)
+	recUI.lib.registerEvent("CHARACTER_POINTS_CHANGED", "recUIHunterPet", characterPointsChanged)
+	recUI.lib.registerEvent("PLAYER_TALENT_UPDATE", "recUIHunterPet", characterPointsChanged)
+	recUI.lib.registerEvent("PLAYER_ALIVE", "recUIHunterPet", playerAlive)
+	recUI.lib.registerEvent("PLAYER_REGEN_DISABLED", "recUIHunterPet", playerRegenDisabled)
+	recUI.lib.registerEvent("PLAYER_REGEN_ENABLED", "recUIHunterPet", playerRegenEnabled)
+	recUI.lib.registerEvent("PLAYER_UNGHOST", "recUIHunterPet", playerAlive)
+	recUI.lib.registerEvent("UI_ERROR_MESSAGE", "recUIHunterPet", UIErrorMessage)
+	recUI.lib.registerEvent("UNIT_HEALTH", "recUIHunterPet", unitHealth)
+	recUI.lib.registerEvent("UNIT_PET", "recUIHunterPet", unitPet)
+
+	if not InCombatLockdown() then
+		recUI.lib.registerEvent("UNIT_AURA", "recUIHunterPet", unitAura)
+		recUI.lib.registerEvent("UNIT_HAPPINESS", "recUIHunterPet", unitHappiness)
+	end
+
+	unitPet("player")
+	bagUpdate()
+
+	characterPointsChanged()
+
+	recUI.lib.unregisterEvent("PLAYER_LOGIN", "recUIHunterPet")
+end)
