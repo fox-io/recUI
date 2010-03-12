@@ -1,7 +1,7 @@
 local _, recUI = ...
 -- Lean and clean version of aTotemBar by Arimis
 
-if UnitLevel("player") < 30 or select(2, UnitClass("player")) ~= "SHAMAN" then
+if UnitLevel("player") < 30 or recUI.lib.playerClass ~= "SHAMAN" then
 	return
 end
 
