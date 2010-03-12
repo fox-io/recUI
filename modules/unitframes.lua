@@ -42,17 +42,21 @@ local updateName = function(self, event, unit)
 		if(r) then
 			self.Name:SetTextColor(r, g, b)
 		end
-		self.Name:SetText(UnitName(unit))
+		if self:GetParent():GetName():match("oUF_Raid") then
+			self.Name:SetText(string.sub(UnitName(unit), 0, 4))
+		else
+			self.Name:SetText(UnitName(unit))
+		end
 	end
 end
 
 local PostUpdateHealth = function(self, event, unit, bar, min, max)
 	if(UnitIsDead(unit)) then
-		bar.value:SetText("Dead")
+		bar.value:SetText("d")
 	elseif(UnitIsGhost(unit)) then
-		bar.value:SetText("Ghost")
+		bar.value:SetText("g")
 	elseif(not UnitIsConnected(unit)) then
-		bar.value:SetText("Offline")
+		bar.value:SetText("o")
 	else
 		if unit == "player" or unit == "target" then
 			if(min ~= 0 and min ~= max) then
