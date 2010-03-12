@@ -417,7 +417,6 @@ recUI.lib.scheduleUpdate("recUIModuleChatColors", 10, function()
 	ChangeChatColor("CHANNEL5", 1, .75, .75)	-- LookingForGroup
 	ChangeChatColor("WHISPER", 1, .7, 1)		-- Incoming Whispers
 	ChangeChatColor("WHISPER_INFORM", 1, .7, 1)	-- Outgoing Whispers
-	print("recUI Chat: Setup completed.")
 	recUI.lib.unscheduleUpdate("recUIModuleChatColors")
 end)
 
