@@ -70,6 +70,7 @@ local function GetBagSlots(index)
 	end
 	return filledslots, totalslots
 end
+
 local function DEC_HEX(IN)
     local B, K, OUT, I, D = 16, "0123456789ABCDEF", "", 0
     while IN > 0 do
@@ -79,6 +80,7 @@ local function DEC_HEX(IN)
     end
     return OUT
 end
+
 local r,g,b
 local function MakeDisplay(full, total, special)
 	local leftText = ""
@@ -97,8 +99,9 @@ local function MakeDisplay(full, total, special)
 	end
 	return output
 end
+
 local bagData = {}
-local function Update()
+local function DataFeedBagUpdate()
 	local i, j, totalSlots, fullSlots = nil, nil, 0, 0
 	local displayString = ""
 	local bagType
@@ -135,10 +138,8 @@ local function Update()
 	Feeds:Update()
 end
 
-local event = CreateFrame("Frame")
-event:SetScript("OnEvent", Update)
-event:RegisterEvent("BAG_UPDATE")
-Update()
+recUI.lib.registerEvent("BAG_UPDATE", "recUIModuleDataFeedBag", DataFeedBagUpdate)
+DataFeedBagUpdate()
 
 _G["Feeds_1"].Feeds.Clock = Feeds:CreateFeed("Feeds_Clock", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Clock
@@ -146,18 +147,13 @@ local out = _G["Feeds_1"].Feeds.Clock
 local h, ap
 local t = 1
 
-local function Update()
+local function DataFeedClockUpdate()
 	h = tonumber(date("%H"))
 	if floor(h/12) == 1 then ap = "p" else ap = "a" end
 	h = mod(h, 12)
 	if h == 0 then h = 12 end
 	out:SetText(string.format("%d:%02d%s", h, tonumber(date("%M")), ap))
 	Feeds:Update()
-end
-
-local function Timer(...)
-	t = t - select(2, ...)
-	if t <= 0 then t = 1; Update() end
 end
 
 local function GetInvites()
@@ -168,10 +164,8 @@ local function GetInvites()
 	end
 end
 
-local event = CreateFrame("Frame")
-event:SetScript("OnUpdate", Timer)
-event:RegisterEvent("CALENDAR_UPDATE_PENDING_INVITES")
-event:SetScript("OnEvent", GetInvites)
+recUI.lib.registerEvent("CALENDAR_UPDATE_PENDING_INVITES", "recUIModuleDataFeedsClock", GetInvites)
+recUI.lib.scheduleUpdate("recUIModuleDataFeedsClock", 1, DataFeedClockUpdate)
 
 out.b = CreateFrame("Button", out)
 out.b:SetAllPoints(out)
