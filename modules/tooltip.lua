@@ -47,10 +47,8 @@ local function OnEvent(self, event, ...)
 		gttip:SetUnit("mouseover")
 	end
 end
-local f = CreateFrame("Frame")
-f:SetScript("OnEvent", OnEvent)
-f:RegisterEvent("UNIT_TARGET")
-f:RegisterEvent("PLAYER_LEVEL_UP")
+recUI.lib.registerEvent("UNIT_TARGET", "recUITooltip", OnEvent)
+recUI.lib.registerEvent("PLAYER_LEVEL_UP", "recUITooltip", OnEvent)
 
 -- Returns the itemID from an itemlink
 local function GetID(link)
