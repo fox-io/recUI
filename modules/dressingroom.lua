@@ -14,7 +14,9 @@ local function OnUpdate(self)
 end
 local function OnMouseDown(self, button)
 	self.pMouseDown(button)
-	self:SetScript("OnUpdate", OnUpdate)
+	recUI.lib.scheduleUpdate("recUIDressingRoom", 0, function()
+		OnUpdate(self)
+	end)
 	if button == "LeftButton" then
 		self.isrotating = 1
 	elseif button == "RightButton" then
@@ -24,7 +26,7 @@ local function OnMouseDown(self, button)
 end
 local function OnMouseUp(self, button)
 	self.pMouseUp(button)
-	self:SetScript("OnUpdate", nil)
+	recUI.lib.unscheduleUpdate("recUIDressingRoom")
 	if button == "LeftButton" then
 		self.isrotating = nil
 	end
@@ -115,15 +117,14 @@ end
 
 -- now apply the changes
 -- need an event frame since 2 of the models are from LoD addons
-local f = CreateFrame("Frame")
-f:RegisterEvent("ADDON_LOADED")
-f:SetScript("OnEvent", function(self, event, addon)
+recUI.lib.registerEvent("ADDON_LOADED", "recUIDressingRoom", function(self, event, addon)
 	if addon == "Blizzard_AuctionUI" then
 		hook_auction_house()
 	elseif addon == "Blizzard_InspectUI" then
 		hook_inspect()
 	end
 end)
+
 -- in case Blizzard_AuctionUI or Blizzard_InspectUI were loaded early
 if AuctionDressUpModel then hook_auction_house() end
 if InspectModelFrame then hook_inspect() end
