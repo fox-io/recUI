@@ -105,9 +105,9 @@ local PostCastStop = function(self, event, unit)
 end
 
 local PostCreateAuraIcon = function(self, button)
-	button.count:SetFont(recUI.media.font, 9, nil)
+	button.count:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	button.count:ClearAllPoints()
-	button.count:SetPoint("BOTTOMRIGHT")
+	button.count:SetPoint("BOTTOMRIGHT", -1, 3)
 	
 	-- Icons are easier to recognize without this set.
 	--button.icon:SetTexCoord(.07, .93, .07, .93)
@@ -128,9 +128,11 @@ local PostCreateAuraIcon = function(self, button)
 	button.gloss:SetAllPoints()
 	
 	-- Put spiral inside outline frame.
-	button.cd:ClearAllPoints()
-	button.cd:SetPoint("TOPLEFT", 3, -3)
-	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
+	--button.cd:ClearAllPoints()
+	--button.cd:SetPoint("TOPLEFT", 3, -3)
+	--button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
+	-- Remove cooldown spiral.
+	button.cd = nil
 end
 
 --local auraColor  = {
