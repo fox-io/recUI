@@ -15,32 +15,24 @@ local bar1Holder = CreateFrame("Frame","Bar1Holder",UIParent)
 bar1Holder:SetWidth(172)
 bar1Holder:SetHeight(60)
 bar1Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", -165, 115)  
---bar1Holder:SetPoint("TOPLEFT", TLActionBarPanel, "TOPLEFT", 5, -5)
---bar1Holder:SetPoint("BOTTOMRIGHT", TLActionBarPanel, "BOTTOMRIGHT", -5, 5)
   
 -- Frame to hold the MultibarBottomLeft
 local bar2Holder = CreateFrame("Frame","Bar2Holder",UIParent)
 bar2Holder:SetWidth(172)
 bar2Holder:SetHeight(60)
 bar2Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 115)  
---bar2Holder:SetPoint("TOPLEFT", TRActionBarPanel, "TOPLEFT", 5, -5)
---bar2Holder:SetPoint("BOTTOMRIGHT", TRActionBarPanel, "BOTTOMRIGHT", -5, 5)
 
 -- Frame to hold the MultibarRight
 local bar3Holder = CreateFrame("Frame","Bar3Holder",UIParent)
 bar3Holder:SetWidth(172)
 bar3Holder:SetHeight(60)
 bar3Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", -165, 35)
---bar3Holder:SetPoint("TOPLEFT", LLActionBarPanel, "TOPLEFT", 5, -5)
---bar3Holder:SetPoint("BOTTOMRIGHT", LLActionBarPanel, "BOTTOMRIGHT", -5, 5)
   
 -- Frame to hold the right bars
 local bar45Holder = CreateFrame("Frame","Bar45Holder",UIParent)
 bar45Holder:SetWidth(172)
 bar45Holder:SetHeight(60)
 bar45Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 35)
---bar45Holder:SetPoint("TOPLEFT", LRActionBarPanel, "TOPLEFT", 5, -5)
---bar45Holder:SetPoint("BOTTOMRIGHT", LRActionBarPanel, "BOTTOMRIGHT", -5, 5)
   
 -- Frame to hold the pet bars  
 local petBarHolder = CreateFrame("Frame","PetBarHolder",UIParent)
@@ -54,7 +46,6 @@ shiftBarHolder:SetWidth(355)
 shiftBarHolder:SetHeight(50)
 shiftBarHolder:SetScale(.6)
 shiftBarHolder:SetAlpha(1)
---shiftBarHolder:SetPoint("BOTTOMLEFT", TLActionBarPanel, "TOPLEFT") 
 shiftBarHolder:SetPoint("BOTTOMLEFT", bar1Holder, "TOPLEFT") 
  
 -- Frame to hold the vehicle button
