@@ -9,55 +9,55 @@ local mouseOverPetBar = 0
 ---------------------------------------------------
 -- CREATE ALL THE HOLDER FRAMES
 ---------------------------------------------------
-    
+
 -- Frame to hold the ActionBar1 and the BonusActionBar
 local bar1Holder = CreateFrame("Frame","Bar1Holder",UIParent)
 bar1Holder:SetWidth(172)
 bar1Holder:SetHeight(60)
-bar1Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", -165, 115)  
-  
+bar1Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", -165, 115)
+
 -- Frame to hold the MultibarBottomLeft
 local bar2Holder = CreateFrame("Frame","Bar2Holder",UIParent)
 bar2Holder:SetWidth(172)
 bar2Holder:SetHeight(60)
-bar2Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 115)  
+bar2Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 115)
 
 -- Frame to hold the MultibarRight
 local bar3Holder = CreateFrame("Frame","Bar3Holder",UIParent)
 bar3Holder:SetWidth(172)
 bar3Holder:SetHeight(60)
 bar3Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", -165, 35)
-  
+
 -- Frame to hold the right bars
 local bar45Holder = CreateFrame("Frame","Bar45Holder",UIParent)
 bar45Holder:SetWidth(172)
 bar45Holder:SetHeight(60)
 bar45Holder:SetPoint("BOTTOM", UIParent, "BOTTOM", 165, 35)
-  
--- Frame to hold the pet bars  
+
+-- Frame to hold the pet bars
 local petBarHolder = CreateFrame("Frame","PetBarHolder",UIParent)
 petBarHolder:SetWidth(120)
 petBarHolder:SetHeight(47)
 petBarHolder:SetPoint("BOTTOM", UIParent, "BOTTOM", -337, 344)
-  
--- Frame to hold the shapeshift bars  
+
+-- Frame to hold the shapeshift bars
 local shiftBarHolder = CreateFrame("Frame","ShapeShiftHolder",UIParent)
 shiftBarHolder:SetWidth(355)
 shiftBarHolder:SetHeight(50)
 shiftBarHolder:SetScale(.6)
 shiftBarHolder:SetAlpha(1)
-shiftBarHolder:SetPoint("BOTTOMLEFT", bar1Holder, "TOPLEFT") 
- 
+shiftBarHolder:SetPoint("BOTTOMLEFT", bar1Holder, "TOPLEFT")
+
 -- Frame to hold the vehicle button
 local vehicleButton = CreateFrame("Frame","VEBHolder",UIParent)
 vehicleButton:SetWidth(70)
 vehicleButton:SetHeight(70)
-vehicleButton:SetPoint("BOTTOM", -150, 277)   
+vehicleButton:SetPoint("BOTTOM", -150, 277)
 
 ---------------------------------------------------
 -- CREATE MY OWN VEHICLE EXIT BUTTON
 ---------------------------------------------------
-  
+
 local veb = CreateFrame("BUTTON", "VehicleExitButton", vehicleButton, "SecureActionButtonTemplate")
 veb:SetWidth(32.5)
 veb:SetHeight(32.5)
@@ -79,7 +79,7 @@ recUI.lib.registerEvent("UNIT_ENTERING_VEHICLE", "recUIActionBar", OnVehicle)
 recUI.lib.registerEvent("UNIT_ENTERED_VEHICLE", "recUIActionBar", OnVehicle)
 recUI.lib.registerEvent("UNIT_EXITING_VEHICLE", "recUIActionBar", OnVehicle)
 recUI.lib.registerEvent("UNIT_EXITED_VEHICLE", "recUIActionBar", OnVehicle)
- 
+
 ---------------------------------------------------
 -- MOVE STUFF INTO POSITION
 ---------------------------------------------------
@@ -92,7 +92,7 @@ for i = 1, 12 do
 	b1 = _G[format("ActionButton%d", i)]
 	b1:SetParent(bar1Holder)
 	b1:SetScale(0.68625)
-	
+
 	-- Action 1-12 On MOUSE down
 	--b1:RegisterForClicks("AnyDown")
 	-- Action 1-12 On KEY down
@@ -173,7 +173,7 @@ MultiBarRightButton1:SetPoint('TOPLEFT', bar45Holder, 'TOPLEFT', 4.5, -4.5)
 for i = 1, 12 do
 	b1 = _G["MultiBarRightButton"..i]
 	b1:SetScale(0.68625)
-	
+
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
 		b1:SetPoint("LEFT", _G["MultiBarRightButton"..i-1], "RIGHT", 5, 0)
@@ -199,7 +199,7 @@ ShapeshiftButton1:SetPoint("BOTTOMLEFT",shiftBarHolder,"BOTTOMLEFT",10,10)
 local function MoveShapeshift()
 	ShapeshiftButton1:SetPoint("BOTTOMLEFT",shiftBarHolder,"BOTTOMLEFT",10,10)
 end
-hooksecurefunc("ShapeshiftBar_Update", MoveShapeshift)  
+hooksecurefunc("ShapeshiftBar_Update", MoveShapeshift)
 
 PossessBarFrame:SetParent(shiftBarHolder)
 PossessButton1:ClearAllPoints()
@@ -218,7 +218,7 @@ PetActionButton6:SetPoint('TOPLEFT', PetActionButton1, 'BOTTOMLEFT' ,0, -5)
 ---------------------------------------------------
 -- ACTIONBUTTONS MUST BE HIDDEN
 ---------------------------------------------------
-  
+
 -- hide actionbuttons when the bonusbar is visible (rogue stealth and such)
 local function showhideactionbuttons(alpha)
    local f = "ActionButton"
@@ -258,7 +258,7 @@ local function showhidebar2(alpha)
 		end
 	end
 end
-  
+
 local function showhidebar3(alpha)
    if MultiBarBottomRight:IsShown() then
       for i=1, 12 do
@@ -267,21 +267,21 @@ local function showhidebar3(alpha)
 		end
 	end
 end
-  
+
 local function showhideshapeshift(alpha)
    for i=1, NUM_SHAPESHIFT_SLOTS do
 		local pb = _G["ShapeshiftButton"..i]
 		pb:SetAlpha(alpha)
 	end
 end
-  
+
 local function showhidepet(alpha)
    for i=1, NUM_PET_ACTION_SLOTS do
       local pb = _G["PetActionButton"..i]
       pb:SetAlpha(alpha)
    end
 end
-  
+
 local function showhiderightbar(alpha)
    if MultiBarLeft:IsShown() then
       for i=1, 12 do
@@ -300,7 +300,7 @@ end
 if mouseOverBar1 == 1 then
 	bar1Holder:EnableMouse(true)
 	bar1Holder:SetScript("OnEnter", function(self) showhidebar1(1) end)
-	bar1Holder:SetScript("OnLeave", function(self) showhidebar1(0) end)  
+	bar1Holder:SetScript("OnLeave", function(self) showhidebar1(0) end)
 	for i=1, 12 do
 		local pb = _G["ActionButton"..i]
 		pb:SetAlpha(0)
@@ -312,11 +312,11 @@ if mouseOverBar1 == 1 then
 		pb:HookScript("OnLeave", function(self) showhidebar1(0) end)
 	end
 end
-  
+
 if mouseOverBar2 == 1 then
    bar2Holder:EnableMouse(true)
    bar2Holder:SetScript("OnEnter", function(self) showhidebar2(1) end)
-   bar2Holder:SetScript("OnLeave", function(self) showhidebar2(0) end)  
+   bar2Holder:SetScript("OnLeave", function(self) showhidebar2(0) end)
    for i=1, 12 do
 		local pb = _G["MultiBarBottomLeftButton"..i]
       pb:SetAlpha(0)
@@ -324,11 +324,11 @@ if mouseOverBar2 == 1 then
       pb:HookScript("OnLeave", function(self) showhidebar2(0) end)
    end
 end
-  
+
 if mouseOverBar3 == 1 then
    bar3Holder:EnableMouse(true)
    bar3Holder:SetScript("OnEnter", function(self) showhidebar3(1) end)
-   bar3Holder:SetScript("OnLeave", function(self) showhidebar3(0) end)  
+   bar3Holder:SetScript("OnLeave", function(self) showhidebar3(0) end)
    for i=1, 12 do
       local pb = _G["MultiBarBottomRightButton"..i]
       pb:SetAlpha(0)
@@ -336,11 +336,11 @@ if mouseOverBar3 == 1 then
       pb:HookScript("OnLeave", function(self) showhidebar3(0) end)
    end
 end
-  
+
 if mouseOverShiftBar == 1 then
    shiftBarHolder:EnableMouse(true)
    shiftBarHolder:SetScript("OnEnter", function(self) showhideshapeshift(1) end)
-   shiftBarHolder:SetScript("OnLeave", function(self) showhideshapeshift(0) end)  
+   shiftBarHolder:SetScript("OnLeave", function(self) showhideshapeshift(0) end)
    for i=1, NUM_SHAPESHIFT_SLOTS do
       local pb = _G["ShapeshiftButton"..i]
       pb:SetAlpha(0)
@@ -348,11 +348,11 @@ if mouseOverShiftBar == 1 then
       pb:HookScript("OnLeave", function(self) showhideshapeshift(0) end)
    end
 end
-  
+
 if mouseOverPetBar == 1 then
    petBarHolder:EnableMouse(true)
    petBarHolder:SetScript("OnEnter", function(self) showhidepet(1) end)
-   petBarHolder:SetScript("OnLeave", function(self) showhidepet(0) end)  
+   petBarHolder:SetScript("OnLeave", function(self) showhidepet(0) end)
    for i=1, NUM_PET_ACTION_SLOTS do
       local pb = _G["PetActionButton"..i]
       pb:SetAlpha(0)
@@ -360,11 +360,11 @@ if mouseOverPetBar == 1 then
       pb:HookScript("OnLeave", function(self) showhidepet(0) end)
    end
 end
-  
+
 if mouseOverBar45 == 1 then
    bar45Holder:EnableMouse(true)
    bar45Holder:SetScript("OnEnter", function(self) showhiderightbar(1) end)
-   bar45Holder:SetScript("OnLeave", function(self) showhiderightbar(0) end)  
+   bar45Holder:SetScript("OnLeave", function(self) showhiderightbar(0) end)
    for i=1, 12 do
       local pb = _G["MultiBarLeftButton"..i]
       pb:SetAlpha(0)
@@ -402,8 +402,8 @@ local FramesToHide = {
 	LFGMicroButton,
 	MainMenuMicroButton,
 	HelpMicroButton,
-}  
-  
+}
+
 local function HideDefaultFrames()
 	for _, frame in pairs(FramesToHide) do
 		frame:SetScale(0.001)
@@ -417,21 +417,21 @@ HideDefaultFrames()
 
 
 
-  
+
   --rActionButtonStyler - roth 2009
 
   local _G = _G
-  
+
   ---------------------------------------
-  -- CONFIG 
+  -- CONFIG
   ---------------------------------------
-  
+
   --hide the hotkey? 0/1
   local hide_hotkey = 1
-  
+
   --use dominos? 0/1
   local use_dominos = 0
-    
+
   --COLORS
   --color you want to appy to the standard texture (red, green, blue in RGB)
   --local color = { r = 0.25, g = 0.25, b = 0.25, }
@@ -441,17 +441,17 @@ HideDefaultFrames()
 
   --color for equipped border texture (red, green, blue in RGB)
   local color_equipped = { r = 0.33, g = 0.59, b = 0.33, }
-  
+
   --color when out of range
   local range_color = { r = 0.69, g = 0.31, b = 0.31, }
-    
+
 --color when out of power (mana)
   local mana_color = { r = 0.31, g = 0.45, b = 63, }
 
   --color when button is usable
   --local usable_color = { r = 0.84, g = 0.75, b = 0.65, }
   local usable_color = { r = 1, g = 1, b = 1, }
-  
+
   --color when button is unusable (example revenge not active, since you have not blocked yet)
   local unusable_color = { r = 0.5, g = 0.5, b = 0.5, }
 
@@ -474,10 +474,10 @@ HideDefaultFrames()
   ---------------------------------------
   -- FUNCTIONS
   ---------------------------------------
-  
+
   --initial style func
   local function rActionButtonStyler_AB_style(self)
-  
+
     local action = self.action
     local name = self:GetName()
     local bu  = _G[name]
@@ -489,7 +489,7 @@ HideDefaultFrames()
     local na  = _G[format("%sName", name)]
     local fl  = _G[format("%sFlash", name)]
     local nt  = _G[format("%sNormalTexture", name)]
-	
+
 	bu:SetBackdrop({
 		bgFile = recUI.media.buttonBackdrop,
 		edgeFile = nil,
@@ -497,15 +497,15 @@ HideDefaultFrames()
 		insets = { left = 0, right = 0, top = 0, bottom = 0 }
 	})
 	bu:SetBackdropColor(1, 1, 1, 1)
-    
+
     nt:SetHeight(bu:GetHeight())
     nt:SetWidth(bu:GetWidth())
     nt:SetPoint("CENTER")
 	nt:SetDrawLayer("OVERLAY")
-	
+
 	bo:SetTexture(recUI.media.buttonBorder)
 	bo:SetDrawLayer("OVERLAY")
-    
+
     ho:SetFont(recUI.media.font, 14, "OUTLINE")
     co:SetFont(recUI.media.font, 14, "OUTLINE")
     na:SetFont(recUI.media.font, 14, "OUTLINE")
@@ -513,39 +513,39 @@ HideDefaultFrames()
       ho:Hide()
     end
     na:Hide()
-  
+
     fl:SetTexture(recUI.media.buttonFlash)
 	fl:SetDrawLayer("OVERLAY")
     bu:SetHighlightTexture(recUI.media.buttonHighlight)
     bu:SetPushedTexture(recUI.media.buttonPushed)
     bu:SetCheckedTexture(recUI.media.buttonChecked)
     bu:SetNormalTexture(recUI.media.buttonNormal)
-  
+
     ic:SetTexCoord(0.1,0.9,0.1,0.9)
     ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 3, -3)
     ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -3, 3)
 	ic:SetDrawLayer("BORDER")
-  
+
     if ( IsEquippedAction(action) ) then
       bu:SetNormalTexture(recUI.media.buttonEquipped)
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
       bu:SetNormalTexture(recUI.media.buttonNormal)
       nt:SetVertexColor(color.r,color.g,color.b,.6)
-    end  
-  
+    end
+
   end
-  
+
   --style pet buttons
   local function rActionButtonStyler_AB_stylepet()
-    
+
     for i=1, NUM_PET_ACTION_SLOTS do
       local name = "PetActionButton"..i
       local bu  = _G[name]
       local ic  = _G[name.."Icon"]
       local fl  = _G[name.."Flash"]
       local nt  = _G[name.."NormalTexture2"]
-	  
+
 	bu:SetBackdrop({
 		bgFile = recUI.media.buttonBackdrop,
 		edgeFile = nil,
@@ -556,28 +556,28 @@ HideDefaultFrames()
 	fl:SetDrawLayer("OVERLAY")
 	nt:SetDrawLayer("OVERLAY")
 	ic:SetDrawLayer("BORDER")
-  
+
       nt:SetHeight(bu:GetHeight())
       nt:SetWidth(bu:GetWidth())
       nt:SetPoint("Center", 0, 0)
-      
+
       nt:SetVertexColor(color.r,color.g,color.b,1)
-      
+
       fl:SetTexture(recUI.media.buttonFlash)
       bu:SetHighlightTexture(recUI.media.buttonHighlight)
       bu:SetPushedTexture(recUI.media.buttonPushed)
       bu:SetCheckedTexture(recUI.media.buttonChecked)
       bu:SetNormalTexture(recUI.media.buttonNormal)
-    
+
       ic:SetTexCoord(0.1,0.9,0.1,0.9)
       ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
       ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
-      
-    end  
+
+    end
   end
-  
+
   --style shapeshift buttons
-  local function rActionButtonStyler_AB_styleshapeshift()    
+  local function rActionButtonStyler_AB_styleshapeshift()
     for i=1, NUM_SHAPESHIFT_SLOTS do
       local name = "ShapeshiftButton"..i
       local bu  = _G[name]
@@ -595,25 +595,25 @@ HideDefaultFrames()
 	fl:SetDrawLayer("OVERLAY")
 	nt:SetDrawLayer("OVERLAY")
 	ic:SetDrawLayer("BORDER")
-	
+
       nt:ClearAllPoints()
       nt:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
       nt:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 0, 0)
-      
+
       nt:SetVertexColor(color.r,color.g,color.b,1)
-      
+
       fl:SetTexture(recUI.media.buttonFlash)
       bu:SetHighlightTexture(recUI.media.buttonHover)
       bu:SetPushedTexture(recUI.media.buttonPushed)
       bu:SetCheckedTexture(recUI.media.buttonChecked)
       bu:SetNormalTexture(recUI.media.buttonNormal)
-    
+
       ic:SetTexCoord(0.1,0.9,0.1,0.9)
       ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
-      ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)  
-    end    
+      ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+    end
   end
-  
+
   --fix the grid display
   --the default function has a bug and once you move a button the alpha stays at 0.5, this gets fixed here
   local function rActionButtonStyler_AB_fixgrid(button)
@@ -624,9 +624,9 @@ HideDefaultFrames()
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
       nt:SetVertexColor(color.r,color.g,color.b,1)
-    end  
+    end
   end
-  
+
   --update the button colors onUpdateUsable
   local function rActionButtonStyler_AB_usable(self)
     local name = self:GetName()
@@ -637,7 +637,7 @@ HideDefaultFrames()
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
       nt:SetVertexColor(color.r,color.g,color.b,1)
-    end  
+    end
     local isUsable, notEnoughMana = IsUsableAction(action)
     if (ActionHasRange(action) and IsActionInRange(action) == 0) then
       icon:SetVertexColor(range_color.r,range_color.g,range_color.b,1)
@@ -653,7 +653,7 @@ HideDefaultFrames()
       return
     end
   end
-  
+
   --rewrite of the onupdate func
   --much less cpu usage needed
   local function rActionButtonStyler_AB_onupdate(self,elapsed)
@@ -671,7 +671,7 @@ HideDefaultFrames()
       rActionButtonStyler_AB_usable(self)
     end
   end
-  
+
   --hotkey func
   --is only needed when you want to hide the hotkeys and use the default barmod (Dominos does not need this)
   local function rActionButtonStyler_AB_hotkey(self, actionButtonType)
@@ -683,34 +683,34 @@ HideDefaultFrames()
    	local text = GetBindingText(key, "KEY_", 1);
     hotkey:SetText(text);
     hotkey:Hide()
-  end 
-  
-  
+  end
+
+
   ---------------------------------------
   -- CALLS // HOOKS
   ---------------------------------------
-  
+
   hooksecurefunc("ActionButton_Update",   rActionButtonStyler_AB_style)
   hooksecurefunc("ActionButton_UpdateUsable",   rActionButtonStyler_AB_usable)
-  
+
   --rewrite default onUpdateFunc, the new one uses much less CPU power
   ActionButton_OnUpdate = rActionButtonStyler_AB_onupdate
-  
+
   --fix grid
   hooksecurefunc("ActionButton_ShowGrid", rActionButtonStyler_AB_fixgrid)
-  
+
   --call the special func to hide hotkeys after entering combat with the default actionbar
   if hide_hotkey == 1 and use_dominos == 0 then
     hooksecurefunc("ActionButton_UpdateHotkeys", rActionButtonStyler_AB_hotkey)
   end
-  
+
   hooksecurefunc("ShapeshiftBar_OnLoad",   rActionButtonStyler_AB_styleshapeshift)
   hooksecurefunc("ShapeshiftBar_Update",   rActionButtonStyler_AB_styleshapeshift)
   hooksecurefunc("ShapeshiftBar_UpdateState",   rActionButtonStyler_AB_styleshapeshift)
   hooksecurefunc("PetActionBar_Update",   rActionButtonStyler_AB_stylepet)
-  
-  
-  
+
+
+
   local _G = _G
 
 function RedRange_ActionButton_OnUpdate(self, elapsed)

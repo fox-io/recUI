@@ -1,6 +1,3 @@
--------------------
--- EVENT HANDLER --
--------------------
 local _, recUI = ...
 local lib = recUI.lib
 
