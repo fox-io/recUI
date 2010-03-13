@@ -160,7 +160,7 @@ recUI.tweaks.eventFrame:HookScript("OnEvent", function(self, event, ...)
 		SetCVar("weatherDensity", 0)							-- 0-3 aka Weather Intensity
 		SetCVar("processAffinityMask", "3")						-- how many processor cores to use. 1 = 1 core, 3 = 2 cores, 15 = 4 cores, 255 = 8 cores
 		SetCVar("useUiScale", 1)								--
-		SetCVar("uiScale", 0.84)								--
+		SetCVar("uiScale", 0.8193)								--
 		ConsoleExec( "pitchlimit 449" )							-- 89, 449. 449 allows doing flips, 89 will not
 		ConsoleExec( "characterAmbient -0.1")					-- -0.1-1 use ambient lighting for character. <0 == off
 		--ConsoleExec( "gxRestart" )							-- Needed for some settings to take effect
