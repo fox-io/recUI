@@ -133,6 +133,11 @@ local PostCreateAuraIcon = function(self, button)
 	--button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
 	-- Remove cooldown spiral.
 	button.cd = nil
+	
+	-- Use time display rather than spiral.
+	button.time = button:CreateFontString(nil, "OVERLAY")
+	button.time:SetPoint("TOPLEFT", 2, -2)
+	button.time:SetFont(recUI.media.font, 9, "THINOUTLINE")
 end
 
 --local auraColor  = {
