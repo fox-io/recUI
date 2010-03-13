@@ -109,20 +109,37 @@ local PostCreateAuraIcon = function(self, button)
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT")
 	
+	-- Icons are easier to recognize without this set.
 	--button.icon:SetTexCoord(.07, .93, .07, .93)
 	
+	-- Push icon in 1px because it likes to poke out from the border on some scales.
 	button.icon:ClearAllPoints()
 	button.icon:SetPoint("TOPLEFT", 1, -1)
 	button.icon:SetPoint("BOTTOMRIGHT", -1, 1)
 	
+	-- Thin 'outline' border texture.
 	button.outline = button:CreateTexture(nil, "OVERLAY")
 	button.outline:SetTexture(recUI.media.buttonNormal)
 	button.outline:SetAllPoints()
-	
+
+	-- Make icon look pretty with an overlay.
 	button.gloss = button:CreateTexture(nil, "OVERLAY")
 	button.gloss:SetTexture(recUI.media.buttonGloss)
 	button.gloss:SetAllPoints()
+	
+	-- Put spiral inside outline frame.
+	button.cd:ClearAllPoints()
+	button.cd:SetPoint("TOPLEFT", 3, -3)
+	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
 end
+
+local auraColor  = {
+	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
+	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
+	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10}, 
+	["Curse"]   = {r = 0.40, g = 0.00, b = 0.40},
+	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
+}
 
 local PostUpdateAuraIcon
 do
@@ -134,7 +151,10 @@ do
 
 	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
 		if(playerUnits[icon.owner]) then
-			icon.icon:SetDesaturated(false)
+			local auraType = select(5, UnitAura(unit, index, icon.filter))
+			if (auraType) then -- Be absolutely sure.
+				icon.outline:SetVertexColor(auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b, 1)
+			end
 		else
 			icon.icon:SetDesaturated(true)
 		end
