@@ -133,13 +133,13 @@ local PostCreateAuraIcon = function(self, button)
 	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
 end
 
-local auraColor  = {
-	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
-	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
-	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10}, 
-	["Curse"]   = {r = 0.40, g = 0.00, b = 0.40},
-	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
-}
+--local auraColor  = {
+--	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
+--	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
+--	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10}, 
+--	["Curse"]   = {r = 0.40, g = 0.00, b = 0.40},
+--	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
+--}
 
 local PostUpdateAuraIcon
 do
@@ -151,10 +151,12 @@ do
 
 	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
 		if(playerUnits[icon.owner]) then
-			local auraType = select(5, UnitAura(unit, index, icon.filter))
-			if (auraType) then -- Be absolutely sure.
-				icon.outline:SetVertexColor(auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b, 1)
-			end
+			--local auraType = select(5, UnitAura(unit, index, icon.filter))
+			--f (auraType) then -- Be absolutely sure.
+			--	print(auraType, auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b)
+			--	icon.outline:SetVertexColor(auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b, 1)
+			--end
+			icon.icon:SetDesaturated(false)
 		else
 			icon.icon:SetDesaturated(true)
 		end
