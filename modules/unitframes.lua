@@ -110,7 +110,7 @@ local function UpdateAura(self, elapsed)
 		self.elapsed = 0
 		local _, _, _, _, _, duration = UnitAura(self.unit, self.index, self.filter)
 		if duration and duration > 0 then
-			self.time:SetText(recUI.lib.formatTime(duration))
+			self.time:SetText(recUI.lib.prettyTime(duration))
 		else
 			self.time:SetText()
 		end

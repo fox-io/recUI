@@ -2,4 +2,5 @@
 	<Script file="recUILib.lua" />
 	<Script file="libevents.lua" />
 	<Script file="libupdates.lua" />
+	<Script file="libpretty.lua" />
 </Ui>
