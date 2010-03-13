@@ -18,3 +18,13 @@ lib.prettyTime = function(seconds)
 	end
 	return format("%.1f", seconds), (seconds * 100 - floor(seconds * 100))/100
 end
+
+lib.prettyNumber = function(value)
+	if value >= 1e6 then
+		return ("%.1fm"):format(value / 1e6):gsub("%.?0+([km])$", "%1")
+	elseif value >= 1e3 or value <= -1e3 then
+		return ("%.1fk"):format(value / 1e3):gsub("%.?0+([km])$", "%1")
+	else
+		return value
+	end
+end

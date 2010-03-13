@@ -1,16 +1,6 @@
 local _, recUI = ...
 local oUF = recUI.oUF
 
-local ShortValue = function(value)
-	if value >= 1e6 then
-		return ("%.1fm"):format(value / 1e6):gsub("%.?0+([km])$", "%1")
-	elseif value >= 1e3 or value <= -1e3 then
-		return ("%.1fk"):format(value / 1e3):gsub("%.?0+([km])$", "%1")
-	else
-		return value
-	end
-end
-
 local menu = function(self)
 	local unit = self.unit:sub(1, -2)
 	local cunit = self.unit:gsub("(.)", string.upper, 1)
@@ -62,12 +52,12 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if(min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", ShortValue(min), ShortValue(max))
+				bar.value:SetFormattedText("%s | %s", recUI.lib.prettyNumber(min), recUI.lib.prettyNumber(max))
 			else
 				bar.value:SetText(max)
 			end
 		else
-			bar.value:SetText(ShortValue(min))
+			bar.value:SetText(recUI.lib.prettyNumber(min))
 		end
 	end
 
@@ -85,7 +75,7 @@ local PostUpdatePower = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if (min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", ShortValue(min), ShortValue(max))
+				bar.value:SetFormattedText("%s | %s", recUI.lib.prettyNumber(min), recUI.lib.prettyNumber(max))
 			else
 				bar.value:SetText(max)
 			end
@@ -121,15 +111,15 @@ local PostCreateAuraIcon = function(self, button)
 	button.count:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT", -1, 3)
-	
+
 	-- Icons are easier to recognize without this set.
 	--button.icon:SetTexCoord(.07, .93, .07, .93)
-	
+
 	-- Push icon in 1px because it likes to poke out from the border on some scales.
 	button.icon:ClearAllPoints()
 	button.icon:SetPoint("TOPLEFT", 1, -1)
 	button.icon:SetPoint("BOTTOMRIGHT", -1, 1)
-	
+
 	-- Thin 'outline' border texture.
 	button.outline = button:CreateTexture(nil, "OVERLAY")
 	button.outline:SetTexture(recUI.media.buttonNormal)
@@ -139,14 +129,14 @@ local PostCreateAuraIcon = function(self, button)
 	button.gloss = button:CreateTexture(nil, "OVERLAY")
 	button.gloss:SetTexture(recUI.media.buttonGloss)
 	button.gloss:SetAllPoints()
-	
+
 	-- Put spiral inside outline frame.
 	button.cd:ClearAllPoints()
 	button.cd:SetPoint("TOPLEFT", 3, -3)
 	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
 	-- Remove cooldown spiral.
 	--button.cd = nil
-	
+
 	-- Use time display rather than spiral.
 	--button.time = button:CreateFontString(nil, "OVERLAY")
 	--button.time:SetPoint("TOPLEFT", 1, -1)
@@ -155,9 +145,9 @@ local PostCreateAuraIcon = function(self, button)
 end
 
 --local auraColor  = {
---	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
---	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
---	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10}, 
+--	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45},
+--	["Disease"] = {r = 0.40, g = 0.30, b = 0.10},
+--	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10},
 --	["Curse"]   = {r = 0.40, g = 0.00, b = 0.40},
 --	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
 --}
@@ -188,7 +178,7 @@ local function style(self, unit)
 	self.menu = menu
 	self:RegisterForClicks("AnyUp")
 	self:SetAttribute("type2", "menu")
-	
+
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
 
@@ -197,7 +187,7 @@ local function style(self, unit)
 			v(frame, "UpdateElement", frame.unit)
 		end
 	end)
-	
+
 -- Backdrop
 	self.background = CreateFrame("Frame", nil, self)
 	self.background:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 4)
@@ -210,23 +200,23 @@ local function style(self, unit)
 	}
 	self.background:SetBackdropColor(0, 0, 0, 1)
 	self.background:SetBackdropBorderColor(0, 0, 0)
-	
--- Health	
+
+-- Health
 	self.Health = CreateFrame("StatusBar", nil, self)
 	self.Health:SetStatusBarTexture(recUI.media.statusBar)
 	self.Health:SetPoint("TOPLEFT", 0,0)
 	self.Health:SetPoint("TOPRIGHT", 0,0)
 	self.Health.frequentUpdates = true
-	
+
 	self.Health.background = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.background:SetTexture(.25, .25, .25, 1)
 	self.Health.background:SetAllPoints()
-	
+
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Health.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Health.value:SetPoint("RIGHT", -5, 2)
 	self.Health.value:SetTextColor(1, 1, 1)
-	
+
 -- Power
 	self.Power = CreateFrame("StatusBar", nil, self)
 	self.Power:SetStatusBarTexture(recUI.media.statusBar)
@@ -237,23 +227,23 @@ local function style(self, unit)
 	self.Power.colorHappiness = true
 	self.Power.colorClass = true
 	self.Power.colorReaction = true
-	
+
 	self.Power.background = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.background:SetTexture(.25, .25, .25, 1)
 	self.Power.background:SetAllPoints()
-	
+
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
 	self.Power.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Power.value:SetPoint("RIGHT", -5, 2)
 	self.Power.value:SetTextColor(1, 1, 1)
-	
--- Name	
+
+-- Name
 	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Name:SetPoint("LEFT", 5, 2)
 	self.Name:SetJustifyH("LEFT")
 	self.Name:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	self.Name:SetTextColor(1, 1, 1)
-	
+
 -- Castbar
 	if unit == "player" or unit == "target" then
 		self.Castbar = CreateFrame("StatusBar", nil, self)
@@ -262,23 +252,23 @@ local function style(self, unit)
 		self.Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
 		self.Castbar:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
 		self.Castbar:SetToplevel(true)
-		
+
 		self.Castbar.spellName = self.Castbar:CreateFontString(nil, "OVERLAY")
 		self.Castbar.spellName:SetFont(recUI.media.font, 9, "THINOUTLINE")
 		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
 		self.Castbar.spellName:SetTextColor(1, 1, 1)
-		
+
 -- Portrait
 		self.Portrait = CreateFrame("PlayerModel", nil, self)
 		self.Portrait:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -3)
 		self.Portrait:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
-		
+
 		self.Portrait.backdrop = self.Portrait:CreateTexture(nil, "BACKGROUND")
 		self.Portrait.backdrop:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
 		self.Portrait.backdrop:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
 		self.Portrait.backdrop:SetTexture(.15, .15, .15, 1)
 	end
-	
+
 -- Buffs
 	if unit == "player" or unit == "target" then
 		self.Buffs = CreateFrame("Frame", nil, self)
@@ -287,20 +277,20 @@ local function style(self, unit)
 		self.Buffs.num = 16
 		self.Buffs.size = 22
 		self.Buffs.spacing = 1
-		
+
 		self.Debuffs = CreateFrame("Frame", nil, self)
 		self.Debuffs:SetHeight(2 * 22 + 2 * 2)
 		self.Debuffs:SetWidth(8 * 22 + 8 * 2)
 		self.Debuffs.num = 16
 		self.Debuffs.size = 22
 		self.Debuffs.spacing = 1
-		
+
 		if unit == "player" then
 			self.Buffs.initialAnchor = "TOPRIGHT"
 			self.Buffs["growth-x"] = "LEFT"
 			self.Buffs["growth-y"] = "DOWN"
 			self.Buffs:SetPoint("TOPRIGHT", self, "TOPLEFT", -5, 2)
-			
+
 			BuffFrame:Hide()
 			TemporaryEnchantFrame:Hide()
 		else
@@ -309,12 +299,12 @@ local function style(self, unit)
 			self.Buffs["growth-y"] = "DOWN"
 			self.Buffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 2)
 		end
-		
+
 		self.Debuffs.initialAnchor = "TOPLEFT"
 		self.Debuffs["growth-x"] = "RIGHT"
 		self.Debuffs["growth-y"] = "DOWN"
 		self.Debuffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", -3, -4)
-		
+
 		self.PostUpdateAuraIcon = PostUpdateAuraIcon
 		self.PostCreateAuraIcon = PostCreateAuraIcon
 	end
@@ -341,7 +331,7 @@ local function style(self, unit)
 		self.Power:SetHeight(5)
 		self.Health:SetHeight(15)
 	end
-	
+
 -- Overrides/Hooks
 	self.PostUpdateHealth = PostUpdateHealth
 	self.PostUpdatePower = PostUpdatePower
@@ -356,7 +346,7 @@ local function style(self, unit)
 
 	return self
 end
-	
+
 oUF:RegisterStyle("recUI", style)
 oUF:SetActiveStyle("recUI")
 
