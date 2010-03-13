@@ -14,24 +14,24 @@ local menu = function(self)
 end
 
 local updateName = function(self, event, unit)
-	if(self.unit == unit) then
+	if (self.unit == unit) then
 		local r, g, b, t
-		if(UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
+		if (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) or not UnitIsConnected(unit)) then
 			r, g, b = .6, .6, .6
-		elseif(unit == 'pet') then
+		elseif (unit == 'pet') then
 			t = self.colors.happiness[GetPetHappiness()]
-		elseif(UnitIsPlayer(unit)) then
+		elseif (UnitIsPlayer(unit)) then
 			local _, class = UnitClass(unit)
 			t = self.colors.class[class]
 		else
 			t = self.colors.reaction[UnitReaction(unit, "player")]
 		end
 
-		if(t) then
+		if (t) then
 			r, g, b = t[1], t[2], t[3]
 		end
 
-		if(r) then
+		if (r) then
 			self.Name:SetTextColor(r, g, b)
 		end
 		if self:GetParent():GetName():match("oUF_Raid") then
@@ -45,15 +45,15 @@ local updateName = function(self, event, unit)
 end
 
 local PostUpdateHealth = function(self, event, unit, bar, min, max)
-	if(UnitIsDead(unit)) then
+	if (UnitIsDead(unit)) then
 		bar.value:SetText("d")
-	elseif(UnitIsGhost(unit)) then
+	elseif (UnitIsGhost(unit)) then
 		bar.value:SetText("g")
-	elseif(not UnitIsConnected(unit)) then
+	elseif (not UnitIsConnected(unit)) then
 		bar.value:SetText("o")
 	else
 		if unit == "player" or unit == "target" then
-			if(min ~= 0 and min ~= max) then
+			if (min ~= 0 and min ~= max) then
 				bar.value:SetFormattedText("%s | %s", lib.prettyNumber(min), lib.prettyNumber(max))
 			else
 				bar.value:SetText(max)
@@ -68,10 +68,10 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 end
 
 local PostUpdatePower = function(self, event, unit, bar, min, max)
-	if(min == 0 or max == 0 or not UnitIsConnected(unit)) then
+	if (min == 0 or max == 0 or not UnitIsConnected(unit)) then
 		bar.value:SetText()
 		bar:SetValue(0)
-	elseif(UnitIsDead(unit) or UnitIsGhost(unit)) then
+	elseif (UnitIsDead(unit) or UnitIsGhost(unit)) then
 		bar.value:SetText()
 		bar:SetValue(0)
 	else
@@ -92,7 +92,7 @@ local PostCastStart = function(self, event, unit, spell, spellrank, castid)
 end
 
 local PostCastStop = function(self, event, unit)
-	if(unit ~= self.unit) then return end
+	if (unit ~= self.unit) then return end
 	self.Castbar.spellName:SetText()
 end
 
