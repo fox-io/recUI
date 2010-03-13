@@ -136,7 +136,7 @@ local PostCreateAuraIcon = function(self, button)
 	
 	-- Use time display rather than spiral.
 	button.time = button:CreateFontString(nil, "OVERLAY")
-	button.time:SetPoint("TOPLEFT", 2, -2)
+	button.time:SetPoint("TOPLEFT", 1, -1)
 	button.time:SetFont(recUI.media.font, 9, "THINOUTLINE")
 end
 
@@ -157,6 +157,7 @@ do
 	}
 
 	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
+		local _, _, _, _, _, duration = UnitAura(unit, index, filter)
 		--local auraType = select(5, UnitAura(unit, index, icon.filter))
 		--f (auraType) then -- Be absolutely sure.
 		--	print(auraType, auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b)
@@ -166,6 +167,12 @@ do
 			icon.icon:SetDesaturated(true)
 		else
 			icon.icon:SetDesaturated(false)
+		end
+		
+		if duration > 0 then
+			icon.time:SetText(duration)
+		else
+			icon.time:SetText()
 		end
 	end
 end
