@@ -22,10 +22,12 @@ local onUpdate = function(self, elapsed)
 		end
 	end
 end
+
+
 lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, selfFrame)
 	-- Inform on duplicate updater
 	if scheduledUpdates[updateName] then
-		print(format("recUI: Attempt to scheduled duplicate update - %s", updateName))
+		print(format("recUI: Attempt to schedule duplicate update - %s", updateName))
 		return
 
 	else
@@ -40,6 +42,8 @@ lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, selfFr
 		updateFrame:SetScript("OnUpdate", onUpdate)
 	end
 end
+
+
 lib.unscheduleUpdate = function(updateName)
 	-- Inform on bad removal
 	if not scheduledUpdates[updateName] then
