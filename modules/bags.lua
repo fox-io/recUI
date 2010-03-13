@@ -701,7 +701,7 @@ function RestackCheck()
 
     if Restack() and (#restack_threads or #restack_threads == 0) then
     	restack_threads = {}
-		restack_frame:SetScript("OnUpdate", nil)
+		recUI.lib.unscheduleUpdate("recUIBagsRestack")
 		collectgarbage("collect")	-- i think we can remove this!
 	end
 end
@@ -725,7 +725,7 @@ Restack = function()
 							local thread = restack_threads[thread_index]
 							thread = coroutine.create(function() MoveItem(bag,slot,a_bag,a_slot) end)
 							coroutine.resume(thread)
-							restack_frame:SetScript("OnUpdate", RestackCheck)
+							recUI.lib.scheduleUpdate("recUIBagsRestack", 0, RestackCheck)
 							return false
 						end
 					end
@@ -771,7 +771,7 @@ function BankRestackCheck()
 
     if RestackBank() and (#bank_restack_threads or #bank_restack_threads == 0) then
     	bank_restack_threads = {}
-		bank_restack_frame:SetScript("OnUpdate", nil)
+		recUI.lib.unscheduleUpdate("recUIBagsBankRestack")
 		collectgarbage("collect")	-- i think we can remove this!
 	end
 end
@@ -795,7 +795,7 @@ RestackBank = function()
 							local thread = bank_restack_threads[thread_index]
 							thread = coroutine.create(function() MoveBankItem(bag,slot,a_bag,a_slot) end)
 							coroutine.resume(thread)
-							bank_restack_frame:SetScript("OnUpdate", BankRestackCheck)
+							recUI.lib.scheduleUpdate("recUIBagsBankRestack", 0, BankRestackCheck)
 							return false
 						end
 					end
@@ -840,8 +840,8 @@ local function DoSort()
 	-- We're done
 	if not(sort_data) or #sort_data == 0 then
 		-- Remove frame scripts, as we don't need them anymore
-		sort_frame:SetScript("OnEvent", nil)
-		sort_frame:SetScript("OnUpdate", nil)
+		recUI.lib.unregisterEvent("all", "recUIBagsSort")
+		recUI.lib.unscheduleUpdate("recUIBagsSort")
 
 		-- Cleanup
 		collectgarbage("collect")
@@ -1020,9 +1020,8 @@ Sort = function(reverse)
 
 	-- Start updating to sort!
 	print("recUI Bags: Sort in progress, please wait...")
-	sort_frame:SetScript("OnEvent", SortEvent)
-	sort_frame:RegisterEvent("BAG_UPDATE")
-	sort_frame:SetScript("OnUpdate", DoSort)
+	recUI.lib.registerEvent("BAG_UPDATE", "recUIBagsSort", SortEvent)
+	recUI.lib.scheduleUpdate("recUIBagsSort", 0, DoSort)
 end
 
 BankSort = function(reverse)
@@ -1083,10 +1082,9 @@ BankSort = function(reverse)
 
 	-- Start updating to sort!
 	print("recUI Bags: Sort in progress, please wait...")
-	sort_frame:SetScript("OnEvent", SortEvent)
-	sort_frame:RegisterEvent("BAG_UPDATE")
-	sort_frame:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
-	sort_frame:SetScript("OnUpdate", DoSort)
+	recUI.lib.registerEvent("BAG_UPDATE", "recUIBagsSort", SortEvent)
+	recUI.lib.registerEvent("PLAYERBANKSLOTS_CHANGED", "recUIBagsSort", SortEvent)
+	recUI.lib.scheduleUpdate("recUIBagsSort", 0, DoSort)
 end
 
 -- Show tooltip when mouse is over sort button
@@ -1293,25 +1291,17 @@ local function UpdateBagMap()
 	end
 end
 
-local login_delay = 1
 local function LoginTimer(self, elapsed)
+	-- Turn off our timer
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIBags")
+	recUI.lib.unscheduleUpdate("recUIBags")
 
-	-- After a small delay, we do our initial addon loading process.
-	login_delay = login_delay - elapsed
-	if login_delay <= 0 then
+	-- Basic initialization
+	UpdateBagMap()
+	CreateBagBar()
 
-		-- Turn off our timer
-		recBags:UnregisterEvent("PLAYER_ENTERING_WORLD")
-		recBags:SetScript("OnUpdate", nil)
-
-		-- Basic initialization
-		UpdateBagMap()
-		CreateBagBar()
-
-		-- Set a flag to let other parts of code know that it is okay to do what they do.
-		bags_ready = true
-	end
-
+	-- Set a flag to let other parts of code know that it is okay to do what they do.
+	bags_ready = true
 end
 
 local function OpenBags()
@@ -1339,7 +1329,7 @@ local function OnEvent(self, event, ...)
 	if event == "PLAYER_ENTERING_WORLD" then
 
 		-- Some bag data is not available immediately after PEW fires, so we delay our loading calls.
-		recBags:SetScript("OnUpdate", LoginTimer)
+		recUI.lib.scheduleUpdate("recUIBags", 1, LoginTimer)
 
 	elseif event == "BANKFRAME_OPENED" then
 		-- Set a flag to let other parts of the code know the bank is available.
@@ -1430,16 +1420,15 @@ local function OnEvent(self, event, ...)
 	end
 end
 
-recBags:SetScript("OnEvent", OnEvent)
-recBags:RegisterEvent("PLAYER_ENTERING_WORLD")
-recBags:RegisterEvent("BANKFRAME_OPENED")
-recBags:RegisterEvent("BANKFRAME_CLOSED")
-recBags:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
-recBags:RegisterEvent("BAG_UPDATE")
-recBags:RegisterEvent("BAG_CLOSED")
-recBags:RegisterEvent("PLAYERBANKBAGSLOTS_CHANGED") -- Fired when player buys a bag slot
-recBags:RegisterEvent("BAG_UPDATE_COOLDOWN")		-- Fired when an item cooldown needs to be updated
-recBags:RegisterEvent("ITEM_LOCK_CHANGED")		-- Fired when items get locked (item in trade, auction etc)
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIBags", OnEvent)
+recUI.lib.registerEvent("BANKFRAME_OPENED", "recUIBags", OnEvent)
+recUI.lib.registerEvent("BANKFRAME_CLOSED", "recUIBags", OnEvent)
+recUI.lib.registerEvent("PLAYERBANKSLOTS_CHANGED", "recUIBags", OnEvent)
+recUI.lib.registerEvent("BAG_UPDATE", "recUIBags", OnEvent)
+recUI.lib.registerEvent("BAG_CLOSED", "recUIBags", OnEvent)
+recUI.lib.registerEvent("PLAYERBANKBAGSLOTS_CHANGED", "recUIBags", OnEvent) -- Fired when player buys a bag slot
+recUI.lib.registerEvent("BAG_UPDATE_COOLDOWN", "recUIBags", OnEvent)		-- Fired when an item cooldown needs to be updated
+recUI.lib.registerEvent("ITEM_LOCK_CHANGED", "recUIBags", OnEvent)		-- Fired when items get locked (item in trade, auction etc)
 
 -- Override blizzard versions
 ToggleBackpack	= ToggleBags
