@@ -150,15 +150,15 @@ do
 	}
 
 	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
-		if(playerUnits[icon.owner]) then
-			--local auraType = select(5, UnitAura(unit, index, icon.filter))
-			--f (auraType) then -- Be absolutely sure.
-			--	print(auraType, auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b)
-			--	icon.outline:SetVertexColor(auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b, 1)
-			--end
-			icon.icon:SetDesaturated(false)
-		else
+		--local auraType = select(5, UnitAura(unit, index, icon.filter))
+		--f (auraType) then -- Be absolutely sure.
+		--	print(auraType, auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b)
+		--	icon.outline:SetVertexColor(auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b, 1)
+		--end
+		if unit == "target" and not(playerUnits[icon.owner]) and isDebuff then
 			icon.icon:SetDesaturated(true)
+		else
+			icon.icon:SetDesaturated(false)
 		end
 	end
 end
