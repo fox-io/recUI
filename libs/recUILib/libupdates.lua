@@ -11,30 +11,31 @@ local onUpdate = function(self, elapsed)
 	for _, scheduledUpdate in pairs(scheduledUpdates) do
 		-- Increment updater
 		scheduledUpdate.elapsed = scheduledUpdate.elapsed + elapsed
-		
+
 		-- See if we need to fire this onUpdate.
 		if scheduledUpdate.elapsed >= scheduledUpdate.frequency then
 			-- Reset elapsed timer.
 			scheduledUpdate.elapsed = 0
-			
+
 			-- Run onUpdate func
-			scheduledUpdate.onUpdate()
+			scheduledUpdate.onUpdate(scheduledUpdate.frame)
 		end
 	end
 end
-lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler)
+lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, updateFrame)
 	-- Inform on duplicate updater
 	if scheduledUpdates[updateName] then
 		print(format("recUI: Attempt to scheduled duplicate update - %s", updateName))
 		return
-		
+
 	else
 		-- Add updater to list
 		scheduledUpdates[updateName] = {}
 		scheduledUpdates[updateName].onUpdate = updateHandler
 		scheduledUpdates[updateName].elapsed = 0
 		scheduledUpdates[updateName].frequency = updateFrequency
-		
+		scheduledUpdates[updateName].frame = updateFrame
+
 		-- Ensure updates are firing.
 		updateFrame:SetScript("OnUpdate", onUpdate)
 	end
@@ -47,7 +48,7 @@ lib.unscheduleUpdate = function(updateName)
 	else
 		-- Remove update
 		scheduledUpdates[updateName] = nil
-		
+
 		-- Stop updating if there are no scheduled updates.
 		local numUpdates = 0
 		for k,v in pairs(scheduledUpdates) do
