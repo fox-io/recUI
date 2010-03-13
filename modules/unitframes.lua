@@ -104,6 +104,19 @@ local PostCastStop = function(self, event, unit)
 	self.Castbar.spellName:SetText()
 end
 
+local function UpdateAura(self, elapsed)
+	self.elapsed = self.elapsed + elapsed
+	if self.elapsed >= .1 then
+		self.elapsed = 0
+		local _, _, _, _, _, duration = UnitAura(self.unit, self.index, self.filter)
+		if duration and duration > 0 then
+			self.time:SetText(recUI.lib.formatTime(duration))
+		else
+			self.time:SetText()
+		end
+	end
+end
+
 local PostCreateAuraIcon = function(self, button)
 	button.count:SetFont(recUI.media.font, 9, "THINOUTLINE")
 	button.count:ClearAllPoints()
@@ -128,16 +141,17 @@ local PostCreateAuraIcon = function(self, button)
 	button.gloss:SetAllPoints()
 	
 	-- Put spiral inside outline frame.
-	--button.cd:ClearAllPoints()
-	--button.cd:SetPoint("TOPLEFT", 3, -3)
-	--button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
+	button.cd:ClearAllPoints()
+	button.cd:SetPoint("TOPLEFT", 3, -3)
+	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
 	-- Remove cooldown spiral.
-	button.cd = nil
+	--button.cd = nil
 	
 	-- Use time display rather than spiral.
-	button.time = button:CreateFontString(nil, "OVERLAY")
-	button.time:SetPoint("TOPLEFT", 1, -1)
-	button.time:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	--button.time = button:CreateFontString(nil, "OVERLAY")
+	--button.time:SetPoint("TOPLEFT", 1, -1)
+	--button.time:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	--button.time:SetText("0")
 end
 
 --local auraColor  = {
@@ -157,7 +171,6 @@ do
 	}
 
 	PostUpdateAuraIcon = function(self, icons, unit, icon, index, offset, filter, isDebuff)
-		local _, _, _, _, _, duration = UnitAura(unit, index, filter)
 		--local auraType = select(5, UnitAura(unit, index, icon.filter))
 		--f (auraType) then -- Be absolutely sure.
 		--	print(auraType, auraColor[auraType].r, auraColor[auraType].g, auraColor[auraType].b)
@@ -167,12 +180,6 @@ do
 			icon.icon:SetDesaturated(true)
 		else
 			icon.icon:SetDesaturated(false)
-		end
-		
-		if duration > 0 then
-			icon.time:SetText(duration)
-		else
-			icon.time:SetText()
 		end
 	end
 end
