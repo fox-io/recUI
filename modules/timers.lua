@@ -37,7 +37,7 @@ if recUI.lib.playerClass == "HUNTER" then
 
 		startTime = GetTime()
 		endTime = startTime + UnitRangedDamage("player")
-		
+
 		self:SetMinMaxValues(startTime, endTime)
 		self.time:SetText(" ")
 		self:Show()
@@ -69,53 +69,35 @@ local texture      = recUI.media.statusBar
 local edge_file    = recUI.media.edgeFile
 local bg_file      = recUI.media.bgFile
 local aura_colors  = {
-	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45}, 
-	["Disease"] = {r = 0.40, g = 0.30, b = 0.10}, 
-	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10}, 
+	["Magic"]   = {r = 0.00, g = 0.25, b = 0.45},
+	["Disease"] = {r = 0.40, g = 0.30, b = 0.10},
+	["Poison"]  = {r = 0.00, g = 0.40, b = 0.10},
 	["Curse"]   = {r = 0.40, g = 0.00, b = 0.40},
 	["None"]    = {r = 0.40, g = 0.40, b = 0.40}
 }
 
 local bars = {}
 
-local function pretty_time(s)
-	-- Caellian's version
-	local day, hour, minute = 86400, 3600, 60
-	if s >= day then
-		return format("%dd", floor(s/day + 0.5)), s % day
-	elseif s >= hour then
-		return format("%dh", floor(s/hour + 0.5)), s % hour
-	elseif s >= minute then
-		if s <= minute * 5 then
-			return format("%d:%02d", floor(s/60), s % minute), s - floor(s)
-		end
-		return format("%dm", floor(s/minute + 0.5)), s % minute
-	elseif s >= minute / 12 then
-		return floor(s + 0.5), (s * 100 - floor(s * 100))/100
-	end
-	return format("%.1f", s), (s * 100 - floor(s * 100))/100
-end
-
 local function on_update(self, elapsed)
 	self.timer = self.timer - elapsed
-	
+
 	if self.timer > 0 then return end
 	self.timer = 0.1
-	
+
 	if self.active then
 		if self.expires >= GetTime() then
 			self:SetValue(self.expires - GetTime())
 			self:SetMinMaxValues(0, self.duration)
 			if not self.hide_name then
-				self.lbl:SetText(format("%s%s - %s", self.spell_name, self.count > 1 and format(" x%d", self.count) or "", pretty_time(self.expires - GetTime())))
+				self.lbl:SetText(format("%s%s - %s", self.spell_name, self.count > 1 and format(" x%d", self.count) or "", recUI.lib.prettyTime(self.expires - GetTime())))
 			else
-				self.lbl:SetText(format("%s", pretty_time(self.expires - GetTime())))
+				self.lbl:SetText(format("%s", recUI.lib.prettyTime(self.expires - GetTime())))
 			end
 		else
 			self.active = false
 		end
 	end
-	
+
 	if not self.active then
 		self:Hide()
 	end
@@ -143,7 +125,7 @@ recUI.timers.make_bar = function(self, spell_name, unit, buff_type, only_self, r
 	bars[new_id].expires   = 0
 	bars[new_id].duration  = 0
 	bars[new_id].timer     = 0
-	
+
 	-- Store values for each talent spec position.
 	bars[new_id].position = {
 		-- Talent spec 1 references
@@ -163,7 +145,7 @@ recUI.timers.make_bar = function(self, spell_name, unit, buff_type, only_self, r
 			y_offset       = y_offset2       or y_offset1
 		}
 	}
-	
+
 	bars[new_id].tx = bars[new_id]:CreateTexture(nil, "ARTWORK")
 	bars[new_id].tx:SetAllPoints()
 	bars[new_id].tx:SetTexture(texture)
@@ -198,45 +180,45 @@ recUI.timers.make_bar = function(self, spell_name, unit, buff_type, only_self, r
 	bars[new_id].icon:SetWidth(height)
 	bars[new_id].icon:SetPoint("TOPRIGHT", bars[new_id], "TOPLEFT", 0, 0)
 	bars[new_id].icon:SetTexture(nil)
-	
+
 	bars[new_id].lbl = bars[new_id]:CreateFontString(format("recTimers_BarLabel_%d", new_id), "OVERLAY")
 	bars[new_id].lbl:SetFont(recUI.media.font, 8, "THINOUTLINE")
 	bars[new_id].lbl:SetPoint("CENTER", bars[new_id], "CENTER", 0, 1)
-	
+
 	position_bar(bars[new_id])
-	
+
 	bars[new_id]:Hide()
 end
 
 local function check_buffs()
 	for _, bar in pairs(bars) do
 		local icon, count, duration, expiration, caster
-		
+
 		if bar.buff_type == "buff" then
 			_, _, icon, count, aura_type, duration, expiration, caster = UnitBuff(bar.unit, bar.spell_name)
 		else
 			_, _, icon, count, aura_type, duration, expiration, caster = UnitDebuff(bar.unit, bar.spell_name)
 		end
-		
+
 		if icon and (not(bar.only_self) or (bar.only_self and (caster == "player"))) then
 			--bar.icon:SetTexture(icon)
 			bar.count = count
 			bar.active = true
 			bar.expires = expiration
 			bar.duration = duration
-			
+
 			if duration and duration > 0 then
 				bar:SetScript("OnUpdate", on_update)
 			else
 				bar:SetScript("OnUpdate", nil)
 				bar.lbl:SetText(format("%s%s", bar.spell_name, bar.count > 1 and format("(%d)", bar.count) or ""))
 			end
-			
+
 			-- If we need to color the bar automatically, do so.
 			if bar.auto_color then
 				bar.tx:SetVertexColor(aura_colors[aura_type or "None"].r, aura_colors[aura_type or "None"].g, aura_colors[aura_type or "None"].b, 1)
 			end
-			
+
 			bar:Show()
 		end
 	end
@@ -245,7 +227,7 @@ end
 local function on_cleu(...)
 	local _, event, source_guid, _, _, dest_guid, _, _, spell_id, spell_name, _, _ = ...
 	if spell_name then
-	
+
 			if event == "SPELL_AURA_REMOVED" then
 				for _, bar in pairs(bars) do
 					if dest_guid == UnitGUID(bar.unit) and spell_name == bar.spell_name then
@@ -258,7 +240,7 @@ local function on_cleu(...)
 					end
 				end
 			end
-		
+
 		return check_buffs()
 	end
 end
@@ -306,13 +288,13 @@ local level = UnitLevel("player")
 -- relative_point1:      Which point of the parent_frame to use when positioning the bar.
 -- x_offset1, y_offset1: X/Y offset values from the attach point.
 -- attach_point2, parent_frame2, relative_point2, x_offset2, y_offset2: Secondary talent spec values.  You may enter 'nil' to use the same values as primary spec.
--- 
+--
 -- hide_name:   This will hide the name of the buff/debuff if set to true.  You may need to set this if your bar is too short to contain the name.
 
 -- EVERYONE
 	--t:make_bar("Well Fed",		"player", "buff",	false, .4, .4, .4,	200, 10, "CENTER", UIParent, "CENTER", 0, 0)
 	--t:make_bar("Toasty Fire",	"player", "buff",	false, .4, .4, .4,	200, 10, "CENTER", UIParent, "CENTER", 0, 0)
-	
+
 -- LEVELBASED
 if level == 80 then
 	--t:make_bar("Well Fed",		"player", "buff",	false, .4, .4, .4,	200, 10, "CENTER", UIParent, "CENTER", 0, 0)
