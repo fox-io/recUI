@@ -490,14 +490,14 @@ HideDefaultFrames()
     local action = self.action
     local name = self:GetName()
     local bu  = _G[name]
-    local ic  = _G[name.."Icon"]
-    local co  = _G[name.."Count"]
-    local bo  = _G[name.."Border"]
-    local ho  = _G[name.."HotKey"]
-    local cd  = _G[name.."Cooldown"]
-    local na  = _G[name.."Name"]
-    local fl  = _G[name.."Flash"]
-    local nt  = _G[name.."NormalTexture"]
+    local ic  = _G[format("%sIcon", name)]
+    local co  = _G[format("%sCount", name)]
+    local bo  = _G[format("%sBorder", name)]
+    local ho  = _G[format("%sHotKey", name)]
+    local cd  = _G[format("%sCooldown", name)]
+    local na  = _G[format("%sName", name)]
+    local fl  = _G[format("%sFlash", name)]
+    local nt  = _G[format("%sNormalTexture", name)]
 	
 	bu:SetBackdrop({
 		bgFile = recUI.media.buttonBackdrop,
