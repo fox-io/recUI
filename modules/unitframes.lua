@@ -109,7 +109,19 @@ local PostCreateAuraIcon = function(self, button)
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT")
 	
-	button.icon:SetTexCoord(.07, .93, .07, .93)
+	--button.icon:SetTexCoord(.07, .93, .07, .93)
+	
+	button.icon:ClearAllPoints()
+	button.icon:SetPoint("TOPLEFT", 1, -1)
+	button.icon:SetPoint("BOTTOMRIGHT", -1, 1)
+	
+	button.outline = button:CreateTexture(nil, "OVERLAY")
+	button.outline:SetTexture(recUI.media.buttonNormal)
+	button.outline:SetAllPoints()
+	
+	button.gloss = button:CreateTexture(nil, "OVERLAY")
+	button.gloss:SetTexture(recUI.media.buttonGloss)
+	button.gloss:SetAllPoints()
 end
 
 local PostUpdateAuraIcon
@@ -231,16 +243,14 @@ local function style(self, unit)
 		self.Buffs:SetWidth(8 * 22 + 8 * 2)
 		self.Buffs.num = 16
 		self.Buffs.size = 22
-		self.Buffs.spacing = 2
-		self.Buffs.showBuffType = true
+		self.Buffs.spacing = 1
 		
 		self.Debuffs = CreateFrame("Frame", nil, self)
 		self.Debuffs:SetHeight(2 * 22 + 2 * 2)
 		self.Debuffs:SetWidth(8 * 22 + 8 * 2)
 		self.Debuffs.num = 16
 		self.Debuffs.size = 22
-		self.Debuffs.spacing = 2
-		self.Debuffs.showDebuffType = true
+		self.Debuffs.spacing = 1
 		
 		if unit == "player" then
 			self.Buffs.initialAnchor = "TOPRIGHT"
