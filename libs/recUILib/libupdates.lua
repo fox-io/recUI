@@ -22,7 +22,7 @@ local onUpdate = function(self, elapsed)
 		end
 	end
 end
-lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, updateFrame)
+lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, selfFrame)
 	-- Inform on duplicate updater
 	if scheduledUpdates[updateName] then
 		print(format("recUI: Attempt to scheduled duplicate update - %s", updateName))
@@ -34,7 +34,7 @@ lib.scheduleUpdate = function(updateName, updateFrequency, updateHandler, update
 		scheduledUpdates[updateName].onUpdate = updateHandler
 		scheduledUpdates[updateName].elapsed = 0
 		scheduledUpdates[updateName].frequency = updateFrequency
-		scheduledUpdates[updateName].frame = updateFrame
+		scheduledUpdates[updateName].frame = selfFrame
 
 		-- Ensure updates are firing.
 		updateFrame:SetScript("OnUpdate", onUpdate)
