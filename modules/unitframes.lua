@@ -1,5 +1,7 @@
 local _, recUI = ...
-local oUF = recUI.oUF
+local oUF   = recUI.oUF
+local lib   = recUI.lib
+local media = recUI.media
 
 local menu = function(self)
 	local unit = self.unit:sub(1, -2)
@@ -52,12 +54,12 @@ local PostUpdateHealth = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if(min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", recUI.lib.prettyNumber(min), recUI.lib.prettyNumber(max))
+				bar.value:SetFormattedText("%s | %s", lib.prettyNumber(min), lib.prettyNumber(max))
 			else
 				bar.value:SetText(max)
 			end
 		else
-			bar.value:SetText(recUI.lib.prettyNumber(min))
+			bar.value:SetText(lib.prettyNumber(min))
 		end
 	end
 
@@ -75,7 +77,7 @@ local PostUpdatePower = function(self, event, unit, bar, min, max)
 	else
 		if unit == "player" or unit == "target" then
 			if (min ~= 0 and min ~= max) then
-				bar.value:SetFormattedText("%s | %s", recUI.lib.prettyNumber(min), recUI.lib.prettyNumber(max))
+				bar.value:SetFormattedText("%s | %s", lib.prettyNumber(min), lib.prettyNumber(max))
 			else
 				bar.value:SetText(max)
 			end
@@ -100,7 +102,7 @@ local function UpdateAura(self, elapsed)
 		self.elapsed = 0
 		local _, _, _, _, _, duration = UnitAura(self.unit, self.index, self.filter)
 		if duration and duration > 0 then
-			self.time:SetText(recUI.lib.prettyTime(duration))
+			self.time:SetText(lib.prettyTime(duration))
 		else
 			self.time:SetText()
 		end
@@ -108,7 +110,7 @@ local function UpdateAura(self, elapsed)
 end
 
 local PostCreateAuraIcon = function(self, button)
-	button.count:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	button.count:SetFont(media.font, 9, "THINOUTLINE")
 	button.count:ClearAllPoints()
 	button.count:SetPoint("BOTTOMRIGHT", -1, 3)
 
@@ -122,12 +124,12 @@ local PostCreateAuraIcon = function(self, button)
 
 	-- Thin 'outline' border texture.
 	button.outline = button:CreateTexture(nil, "OVERLAY")
-	button.outline:SetTexture(recUI.media.buttonNormal)
+	button.outline:SetTexture(media.buttonNormal)
 	button.outline:SetAllPoints()
 
 	-- Make icon look pretty with an overlay.
 	button.gloss = button:CreateTexture(nil, "OVERLAY")
-	button.gloss:SetTexture(recUI.media.buttonGloss)
+	button.gloss:SetTexture(media.buttonGloss)
 	button.gloss:SetAllPoints()
 
 	-- Put spiral inside outline frame.
@@ -140,7 +142,7 @@ local PostCreateAuraIcon = function(self, button)
 	-- Use time display rather than spiral.
 	--button.time = button:CreateFontString(nil, "OVERLAY")
 	--button.time:SetPoint("TOPLEFT", 1, -1)
-	--button.time:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	--button.time:SetFont(media.font, 9, "THINOUTLINE")
 	--button.time:SetText("0")
 end
 
@@ -194,8 +196,8 @@ local function style(self, unit)
 	self.background:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -4)
 	self.background:SetFrameStrata("BACKGROUND")
 	self.background:SetBackdrop {
-		bgFile = recUI.media.bgFile,
-		edgeFile = recUI.media.edgeFile, edgeSize = 3,
+		bgFile = media.bgFile,
+		edgeFile = media.edgeFile, edgeSize = 3,
 		insets = {left = 3, right = 3, top = 3, bottom = 3}
 	}
 	self.background:SetBackdropColor(0, 0, 0, 1)
@@ -203,7 +205,7 @@ local function style(self, unit)
 
 -- Health
 	self.Health = CreateFrame("StatusBar", nil, self)
-	self.Health:SetStatusBarTexture(recUI.media.statusBar)
+	self.Health:SetStatusBarTexture(media.statusBar)
 	self.Health:SetPoint("TOPLEFT", 0,0)
 	self.Health:SetPoint("TOPRIGHT", 0,0)
 	self.Health.frequentUpdates = true
@@ -213,13 +215,13 @@ local function style(self, unit)
 	self.Health.background:SetAllPoints()
 
 	self.Health.value = self.Health:CreateFontString(nil, "OVERLAY")
-	self.Health.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	self.Health.value:SetFont(media.font, 9, "THINOUTLINE")
 	self.Health.value:SetPoint("RIGHT", -5, 2)
 	self.Health.value:SetTextColor(1, 1, 1)
 
 -- Power
 	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetStatusBarTexture(recUI.media.statusBar)
+	self.Power:SetStatusBarTexture(media.statusBar)
 	self.Power:SetPoint("BOTTOMLEFT", 0,0)
 	self.Power:SetPoint("BOTTOMRIGHT", 0,0)
 	self.Power.frequentUpdates = true
@@ -233,7 +235,7 @@ local function style(self, unit)
 	self.Power.background:SetAllPoints()
 
 	self.Power.value = self.Power:CreateFontString(nil, "OVERLAY")
-	self.Power.value:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	self.Power.value:SetFont(media.font, 9, "THINOUTLINE")
 	self.Power.value:SetPoint("RIGHT", -5, 2)
 	self.Power.value:SetTextColor(1, 1, 1)
 
@@ -241,20 +243,20 @@ local function style(self, unit)
 	self.Name = self.Health:CreateFontString(nil, "OVERLAY")
 	self.Name:SetPoint("LEFT", 5, 2)
 	self.Name:SetJustifyH("LEFT")
-	self.Name:SetFont(recUI.media.font, 9, "THINOUTLINE")
+	self.Name:SetFont(media.font, 9, "THINOUTLINE")
 	self.Name:SetTextColor(1, 1, 1)
 
 -- Castbar
 	if unit == "player" or unit == "target" then
 		self.Castbar = CreateFrame("StatusBar", nil, self)
-		self.Castbar:SetStatusBarTexture(recUI.media.statusBar)
+		self.Castbar:SetStatusBarTexture(media.statusBar)
 		self.Castbar:SetStatusBarColor(.3, .3, .6, 1)
 		self.Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -2)
 		self.Castbar:SetPoint("BOTTOMRIGHT", self.Power, "TOPRIGHT", 0, 2)
 		self.Castbar:SetToplevel(true)
 
 		self.Castbar.spellName = self.Castbar:CreateFontString(nil, "OVERLAY")
-		self.Castbar.spellName:SetFont(recUI.media.font, 9, "THINOUTLINE")
+		self.Castbar.spellName:SetFont(media.font, 9, "THINOUTLINE")
 		self.Castbar.spellName:SetPoint("LEFT", 5, 2)
 		self.Castbar.spellName:SetTextColor(1, 1, 1)
 
