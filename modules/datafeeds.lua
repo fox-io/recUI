@@ -2,23 +2,25 @@ local _, recUI = ...
 local lib = recUI.lib
 local media = recUI.media
 
-local _G = _G
 local format = string.format
-_G.Feeds = {}
+local strfind = string.find
+local strupper = string.upper
+local tonumber = tonumber
+
+recUI.feeds = {}
+local feeds = recUI.feeds
 
 -- Feed creation functions
-local function CreateFeedFrame(name, from, to, x, y, w, h)
+local function createFeedFrame(name, from, to, x, y, w, h)
 	local f = CreateFrame("Frame", name, UIParent)
 	f:SetHeight(h)
 	f:SetWidth(w)
 	f:SetPoint(from, UIParent, to, x, y)
-	--f:SetBackdrop({ bgFile = media.bgFile })
-	--f:SetBackdropColor(0, 0, 0, 1)
 	f.Feeds = {}
 	return f
 end
 
-function Feeds:CreateFeed(name, p, from, to, x, y)
+local function createFeed(name, p, from, to, x, y)
 	local feed = p:CreateFontString(name, "BORDER")
 	feed:SetFont(media.font, 9, nil)
 	feed:SetJustifyH("CENTER")
@@ -29,32 +31,32 @@ function Feeds:CreateFeed(name, p, from, to, x, y)
 end
 
 -- Create feed frames
-local frames = {
-	["Feeds_1"] = CreateFeedFrame("Feeds_1", "BOTTOM", "BOTTOM", 0, 15, 1312, 11),
+local feedFrames = {
+	one = createFeedFrame("Feeds_1", "BOTTOM", "BOTTOM", 0, 15, 1312, 11),
 }
 
-function Feeds:Update()
-	for frame, _ in pairs(frames) do
-		local frame_width = frames[frame]:GetWidth()
+local function update()
+	for frame, _ in pairs(feedFrames) do
+		local frame_width = feedFrames[frame]:GetWidth()
 		local num_feeds = 0
 		local feed_width = 0
-		for feed, _ in pairs(frames[frame].Feeds) do
+		for feed, _ in pairs(feedFrames[frame].Feeds) do
 			num_feeds = num_feeds + 1
-			feed_width = feed_width + frames[frame].Feeds[feed]:GetWidth()
+			feed_width = feed_width + feedFrames[frame].Feeds[feed]:GetWidth()
 		end
 		local free_width = frame_width - feed_width
 		local width_between = free_width/(num_feeds + 1)
 		local width_position = width_between
-		for feed, _ in pairs(frames[frame].Feeds) do
-			frames[frame].Feeds[feed]:ClearAllPoints()
-			frames[frame].Feeds[feed]:SetPoint("LEFT", frames[frame], "LEFT", width_position, 0)
-			width_position = width_position + width_between + frames[frame].Feeds[feed]:GetWidth()
+		for feed, _ in pairs(feedFrames[frame].Feeds) do
+			feedFrames[frame].Feeds[feed]:ClearAllPoints()
+			feedFrames[frame].Feeds[feed]:SetPoint("LEFT", feedFrames[frame], "LEFT", width_position, 0)
+			width_position = width_position + width_between + feedFrames[frame].Feeds[feed]:GetWidth()
 		end
 	end
 end
 
-_G["Feeds_1"].Feeds.Bagspace = Feeds:CreateFeed("Feeds_Bagspace", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Bagspace
+feedFrames.one.Feeds.Bagspace = createFeed("Feeds_Bagspace", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Bagspace
 
 local function GetBagSlots(index)
 	local j, link
@@ -123,14 +125,14 @@ local function DataFeedBagUpdate()
 		displayString = format("%s%s", displayString, MakeDisplay(fullSlots, totalSlots, false))
 	end
 	out:SetText(displayString)
-	Feeds:Update()
+	update()
 end
 
 lib.registerEvent("BAG_UPDATE", "recUIModuleDataFeedBag", DataFeedBagUpdate)
 DataFeedBagUpdate()
 
-_G["Feeds_1"].Feeds.Clock = Feeds:CreateFeed("Feeds_Clock", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Clock
+feedFrames.one.Feeds.Clock = createFeed("Feeds_Clock", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Clock
 
 local h, ap
 local t = 1
@@ -141,7 +143,7 @@ local function DataFeedClockUpdate()
 	h = mod(h, 12)
 	if h == 0 then h = 12 end
 	out:SetText(format("%d:%02d%s", h, tonumber(date("%M")), ap))
-	Feeds:Update()
+	update()
 end
 
 local function GetInvites()
@@ -168,8 +170,8 @@ out.b:SetScript("OnClick", function()
 	end
 end)
 
-_G["Feeds_1"].Feeds.Durability = Feeds:CreateFeed("Feeds_Durability", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Durability
+feedFrames.one.Feeds.Durability = createFeed("Feeds_Durability", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Durability
 
 local slots = { "Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "Hands", "MainHand", "SecondaryHand", "Ranged" }
 
@@ -201,7 +203,7 @@ local function DurabilityUpdate()
 
 	out:SetText(format("%0.0f%%", perc))
 	-- out:SetTextColor(lib.gradient(perc, 0, 100))
-	Feeds:Update()
+	update()
 end
 
 lib.registerEvent("MERCHANT_CLOSED", "recUIModuleDataFeedsDurability", DurabilityUpdate)
@@ -213,12 +215,10 @@ DurabilityUpdate()
 -- Cancel loading this feed if player is level 80.
 local player_level = UnitLevel("player")
 if player_level ~= 80 then
-	local strfind = strfind
-	local tonumber = tonumber
 	local UnitXP = UnitXP
 	local UnitXPMax = UnitXPMax
-	_G["Feeds_1"].Feeds.Experience = Feeds:CreateFeed("Feeds_Experience", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-	local out = _G["Feeds_1"].Feeds.Experience
+	feedFrames.one.Feeds.Experience = createFeed("Feeds_Experience", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+	local out = feedFrames.one.Feeds.Experience
 	out:SetText("---")
 
 	local lastxp, a, b = 0
@@ -259,7 +259,7 @@ if player_level ~= 80 then
 			if not lastxp or lastxp < 1 then ktg = "Unknown" else ktg = format("%.1f", ktg) end
 			return format("Player: %s/%s (%.1f%%)", xp, maxxp, ((xp/maxxp)*100)), (petmaxxp and petmaxxp > 0) and format("Pet: %s/%s (%.0f%%)", petxp, petmaxxp, ((petxp/petmaxxp)*100)) or nil, format("Kills to go: %s", ktg)
 		end
-		Feeds:Update()
+		update()
 	end
 
 	local function ShowTooltip(self, ...)
@@ -286,22 +286,22 @@ if player_level ~= 80 then
 	ExperienceUpdate()
 end
 
-_G["Feeds_1"].Feeds.Framerate = Feeds:CreateFeed("Feeds_Framerate", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Framerate
+feedFrames.one.Feeds.Framerate = createFeed("Feeds_Framerate", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Framerate
 
 local framerate
 local function FramerateUpdate()
-	framerate = floor((tonumber(_G.GetFramerate()) or 0))
+	framerate = floor((tonumber(GetFramerate()) or 0))
 	out:SetText(format("%sfps", framerate))
 	-- out:SetTextColor(lib.gradient(framerate, 0, 60))
-	Feeds:Update()
+	update()
 end
 
 lib.scheduleUpdate("recUIDataFeedsFramerate", 2, FramerateUpdate)
 FramerateUpdate()
 
-_G["Feeds_1"].Feeds.Latency = Feeds:CreateFeed("Feeds_Latency", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Latency
+feedFrames.one.Feeds.Latency = createFeed("Feeds_Latency", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Latency
 
 local lat, clat = 0, 0
 local function LatencyUpdate()
@@ -309,13 +309,12 @@ local function LatencyUpdate()
 	if type(clat) == "number" then lat = clat end
 	out:SetText(format("%sms", lat))
 	--out:SetTextColor(lib.gradient(lat, 0, 500, true))
-	Feeds:Update()
+	update()
 end
 
 lib.scheduleUpdate("recUIDataFeedsLatency", 60, LatencyUpdate)
 LatencyUpdate()
 
-local _G						= _G
 local s_lfg						= "LFG"
 local m_queued					= "queued"
 local m_listed					= "listed"
@@ -324,25 +323,25 @@ local unknown_time				= "Unknown"
 local m_rolecheck				= "rolecheck"
 local s_lfgraid					= "LFR (%s)"
 local role_format				= "|cFF%s%s|r"
-local GetLFGMode				= _G.GetLFGMode
+local GetLFGMode				= GetLFGMode
 local tank, heal, dps			= "T", "H", "D"
-local CreateFrame				= _G.CreateFrame
+local CreateFrame				= CreateFrame
 local s_lfgsearch				= "LFG (%s)"
-local SecondsToTime				= _G.SecondsToTime
-local MiniMapLFGFrame			= _G.MiniMapLFGFrame
+local SecondsToTime				= SecondsToTime
+local MiniMapLFGFrame			= MiniMapLFGFrame
 local red, green				= "FF0000", "00FF00"
-local GetLFGQueueStats			= _G.GetLFGQueueStats
-local ToggleDropDownMenu		= _G.ToggleDropDownMenu
-local ToggleLFRParentFrame		= _G.ToggleLFRParentFrame
-local ToggleLFDParentFrame		= _G.ToggleLFDParentFrame
-local LFDDungeonReadyPopup		= _G.LFDDungeonReadyPopup
-local MiniMapLFGFrameDropDown	= _G.MiniMapLFGFrameDropDown
-local StaticPopupSpecial_Show	= _G.StaticPopupSpecial_Show
+local GetLFGQueueStats			= GetLFGQueueStats
+local ToggleDropDownMenu		= ToggleDropDownMenu
+local ToggleLFRParentFrame		= ToggleLFRParentFrame
+local ToggleLFDParentFrame		= ToggleLFDParentFrame
+local LFDDungeonReadyPopup		= LFDDungeonReadyPopup
+local MiniMapLFGFrameDropDown	= MiniMapLFGFrameDropDown
+local StaticPopupSpecial_Show	= StaticPopupSpecial_Show
 local lfg_roles_format			= "|cFF00FF00LFG:|r %s%s%s%s%s %s"
---local ID						= _G.Lib_DungeonID
+--local ID						= Lib_DungeonID
 
-_G["Feeds_1"].Feeds.LFG = Feeds:CreateFeed("Feeds_LFG", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.LFG
+feedFrames.one.Feeds.LFG = createFeed("Feeds_LFG", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.LFG
 
 local function LFGUpdate()
 	MiniMapLFGFrame:UnregisterAllEvents()
@@ -397,7 +396,7 @@ local function LFGUpdate()
 		)
 	)
 
-	Feeds:Update()
+	update()
 end
 
 out.b = CreateFrame("Button", out)
@@ -440,8 +439,8 @@ end)
 
 LFGUpdate()
 
---_G["Feeds_1"].Feeds.Mail = Feeds:CreateFeed("Feeds_Mail", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
---local out = _G["Feeds_1"].Feeds.Mail
+--feedFrames.one.Feeds.Mail = createFeed("Feeds_Mail", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+--local out = feedFrames.one.Feeds.Mail
 --out:SetText("Mail")
 
 local mailFeed = CreateFrame("Frame", "MailFeedFrame", Minimap)
@@ -481,8 +480,8 @@ end)
 mailFeed:SetScript("OnLeave", function() GameTooltip:Hide() end)
 MailUpdate()
 
-_G["Feeds_1"].Feeds.Memory = Feeds:CreateFeed("Feeds_Memory", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Memory
+feedFrames.one.Feeds.Memory = createFeed("Feeds_Memory", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Memory
 
 local function PrettyMemory(n)
 	if n > 1024 then
@@ -502,7 +501,7 @@ local function MemoryUpdate()
 	end
 	out:SetText(PrettyMemory(usage))
 	-- out:SetTextColor(lib.gradient(usage, 0, 15360, true))
-	Feeds:Update()
+	update()
 end
 
 local function OnClick()
@@ -555,8 +554,8 @@ out.b:SetScript("OnLeave", function() GameTooltip:Hide() end)
 lib.scheduleUpdate("recUIDataFeedsMemory", 10, MemoryUpdate)
 MemoryUpdate()
 
-_G["Feeds_1"].Feeds.Money = Feeds:CreateFeed("Feeds_Money", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Money
+feedFrames.one.Feeds.Money = createFeed("Feeds_Money", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Money
 out:SetText("---")
 
 local function MoneyUpdate()
@@ -568,24 +567,24 @@ local function MoneyUpdate()
 	copper = mod(copper, 100)
 
 	out:SetText(format("|cFFFFD700%dg|r |cFFC7C7CF%ds|r |cFFEDA55F%dc|r", gold or 0, silver or 0, copper or 0))
-	Feeds:Update()
+	update()
 end
 lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedMoney", MoneyUpdate)
 lib.registerEvent("PLAYER_MONEY", "recUIDataFeedMoney", MoneyUpdate)
 MoneyUpdate()
 
 
-_G["Feeds_1"].Feeds.PvP = Feeds:CreateFeed("Feeds_PvP", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.PvP
+feedFrames.one.Feeds.PvP = createFeed("Feeds_PvP", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.PvP
 
 local function PvPUpdate()
 	out:SetText("PvP")
-	if MiniMapBattlefieldFrame.tooltip and string.find(MiniMapBattlefieldFrame.tooltip, "You are in the queue") then
+	if MiniMapBattlefieldFrame.tooltip and strfind(MiniMapBattlefieldFrame.tooltip, "You are in the queue") then
 		out:SetTextColor(0, 1, 0)
 	else
 		out:SetTextColor(1, 0, 0)
 	end
-	Feeds:Update()
+	update()
 end
 
 --"You are in the queue for Battleground Name\nAverage wait time: < 1 minute (Last 10 players)\nTime in queue: |4Sec:Sec\nYou are in the queue........\n|cffffffff<Right Click> for PvP Options|r"
@@ -626,8 +625,8 @@ end)
 
 PvPUpdate()
 
-_G["Feeds_1"].Feeds.Reputation = Feeds:CreateFeed("Feeds_Reputation", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Reputation
+feedFrames.one.Feeds.Reputation = createFeed("Feeds_Reputation", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Reputation
 
 local function ReputationUpdate(retval)
 	if(not GetWatchedFactionInfo()) then
@@ -643,7 +642,7 @@ local function ReputationUpdate(retval)
 	--[[if retval then
 		return format("%s: %d / %d (%s)", name, (value - min), (max - min), standing)
 	end--]]
-	Feeds:Update()
+	update()
 end
 
 --[[local function ShowTooltip(self)
@@ -667,8 +666,8 @@ lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedReputation", Reputation
 ReputationUpdate()
 
 
-_G["Feeds_1"].Feeds.Guild = Feeds:CreateFeed("Feeds_Guild", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Guild
+feedFrames.one.Feeds.Guild = createFeed("Feeds_Guild", feedFrames.one, "LEFT",	"LEFT", 0, 0)
+local out = feedFrames.one.Feeds.Guild
 	out.b = CreateFrame("Button", out)
 	out.b:SetAllPoints(out)
 local num_friends = 0
@@ -706,15 +705,15 @@ local function on_enter()
 	for i = 1, num_friends do
 		local friend_name, friend_level, friend_class, friend_area, friend_is_online, friend_status, friend_note = GetFriendInfo(i)
 		if friend_is_online then
-			friend_class = string.upper(friend_class)
+			friend_class = strupper(friend_class)
 			if friend_class:find(" ") then
 				friend_class = "DEATHKNIGHT"
 			end
 			GameTooltip:AddDoubleLine(
 				format("|cFF%02x%02x%02x%s %s %s|r",
-					RAID_CLASS_COLORS[string.upper(friend_class)].r*255,
-					RAID_CLASS_COLORS[string.upper(friend_class)].g*255,
-					RAID_CLASS_COLORS[string.upper(friend_class)].b*255, friend_level, friend_status, friend_name),
+					RAID_CLASS_COLORS[strupper(friend_class)].r*255,
+					RAID_CLASS_COLORS[strupper(friend_class)].g*255,
+					RAID_CLASS_COLORS[strupper(friend_class)].b*255, friend_level, friend_status, friend_name),
 				format("|cFFFFFFFF%s|r", friend_area)
 			)
 		end
@@ -775,7 +774,7 @@ local function DFGEvent(self, event)
 	else
 		out:SetTextColor(1, 0, 0)
 	end
-	Feeds:Update()
+	update()
 end
 
 lib.registerEvent("GUILD_ROSTER_UPDATE", "recUIDataFeedGuild", DFGEvent)
