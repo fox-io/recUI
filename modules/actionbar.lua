@@ -1,7 +1,7 @@
 local _, recUI = ...
 
--- Make textures for action bar 1 show all the time.
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", function()
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShowAndGrid", function()
+	-- Make textures for action bar 1 show all the time.
 	ActionButton_HideGrid = function() end
 	for i = 1,12 do
 		local button = _G[format("ActionButton%d", i)]
@@ -11,17 +11,15 @@ recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", function(
 		button:SetAttribute("showgrid", 1)
 		ActionButton_ShowGrid(button)
 	end
-	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid")
-end)
 
--- Show all bars but the last one on login.
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow", function()
+	-- Show all bars but the last one on login.	
 	SHOW_MULTI_ACTIONBAR_1 = true
 	SHOW_MULTI_ACTIONBAR_2 = true
 	SHOW_MULTI_ACTIONBAR_3 = true
 	SHOW_MULTI_ACTIONBAR_4 = false
 	InterfaceOptions_UpdateMultiActionBars()
-	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow")
+	
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShowAndGrid")
 end)
 
 local mouseOverBar1 = 0
