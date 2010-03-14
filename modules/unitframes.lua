@@ -177,9 +177,31 @@ do
 end
 
 local function style(self, unit)
+
+	local is_party = not unit and self:GetParent():GetName():match("oUF_Party")
+	local is_raid = not unit and self:GetParent():GetName():match("oUF_Raid")
+	
 	self.menu = menu
 	self:RegisterForClicks("AnyUp")
 	self:SetAttribute("type2", "menu")
+	
+	-- Friendly click casting
+	if unit == "player" or unit == "pet" or is_raid or is_party then
+		if lib.playerClass == "SHAMAN" then
+			self:SetAttribute("type1", "spell")
+			self:SetAttribute("spell1", (UnitLevel("player") > 1) and "Healing Wave" or "Lesser Healing Wave")
+			--[[self:SetAttribute("type2", "spell")
+			self:SetAttribute("spell2", "Chain Heal")
+			self:SetAttribute("type3", "spell")
+			self:SetAttribute("spell3", "Riptide")
+			self:SetAttribute("shift-type1", "spell")
+			self:SetAttribute("shift-spell1", "Healing Wave")
+			self:SetAttribute("shift-type2", "spell")
+			self:SetAttribute("shift-spell2", "Cleanse Spirit")--]]
+			self:SetAttribute("alt-type1", "target")
+			self:SetAttribute("alt-type2", "menu")
+		end
+	end
 
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
