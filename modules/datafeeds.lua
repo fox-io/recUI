@@ -262,7 +262,7 @@ if player_level ~= 80 then
 	local function ShowTooltip(self, ...)
 		if not IsShiftKeyDown() then return end
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-		local playerxp, petxp, ktg = Update(true)
+		local playerxp, petxp, ktg = ExperienceUpdate(true)
 		GameTooltip:AddLine(playerxp)
 		if petxp then GameTooltip:AddLine(petxp) end
 		if ktg then GameTooltip:AddLine(ktg) end
