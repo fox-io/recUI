@@ -28,6 +28,16 @@ lib.Kill = function(object)
 	object_reference:Hide()
 end
 
+--[[lib.decToHex = function(value)
+    local B, K, OUT, I, D = 16, "0123456789ABCDEF", "", 0
+    while value > 0 do
+        I = I + 1
+        value, D = math.floor(value/B), math.floor(value%B) + 1
+        OUT = string.sub(K, D, D)..OUT
+    end
+    return OUT
+end--]]
+
 lib.playerClass = select(2, UnitClass("player"))
 
 SLASH_RECUILIB1 = "/recuilib"
