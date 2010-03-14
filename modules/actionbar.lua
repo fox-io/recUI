@@ -89,8 +89,10 @@ local scale = .6824
 ActionButton1:ClearAllPoints()
 ActionButton1:SetPoint('TOPLEFT', bar1Holder, 'TOPLEFT', 4.5, -4.5)
 
+
+
 -- Make textures for action bar 1 show all the time.
-local function PermaGrid()
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", function()
 	ActionButton_HideGrid = function() end
 	for i = 1,12 do
 		local button = _G[format("ActionButton%d", i)]
@@ -100,8 +102,18 @@ local function PermaGrid()
 		button:SetAttribute("showgrid", 1)
 		ActionButton_ShowGrid(button)
 	end
-end
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", PermaGrid)
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid")
+end)
+
+-- Show all bars but the last one on login.
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow", function()
+	SHOW_MULTI_ACTIONBAR_1 = true
+	SHOW_MULTI_ACTIONBAR_2 = true
+	SHOW_MULTI_ACTIONBAR_3 = true
+	SHOW_MULTI_ACTIONBAR_4 = false
+	InterfaceOptions_UpdateMultiActionBars()
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow")
+end)
 
 for i = 1, 12 do
 	b1 = _G[format("ActionButton%d", i)]
