@@ -111,7 +111,7 @@ local function DataFeedBagUpdate()
 	local displayString = ""
 	for k,v in pairs(bagData) do
 		if v.type then
-			displayString = MakeDisplay(v.full, v.total, true)..displayString.." "
+			displayString = format("%s%s ", MakeDisplay(v.full, v.total, true), displayString)
 		else
 			totalSlots = totalSlots + v.total
 			fullSlots = fullSlots + v.full
