@@ -435,7 +435,7 @@ HideDefaultFrames()
   --COLORS
   --color you want to appy to the standard texture (red, green, blue in RGB)
   --local color = { r = 0.25, g = 0.25, b = 0.25, }
-  local color = { r = 0, g = 0, b = 0, }
+  local color = { r = 1, g = 1, b = 1, }
   --want class color? just comment in this:
   --local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
@@ -446,7 +446,7 @@ HideDefaultFrames()
   local range_color = { r = 0.69, g = 0.31, b = 0.31, }
 
 --color when out of power (mana)
-  local mana_color = { r = 0.31, g = 0.45, b = 63, }
+  local mana_color = { r = 0.31, g = 0.45, b = 0.63, }
 
   --color when button is usable
   --local usable_color = { r = 0.84, g = 0.75, b = 0.65, }
@@ -503,8 +503,11 @@ HideDefaultFrames()
     nt:SetPoint("CENTER")
 	nt:SetDrawLayer("OVERLAY")
 
-	bo:SetTexture(recUI.media.buttonBorder)
-	bo:SetDrawLayer("OVERLAY")
+	bo:ClearAllPoints()
+	bo:SetTexture(recUI.media.buttonNormal)
+	bo:SetVertexColor(1, 1, 1, 1)
+	bo:SetPoint("TOPLEFT", bu, -2, 2)
+	bo:SetPoint("BOTTOMRIGHT", bu, 2, -2)
 
     ho:SetFont(recUI.media.font, 14, "OUTLINE")
     co:SetFont(recUI.media.font, 14, "OUTLINE")
@@ -531,7 +534,7 @@ HideDefaultFrames()
       nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
     else
       bu:SetNormalTexture(recUI.media.buttonNormal)
-      nt:SetVertexColor(color.r,color.g,color.b,.6)
+      nt:SetVertexColor(1,1,1,1)
     end
 
   end

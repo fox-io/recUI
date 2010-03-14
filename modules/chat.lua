@@ -406,7 +406,7 @@ recUI.lib.scheduleUpdate("recUIModuleChatColors", 10, function()
 	ChangeChatColor("CHANNEL3", 1, .75, .75)	-- LocalDefense
 	ChangeChatColor("CHANNEL4", 1, .75, .75)	-- GuildRecruitment
 	ChangeChatColor("CHANNEL5", 1, .75, .75)	-- LookingForGroup
-	ChangeChatColor("WHISPER", 1, .7, 1)		-- Incoming Whispers
+	ChangeChatColor("WHISPER",  1,  .7,   1)	-- Incoming Whispers
 	ChangeChatColor("WHISPER_INFORM", 1, .7, 1)	-- Outgoing Whispers
 	recUI.lib.unscheduleUpdate("recUIModuleChatColors")
 end)
