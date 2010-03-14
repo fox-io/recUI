@@ -405,11 +405,11 @@ end
 
 -- SHAMAN
 if class == "SHAMAN" then
-	make_bar("Tidal Waves",	"player",	"buff",		true, 0.0, 0.0, 1.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 277)
-	make_bar("Water Shield",	"player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
-	make_bar("Lightning Shield",	"player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
-	make_bar("Earth Shield",	"focus",	"buff",		true, 0.6, 0.6, 0.3, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 305)
-	make_bar("Flame Shock",	"target",	"debuff",	true, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 261)
+	make_bar("Tidal Waves",	     "player",	"buff",		true, 0.0, 0.0, 1.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 277)
+	make_bar("Water Shield",	 "player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
+	make_bar("Lightning Shield", "player",	"buff",		true, 0.3, 0.3, 0.6, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 293)
+	make_bar("Earth Shield",	 "focus",	"buff",		true, 0.6, 0.6, 0.3, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 305)
+	make_bar("Flame Shock",	     "target",	"debuff",	true, 1.0, 0.0, 0.0, 200, 10, "BOTTOM", UIParent, "BOTTOM", 0, 261)
 end
 
 -- WARLOCK
