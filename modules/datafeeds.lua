@@ -1,7 +1,9 @@
 local _, recUI = ...
 local lib = recUI.lib
 local media = recUI.media
+
 local _G = _G
+local format = string.format
 _G.Feeds = {}
 
 -- Feed creation functions
@@ -74,14 +76,14 @@ local function MakeDisplay(full, total, special)
 
 	leftText = total - full
 
-	rightText = "/"..total
+	rightText = format("/%s", total)
 
-	local output = leftText..rightText
+	local output = format("%s%s", leftText, rightText)
 
 	if special then
-		output = string.format("A: %s", output) --"|cFFFF00FF"..output.."|r"
+		output = format("A: %s", output) --"|cFFFF00FF"..output.."|r"
 	else
-		output = string.format("B: %s", output)
+		output = format("B: %s", output)
 	end
 	return output
 end
@@ -138,7 +140,7 @@ local function DataFeedClockUpdate()
 	if floor(h/12) == 1 then ap = "p" else ap = "a" end
 	h = mod(h, 12)
 	if h == 0 then h = 12 end
-	out:SetText(string.format("%d:%02d%s", h, tonumber(date("%M")), ap))
+	out:SetText(format("%d:%02d%s", h, tonumber(date("%M")), ap))
 	Feeds:Update()
 end
 
@@ -174,7 +176,7 @@ local slots = { "Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wrist", "
 local function DurabilityUpdate()
 	local num_items, perc = 0, 100
 	for _,v in pairs(slots) do
-		local current_durability, max_durability = GetInventoryItemDurability(GetInventorySlotInfo(v.."Slot"))
+		local current_durability, max_durability = GetInventoryItemDurability(GetInventorySlotInfo(format("%sSlot", v)))
 		if current_durability and max_durability then
 
 			local dmg = floor((current_durability / max_durability) * 100)
@@ -197,7 +199,7 @@ local function DurabilityUpdate()
 	--Lowest
 	if perc == 0 and num_items < 1 then perc = 100 end
 
-	out:SetText(string.format("%0.0f%%", perc))
+	out:SetText(format("%0.0f%%", perc))
 	-- out:SetTextColor(lib.gradient(perc, 0, 100))
 	Feeds:Update()
 end
@@ -238,24 +240,24 @@ if player_level ~= 80 then
 		local xpstring
 		if not petmaxxp or petmaxxp == 0 then
 			-- Cur/Max
-			--xpstring = string.format("P:%s/%s", xp, maxxp)
+			--xpstring = format("P:%s/%s", xp, maxxp)
 
 			-- Perc
-			xpstring = string.format("P:%.1f%%", ((xp/maxxp)*100))
+			xpstring = format("P:%.1f%%", ((xp/maxxp)*100))
 		else
 			-- Cur/Max - pet/pet
-			--xpstring = string.format("P:%s/%s p:%s/%s", xp, maxxp, petxp, petmaxxp)
+			--xpstring = format("P:%s/%s p:%s/%s", xp, maxxp, petxp, petmaxxp)
 
 			-- Perc
-			xpstring = string.format("P:%.1f%% p:%.0f%%", ((xp/maxxp)*100), ((petxp/petmaxxp)*100))
+			xpstring = format("P:%.1f%% p:%.0f%%", ((xp/maxxp)*100), ((petxp/petmaxxp)*100))
 		end
 
 		out:SetText(xpstring)
 
 		if retval then
 			local ktg = (maxxp - xp)/(lastxp or 0)
-			if not lastxp or lastxp < 1 then ktg = "Unknown" else ktg = string.format("%.1f", ktg) end
-			return string.format("Player: %s/%s (%.1f%%)", xp, maxxp, ((xp/maxxp)*100)), (petmaxxp and petmaxxp > 0) and string.format("Pet: %s/%s (%.0f%%)", petxp, petmaxxp, ((petxp/petmaxxp)*100)) or nil, string.format("Kills to go: %s", ktg)
+			if not lastxp or lastxp < 1 then ktg = "Unknown" else ktg = format("%.1f", ktg) end
+			return format("Player: %s/%s (%.1f%%)", xp, maxxp, ((xp/maxxp)*100)), (petmaxxp and petmaxxp > 0) and format("Pet: %s/%s (%.0f%%)", petxp, petmaxxp, ((petxp/petmaxxp)*100)) or nil, format("Kills to go: %s", ktg)
 		end
 		Feeds:Update()
 	end
@@ -290,7 +292,7 @@ local out = _G["Feeds_1"].Feeds.Framerate
 local framerate
 local function FramerateUpdate()
 	framerate = floor((tonumber(_G.GetFramerate()) or 0))
-	out:SetText(framerate.."fps")
+	out:SetText(format("%sfps", framerate))
 	-- out:SetTextColor(lib.gradient(framerate, 0, 60))
 	Feeds:Update()
 end
@@ -305,7 +307,7 @@ local lat, clat = 0, 0
 local function LatencyUpdate()
 	clat = select(3, GetNetStats())
 	if type(clat) == "number" then lat = clat end
-	out:SetText(lat.."ms")
+	out:SetText(format("%sms", lat))
 	--out:SetTextColor(lib.gradient(lat, 0, 500, true))
 	Feeds:Update()
 end
@@ -360,15 +362,15 @@ local function LFGUpdate()
 		if k > 0 and ID:GetDungeonNameByID(k) then
 			-- This uses Lib_DungeonID, because sometimes LFGGetDungeonInfoByID() returns nil
 			-- when it should contain a table of data about the dungeon instead.
-			dungeon_names = string.format("%s%s", ID:GetDungeonAbbreviationByID(k), (dungeon_names ~= "" and string.format(", %s", dungeon_names) or ""))
+			dungeon_names = format("%s%s", ID:GetDungeonAbbreviationByID(k), (dungeon_names ~= "" and format(", %s", dungeon_names) or ""))
 		end
 	end	--]]
 
 	if mode == m_listed then
-		out:SetText(string.format(s_lfgraid, dungeon_names ~= "" and dungeon_names or "Raid"))
+		out:SetText(format(s_lfgraid, dungeon_names ~= "" and dungeon_names or "Raid"))
 		return
 	elseif mode == m_queued and not data_present then
-		out:SetText(string.format(s_lfgsearch, dungeon_names ~= "" and dungeon_names or "Searching"))
+		out:SetText(format(s_lfgsearch, dungeon_names ~= "" and dungeon_names or "Searching"))
 		return
 	elseif not data_present then
 		out:SetText(s_lfg)
@@ -385,12 +387,12 @@ local function LFGUpdate()
 	--end
 
 	out:SetText(
-		string.format(lfg_roles_format,
-			string.format(role_format, tanks_needed == 0 and green or red, tank),
-			string.format(role_format, healers_needed == 0 and green or red, heal),
-			string.format(role_format, dps_needed == 3 and red or green, dps),
-			string.format(role_format, dps_needed >= 2 and red or green, dps),
-			string.format(role_format, dps_needed >= 1 and red or green, dps),
+		format(lfg_roles_format,
+			format(role_format, tanks_needed == 0 and green or red, tank),
+			format(role_format, healers_needed == 0 and green or red, heal),
+			format(role_format, dps_needed == 3 and red or green, dps),
+			format(role_format, dps_needed >= 2 and red or green, dps),
+			format(role_format, dps_needed >= 1 and red or green, dps),
 			(wait_time ~= -1 and SecondsToTime(wait_time, false, false, 1) or unknown_time)
 		)
 	)
@@ -484,9 +486,9 @@ local out = _G["Feeds_1"].Feeds.Memory
 
 local function PrettyMemory(n)
 	if n > 1024 then
-		return string.format("%.2f mb", n / 1024)
+		return format("%.2f mb", n / 1024)
 	else
-		return string.format("%.2f kb", n)
+		return format("%.2f kb", n)
 	end
 end
 
@@ -533,7 +535,7 @@ local function OnEnter()
 	local txt = "%d. %s"
 
 	for k, v in pairs(MemoryTable) do
-		GameTooltip:AddDoubleLine(string.format(txt, k, v.addon), PrettyMemory(v.mem), 0, 1, 1, 0, 1, 0)
+		GameTooltip:AddDoubleLine(format(txt, k, v.addon), PrettyMemory(v.mem), 0, 1, 1, 0, 1, 0)
 	end
 
 	for i = 1, #MemoryTable do
@@ -565,7 +567,7 @@ local function MoneyUpdate()
 	silver = mod(floor(copper / 100), 100)
 	copper = mod(copper, 100)
 
-	out:SetText(string.format("|cFFFFD700%dg|r |cFFC7C7CF%ds|r |cFFEDA55F%dc|r", gold or 0, silver or 0, copper or 0))
+	out:SetText(format("|cFFFFD700%dg|r |cFFC7C7CF%ds|r |cFFEDA55F%dc|r", gold or 0, silver or 0, copper or 0))
 	Feeds:Update()
 end
 lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedMoney", MoneyUpdate)
@@ -634,12 +636,12 @@ local function ReputationUpdate(retval)
 	end
 
 	local name, id, min, max, value = GetWatchedFactionInfo()
-	local standing = GetText(string.format("FACTION_STANDING_LABEL%d", id))
+	local standing = GetText(format("FACTION_STANDING_LABEL%d", id))
 
-	out:SetText(string.format("%s: %d / %d (%s)", name, (value - min), (max - min), standing))
+	out:SetText(format("%s: %d / %d (%s)", name, (value - min), (max - min), standing))
 
 	--[[if retval then
-		return string.format("%s: %d / %d (%s)", name, (value - min), (max - min), standing)
+		return format("%s: %d / %d (%s)", name, (value - min), (max - min), standing)
 	end--]]
 	Feeds:Update()
 end
@@ -684,15 +686,15 @@ local function on_enter()
 	for member_index = 1, num_guild_members do
        	local member_name, member_rank, member_rank_index, member_level, member_class_print, member_zone, member_note, member_officer_note, member_is_online, member_status, member_class = GetGuildRosterInfo(member_index)
        	if member_is_online then
-			local class_output = string.format("|cFF%02x%02x%02x%s|r", RAID_CLASS_COLORS[member_class].r*255, RAID_CLASS_COLORS[member_class].g*255, RAID_CLASS_COLORS[member_class].b*255, member_class_print)
+			local class_output = format("|cFF%02x%02x%02x%s|r", RAID_CLASS_COLORS[member_class].r*255, RAID_CLASS_COLORS[member_class].g*255, RAID_CLASS_COLORS[member_class].b*255, member_class_print)
 
 			GameTooltip:AddDoubleLine(
-				string.format("|cFF%02x%02x%02x%s %s %s|r",
+				format("|cFF%02x%02x%02x%s %s %s|r",
 					RAID_CLASS_COLORS[member_class].r*255,
 					RAID_CLASS_COLORS[member_class].g*255,
 					RAID_CLASS_COLORS[member_class].b*255,
 					member_level, member_status, member_name),
-				string.format("|cFFFFFFFF%s|r", member_zone)
+				format("|cFFFFFFFF%s|r", member_zone)
 			)
 		end
 	end
@@ -709,11 +711,11 @@ local function on_enter()
 				friend_class = "DEATHKNIGHT"
 			end
 			GameTooltip:AddDoubleLine(
-				string.format("|cFF%02x%02x%02x%s %s %s|r",
+				format("|cFF%02x%02x%02x%s %s %s|r",
 					RAID_CLASS_COLORS[string.upper(friend_class)].r*255,
 					RAID_CLASS_COLORS[string.upper(friend_class)].g*255,
 					RAID_CLASS_COLORS[string.upper(friend_class)].b*255, friend_level, friend_status, friend_name),
-				string.format("|cFFFFFFFF%s|r", friend_area)
+				format("|cFFFFFFFF%s|r", friend_area)
 			)
 		end
 	end
@@ -765,9 +767,9 @@ local function DFGEvent(self, event)
 	-- Remove yourself from the count.
 	num_online_guild_members = num_online_guild_members - 1
 
-	guild_text = num_online_guild_members > 0 and string.format("%s:%d", num_online_friends > 0 and "G" or "Guild", num_online_guild_members) or nil
-	friend_text = num_online_friends > 0 and string.format("%s:%d", num_online_guild_members > 0 and "F" or "Friends", num_online_friends) or nil
-	out:SetText( (guild_text or friend_text) and string.format("%s%s%s", guild_text and guild_text or "", guild_text and friend_text and " " or "", friend_text and friend_text or "") or "Lonely")
+	guild_text = num_online_guild_members > 0 and format("%s:%d", num_online_friends > 0 and "G" or "Guild", num_online_guild_members) or nil
+	friend_text = num_online_friends > 0 and format("%s:%d", num_online_guild_members > 0 and "F" or "Friends", num_online_friends) or nil
+	out:SetText( (guild_text or friend_text) and format("%s%s%s", guild_text and guild_text or "", guild_text and friend_text and " " or "", friend_text and friend_text or "") or "Lonely")
 	if guild_text or friend_text then
 		out:SetTextColor(0, 1, 0)
 	else
