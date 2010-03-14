@@ -7,9 +7,6 @@ local strfind = string.find
 local strupper = string.upper
 local tonumber = tonumber
 
-recUI.feeds = {}
-local feeds = recUI.feeds
-
 -- Feed creation functions
 local function createFeedFrame(name, from, to, x, y, w, h)
 	local f = CreateFrame("Frame", name, UIParent)
