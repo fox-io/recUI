@@ -1,4 +1,29 @@
 local _, recUI = ...
+
+-- Make textures for action bar 1 show all the time.
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", function()
+	ActionButton_HideGrid = function() end
+	for i = 1,12 do
+		local button = _G[format("ActionButton%d", i)]
+		button:SetAttribute("showgrid", 1)
+		ActionButton_ShowGrid(button)
+		button = _G[format("BonusActionButton%d", i)]
+		button:SetAttribute("showgrid", 1)
+		ActionButton_ShowGrid(button)
+	end
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid")
+end)
+
+-- Show all bars but the last one on login.
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow", function()
+	SHOW_MULTI_ACTIONBAR_1 = true
+	SHOW_MULTI_ACTIONBAR_2 = true
+	SHOW_MULTI_ACTIONBAR_3 = true
+	SHOW_MULTI_ACTIONBAR_4 = false
+	InterfaceOptions_UpdateMultiActionBars()
+	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow")
+end)
+
 local mouseOverBar1 = 0
 local mouseOverBar2 = 0
 local mouseOverBar3 = 0
@@ -88,32 +113,6 @@ local scale = .6824
 
 ActionButton1:ClearAllPoints()
 ActionButton1:SetPoint('TOPLEFT', bar1Holder, 'TOPLEFT', 4.5, -4.5)
-
-
-
--- Make textures for action bar 1 show all the time.
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", function()
-	ActionButton_HideGrid = function() end
-	for i = 1,12 do
-		local button = _G[format("ActionButton%d", i)]
-		button:SetAttribute("showgrid", 1)
-		ActionButton_ShowGrid(button)
-		button = _G[format("BonusActionButton%d", i)]
-		button:SetAttribute("showgrid", 1)
-		ActionButton_ShowGrid(button)
-	end
-	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid")
-end)
-
--- Show all bars but the last one on login.
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow", function()
-	SHOW_MULTI_ACTIONBAR_1 = true
-	SHOW_MULTI_ACTIONBAR_2 = true
-	SHOW_MULTI_ACTIONBAR_3 = true
-	SHOW_MULTI_ACTIONBAR_4 = false
-	InterfaceOptions_UpdateMultiActionBars()
-	recUI.lib.unregisterEvent("PLAYER_ENTERING_WORLD", "recUIActionBarShow")
-end)
 
 for i = 1, 12 do
 	b1 = _G[format("ActionButton%d", i)]
