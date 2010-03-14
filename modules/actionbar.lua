@@ -110,12 +110,6 @@ for i = 1, 12 do
 	b1:SetParent(bar1Holder)
 	b1:SetScale(scale)
 
-	-- Action 1-12 On MOUSE down
-	--b1:RegisterForClicks("AnyDown")
-	-- Action 1-12 On KEY down
---ref		SetOverrideBindingClick(button, true, KEYBIND, button:GetName(), MOUSEBUTTONTOFAKE)
-	--SetOverrideBindingClick(b1, true, i == 12 and "=" or i == 11 and "-" or i == 10 and "0" or i, b1:GetName(), "LeftButton")
-
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
 		b1:SetPoint("LEFT", _G[format("ActionButton%d", i-1)], "RIGHT", 5, 0)
@@ -206,7 +200,6 @@ end
 
 MultiBarLeft:SetParent(bar45Holder)
 MultiBarLeftButton1:ClearAllPoints()
---MultiBarLeftButton1:SetPoint('TOPLEFT', bar45Holder, 'TOPLEFT', 4.5, -4.5)
 MultiBarLeftButton1:SetPoint("CENTER", UIParent)
 
 ShapeshiftBarFrame:SetParent(shiftBarHolder)
@@ -285,300 +278,293 @@ end
 
 HideDefaultFrames()
 
+local _G = _G
 
+---------------------------------------
+-- CONFIG
+---------------------------------------
 
+--hide the hotkey? 0/1
+local hide_hotkey = 1
 
+--use dominos? 0/1
+local use_dominos = 0
 
+--COLORS
+--color you want to appy to the standard texture (red, green, blue in RGB)
+--local color = { r = 0.25, g = 0.25, b = 0.25, }
+local color = { r = 1, g = 1, b = 1, }
+--want class color? just comment in this:
+--local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
 
-  --rActionButtonStyler - roth 2009
+--color for equipped border texture (red, green, blue in RGB)
+local color_equipped = { r = 0.33, g = 0.59, b = 0.33, }
 
-  local _G = _G
-
-  ---------------------------------------
-  -- CONFIG
-  ---------------------------------------
-
-  --hide the hotkey? 0/1
-  local hide_hotkey = 1
-
-  --use dominos? 0/1
-  local use_dominos = 0
-
-  --COLORS
-  --color you want to appy to the standard texture (red, green, blue in RGB)
-  --local color = { r = 0.25, g = 0.25, b = 0.25, }
-  local color = { r = 1, g = 1, b = 1, }
-  --want class color? just comment in this:
-  --local color = RAID_CLASS_COLORS[select(2, UnitClass("player"))]
-
-  --color for equipped border texture (red, green, blue in RGB)
-  local color_equipped = { r = 0.33, g = 0.59, b = 0.33, }
-
-  --color when out of range
-  local range_color = { r = 0.69, g = 0.31, b = 0.31, }
+--color when out of range
+local range_color = { r = 0.69, g = 0.31, b = 0.31, }
 
 --color when out of power (mana)
-  local mana_color = { r = 0.31, g = 0.45, b = 0.63, }
+local mana_color = { r = 0.31, g = 0.45, b = 0.63, }
 
-  --color when button is usable
-  --local usable_color = { r = 0.84, g = 0.75, b = 0.65, }
-  local usable_color = { r = 1, g = 1, b = 1, }
+--color when button is usable
+--local usable_color = { r = 0.84, g = 0.75, b = 0.65, }
+local usable_color = { r = 1, g = 1, b = 1, }
 
-  --color when button is unusable (example revenge not active, since you have not blocked yet)
-  local unusable_color = { r = 0.5, g = 0.5, b = 0.5, }
+--color when button is unusable (example revenge not active, since you have not blocked yet)
+local unusable_color = { r = 0.5, g = 0.5, b = 0.5, }
 
-  -- !!!IMPORTANT!!! - read this before editing the value blow
-  -- !!!do not set this below 0.1 ever!!!
-  -- you have 120 actionbuttons on screen (most of you have at 80) and each of them will get updated on this timer in seconds
-  -- default is 1, it is needed for the rangecheck
-  -- if you dont want it just set the timer to 999 and the cpu usage will be near zero
-  -- if you set the timer to 0 it will update all your 120 buttons on every single frame
-  -- so if you have 120FPS it will call the function 14.400 times a second!
-  -- if the timer is 1 it will call the function 120 times a second (depends on actionbuttons in screen)
-  local update_timer = 999
+-- !!!IMPORTANT!!! - read this before editing the value blow
+-- !!!do not set this below 0.1 ever!!!
+-- you have 120 actionbuttons on screen (most of you have at 80) and each of them will get updated on this timer in seconds
+-- default is 1, it is needed for the rangecheck
+-- if you dont want it just set the timer to 999 and the cpu usage will be near zero
+-- if you set the timer to 0 it will update all your 120 buttons on every single frame
+-- so if you have 120FPS it will call the function 14.400 times a second!
+-- if the timer is 1 it will call the function 120 times a second (depends on actionbuttons in screen)
+local update_timer = 999
 
-  ---------------------------------------
-  -- CONFIG END
-  ---------------------------------------
+---------------------------------------
+-- CONFIG END
+---------------------------------------
 
-  -- DO NOT TOUCH ANYTHING BELOW!
+-- DO NOT TOUCH ANYTHING BELOW!
 
-  ---------------------------------------
-  -- FUNCTIONS
-  ---------------------------------------
+---------------------------------------
+-- FUNCTIONS
+---------------------------------------
 
-  --initial style func
-  local function rActionButtonStyler_AB_style(self)
+--initial style func
+local function rActionButtonStyler_AB_style(self)
 
-    local action = self.action
-    local name = self:GetName()
-    local bu  = _G[name]
-    local ic  = _G[format("%sIcon", name)]
-    local co  = _G[format("%sCount", name)]
-    local bo  = _G[format("%sBorder", name)]
-    local ho  = _G[format("%sHotKey", name)]
-    local cd  = _G[format("%sCooldown", name)]
-    local na  = _G[format("%sName", name)]
-    local fl  = _G[format("%sFlash", name)]
-    local nt  = _G[format("%sNormalTexture", name)]
-	
-	bu:SetBackdrop({
-		bgFile = recUI.media.buttonBackdrop,
-		edgeFile = nil,
-		edgeSize = 0,
-		insets = { left = 0, right = 0, top = 0, bottom = 0 }
-	})
-	bu:SetBackdropColor(1, 1, 1, 1)
+local action = self.action
+local name = self:GetName()
+local bu  = _G[name]
+local ic  = _G[format("%sIcon", name)]
+local co  = _G[format("%sCount", name)]
+local bo  = _G[format("%sBorder", name)]
+local ho  = _G[format("%sHotKey", name)]
+local cd  = _G[format("%sCooldown", name)]
+local na  = _G[format("%sName", name)]
+local fl  = _G[format("%sFlash", name)]
+local nt  = _G[format("%sNormalTexture", name)]
 
-    nt:SetHeight(bu:GetHeight())
-    nt:SetWidth(bu:GetWidth())
-    nt:SetPoint("CENTER")
-	nt:SetDrawLayer("OVERLAY")
+bu:SetBackdrop({
+	bgFile = recUI.media.buttonBackdrop,
+	edgeFile = nil,
+	edgeSize = 0,
+	insets = { left = 0, right = 0, top = 0, bottom = 0 }
+})
+bu:SetBackdropColor(1, 1, 1, 1)
 
-    ho:SetFont(recUI.media.font, 14, "OUTLINE")
-    co:SetFont(recUI.media.font, 14, "OUTLINE")
-    na:SetFont(recUI.media.font, 14, "OUTLINE")
-    if hide_hotkey == 1 then
-      ho:Hide()
-    end
-    na:Hide()
+nt:SetHeight(bu:GetHeight())
+nt:SetWidth(bu:GetWidth())
+nt:SetPoint("CENTER")
+nt:SetDrawLayer("OVERLAY")
 
-    fl:SetTexture(recUI.media.buttonFlash)
-	fl:SetDrawLayer("OVERLAY")
-    bu:SetHighlightTexture(recUI.media.buttonHighlight)
-    bu:SetPushedTexture(recUI.media.buttonHighlight)
-    bu:SetCheckedTexture(recUI.media.buttonChecked)
-    bu:SetNormalTexture(recUI.media.buttonNormal)
+ho:SetFont(recUI.media.font, 14, "OUTLINE")
+co:SetFont(recUI.media.font, 14, "OUTLINE")
+na:SetFont(recUI.media.font, 14, "OUTLINE")
+if hide_hotkey == 1 then
+  ho:Hide()
+end
+na:Hide()
 
-    ic:SetTexCoord(0.1,0.9,0.1,0.9)
-    ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 3, -3)
-    ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -3, 3)
-	ic:SetDrawLayer("BORDER")
+fl:SetTexture(recUI.media.buttonFlash)
+fl:SetDrawLayer("OVERLAY")
+bu:SetHighlightTexture(recUI.media.buttonHighlight)
+bu:SetPushedTexture(recUI.media.buttonHighlight)
+bu:SetCheckedTexture(recUI.media.buttonChecked)
+bu:SetNormalTexture(recUI.media.buttonNormal)
 
-    if ( IsEquippedAction(action) ) then
-      nt:SetVertexColor(0,1,0,1)
-    else
-      nt:SetVertexColor(1,1,1,1)
-    end
+ic:SetTexCoord(0.1,0.9,0.1,0.9)
+ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 3, -3)
+ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -3, 3)
+ic:SetDrawLayer("BORDER")
 
-  end
+if ( IsEquippedAction(action) ) then
+  nt:SetVertexColor(0,1,0,1)
+else
+  nt:SetVertexColor(1,1,1,1)
+end
 
-  --style pet buttons
-  local function rActionButtonStyler_AB_stylepet()
+end
 
-    for i=1, NUM_PET_ACTION_SLOTS do
-      local name = "PetActionButton"..i
-      local bu  = _G[name]
-      local ic  = _G[name.."Icon"]
-      local fl  = _G[name.."Flash"]
-      local nt  = _G[name.."NormalTexture2"]
+--style pet buttons
+local function rActionButtonStyler_AB_stylepet()
 
-	bu:SetBackdrop({
-		bgFile = recUI.media.buttonBackdrop,
-		edgeFile = nil,
-		edgeSize = 0,
-		insets = { left = 0, right = 0, top = 0, bottom = 0 }
-	})
-	bu:SetBackdropColor(1, 1, 1, 1)
-	fl:SetDrawLayer("OVERLAY")
-	nt:SetDrawLayer("OVERLAY")
-	ic:SetDrawLayer("BORDER")
+for i=1, NUM_PET_ACTION_SLOTS do
+  local name = "PetActionButton"..i
+  local bu  = _G[name]
+  local ic  = _G[name.."Icon"]
+  local fl  = _G[name.."Flash"]
+  local nt  = _G[name.."NormalTexture2"]
 
-      nt:SetHeight(bu:GetHeight())
-      nt:SetWidth(bu:GetWidth())
-      nt:SetPoint("Center", 0, 0)
+bu:SetBackdrop({
+	bgFile = recUI.media.buttonBackdrop,
+	edgeFile = nil,
+	edgeSize = 0,
+	insets = { left = 0, right = 0, top = 0, bottom = 0 }
+})
+bu:SetBackdropColor(1, 1, 1, 1)
+fl:SetDrawLayer("OVERLAY")
+nt:SetDrawLayer("OVERLAY")
+ic:SetDrawLayer("BORDER")
 
-      nt:SetVertexColor(color.r,color.g,color.b,1)
+  nt:SetHeight(bu:GetHeight())
+  nt:SetWidth(bu:GetWidth())
+  nt:SetPoint("Center", 0, 0)
 
-      fl:SetTexture(recUI.media.buttonFlash)
-      bu:SetHighlightTexture(recUI.media.buttonHighlight)
-      bu:SetPushedTexture(recUI.media.buttonPushed)
-      bu:SetCheckedTexture(recUI.media.buttonChecked)
-      bu:SetNormalTexture(recUI.media.buttonNormal)
+  nt:SetVertexColor(color.r,color.g,color.b,1)
 
-      ic:SetTexCoord(0.1,0.9,0.1,0.9)
-      ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
-      ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+  fl:SetTexture(recUI.media.buttonFlash)
+  bu:SetHighlightTexture(recUI.media.buttonHighlight)
+  bu:SetPushedTexture(recUI.media.buttonPushed)
+  bu:SetCheckedTexture(recUI.media.buttonChecked)
+  bu:SetNormalTexture(recUI.media.buttonNormal)
 
-    end
-  end
+  ic:SetTexCoord(0.1,0.9,0.1,0.9)
+  ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
+  ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
 
-  --style shapeshift buttons
-  local function rActionButtonStyler_AB_styleshapeshift()
-    for i=1, NUM_SHAPESHIFT_SLOTS do
-      local name = "ShapeshiftButton"..i
-      local bu  = _G[name]
-      local ic  = _G[name.."Icon"]
-      local fl  = _G[name.."Flash"]
-      local nt  = _G[name.."NormalTexture"]
+end
+end
 
-	bu:SetBackdrop({
-		bgFile = recUI.media.buttonBackdrop,
-		edgeFile = nil,
-		edgeSize = 0,
-		insets = { left = 0, right = 0, top = 0, bottom = 0 }
-	})
-	bu:SetBackdropColor(1, 1, 1, 1)
-	fl:SetDrawLayer("OVERLAY")
-	nt:SetDrawLayer("OVERLAY")
-	ic:SetDrawLayer("BORDER")
+--style shapeshift buttons
+local function rActionButtonStyler_AB_styleshapeshift()
+for i=1, NUM_SHAPESHIFT_SLOTS do
+  local name = "ShapeshiftButton"..i
+  local bu  = _G[name]
+  local ic  = _G[name.."Icon"]
+  local fl  = _G[name.."Flash"]
+  local nt  = _G[name.."NormalTexture"]
 
-      nt:ClearAllPoints()
-      nt:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
-      nt:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 0, 0)
+bu:SetBackdrop({
+	bgFile = recUI.media.buttonBackdrop,
+	edgeFile = nil,
+	edgeSize = 0,
+	insets = { left = 0, right = 0, top = 0, bottom = 0 }
+})
+bu:SetBackdropColor(1, 1, 1, 1)
+fl:SetDrawLayer("OVERLAY")
+nt:SetDrawLayer("OVERLAY")
+ic:SetDrawLayer("BORDER")
 
-      nt:SetVertexColor(color.r,color.g,color.b,1)
+  nt:ClearAllPoints()
+  nt:SetPoint("TOPLEFT", bu, "TOPLEFT", 0, 0)
+  nt:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", 0, 0)
 
-      fl:SetTexture(recUI.media.buttonFlash)
-      bu:SetHighlightTexture(recUI.media.buttonHover)
-      bu:SetPushedTexture(recUI.media.buttonPushed)
-      bu:SetCheckedTexture(recUI.media.buttonChecked)
-      bu:SetNormalTexture(recUI.media.buttonNormal)
+  nt:SetVertexColor(color.r,color.g,color.b,1)
 
-      ic:SetTexCoord(0.1,0.9,0.1,0.9)
-      ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
-      ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
-    end
-  end
+  fl:SetTexture(recUI.media.buttonFlash)
+  bu:SetHighlightTexture(recUI.media.buttonHover)
+  bu:SetPushedTexture(recUI.media.buttonPushed)
+  bu:SetCheckedTexture(recUI.media.buttonChecked)
+  bu:SetNormalTexture(recUI.media.buttonNormal)
 
-  --fix the grid display
-  --the default function has a bug and once you move a button the alpha stays at 0.5, this gets fixed here
-  local function rActionButtonStyler_AB_fixgrid(button)
-    local name = button:GetName()
-    local action = button.action
-    local nt  = _G[name.."NormalTexture"]
-    if ( IsEquippedAction(action) ) then
-      nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
-    else
-      nt:SetVertexColor(color.r,color.g,color.b,1)
-    end
-  end
+  ic:SetTexCoord(0.1,0.9,0.1,0.9)
+  ic:SetPoint("TOPLEFT", bu, "TOPLEFT", 2, -2)
+  ic:SetPoint("BOTTOMRIGHT", bu, "BOTTOMRIGHT", -2, 2)
+end
+end
 
-  --update the button colors onUpdateUsable
-  local function rActionButtonStyler_AB_usable(self)
-    local name = self:GetName()
-    local action = self.action
-    local nt  = _G[name.."NormalTexture"]
-    local icon = _G[name.."Icon"]
-    if ( IsEquippedAction(action) ) then
-      nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
-    else
-      nt:SetVertexColor(color.r,color.g,color.b,1)
-    end
-    local isUsable, notEnoughMana = IsUsableAction(action)
-    if (ActionHasRange(action) and IsActionInRange(action) == 0) then
-      icon:SetVertexColor(range_color.r,range_color.g,range_color.b,1)
-      return
-    elseif (notEnoughMana) then
-      icon:SetVertexColor(mana_color.r,mana_color.g,mana_color.b,1)
-      return
-    elseif (isUsable) then
-      icon:SetVertexColor(usable_color.r,usable_color.g,usable_color.b,1)
-      return
-    else
-      icon:SetVertexColor(unusable_color.r,unusable_color.g,unusable_color.b,1);
-      return
-    end
-  end
+--fix the grid display
+--the default function has a bug and once you move a button the alpha stays at 0.5, this gets fixed here
+local function rActionButtonStyler_AB_fixgrid(button)
+local name = button:GetName()
+local action = button.action
+local nt  = _G[name.."NormalTexture"]
+if ( IsEquippedAction(action) ) then
+  nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
+else
+  nt:SetVertexColor(color.r,color.g,color.b,1)
+end
+end
 
-  --rewrite of the onupdate func
-  --much less cpu usage needed
-  local function rActionButtonStyler_AB_onupdate(self,elapsed)
-    local t = self.rABS_range
-    if (not t) then
-      self.rABS_range = 0
-      return
-    end
-    t = t + elapsed
-    if (t<update_timer) then
-      self.rABS_range = t
-      return
-    else
-      self.rABS_range = 0
-      rActionButtonStyler_AB_usable(self)
-    end
-  end
+--update the button colors onUpdateUsable
+local function rActionButtonStyler_AB_usable(self)
+local name = self:GetName()
+local action = self.action
+local nt  = _G[name.."NormalTexture"]
+local icon = _G[name.."Icon"]
+if ( IsEquippedAction(action) ) then
+  nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
+else
+  nt:SetVertexColor(color.r,color.g,color.b,1)
+end
+local isUsable, notEnoughMana = IsUsableAction(action)
+if (ActionHasRange(action) and IsActionInRange(action) == 0) then
+  icon:SetVertexColor(range_color.r,range_color.g,range_color.b,1)
+  return
+elseif (notEnoughMana) then
+  icon:SetVertexColor(mana_color.r,mana_color.g,mana_color.b,1)
+  return
+elseif (isUsable) then
+  icon:SetVertexColor(usable_color.r,usable_color.g,usable_color.b,1)
+  return
+else
+  icon:SetVertexColor(unusable_color.r,unusable_color.g,unusable_color.b,1);
+  return
+end
+end
 
-  --hotkey func
-  --is only needed when you want to hide the hotkeys and use the default barmod (Dominos does not need this)
-  local function rActionButtonStyler_AB_hotkey(self, actionButtonType)
-    if (not actionButtonType) then
-      actionButtonType = "ACTIONBUTTON";
-    end
-    local hotkey = _G[self:GetName().."HotKey"]
-    local key = GetBindingKey(actionButtonType..self:GetID()) or GetBindingKey("CLICK "..self:GetName()..":LeftButton");
-   	local text = GetBindingText(key, "KEY_", 1);
-    hotkey:SetText(text);
-    hotkey:Hide()
-  end
+--rewrite of the onupdate func
+--much less cpu usage needed
+local function rActionButtonStyler_AB_onupdate(self,elapsed)
+local t = self.rABS_range
+if (not t) then
+  self.rABS_range = 0
+  return
+end
+t = t + elapsed
+if (t<update_timer) then
+  self.rABS_range = t
+  return
+else
+  self.rABS_range = 0
+  rActionButtonStyler_AB_usable(self)
+end
+end
 
-
-  ---------------------------------------
-  -- CALLS // HOOKS
-  ---------------------------------------
-
-  hooksecurefunc("ActionButton_Update",   rActionButtonStyler_AB_style)
-  hooksecurefunc("ActionButton_UpdateUsable",   rActionButtonStyler_AB_usable)
-
-  --rewrite default onUpdateFunc, the new one uses much less CPU power
-  ActionButton_OnUpdate = rActionButtonStyler_AB_onupdate
-
-  --fix grid
-  hooksecurefunc("ActionButton_ShowGrid", rActionButtonStyler_AB_fixgrid)
-
-  --call the special func to hide hotkeys after entering combat with the default actionbar
-  if hide_hotkey == 1 and use_dominos == 0 then
-    hooksecurefunc("ActionButton_UpdateHotkeys", rActionButtonStyler_AB_hotkey)
-  end
-
-  hooksecurefunc("ShapeshiftBar_OnLoad",   rActionButtonStyler_AB_styleshapeshift)
-  hooksecurefunc("ShapeshiftBar_Update",   rActionButtonStyler_AB_styleshapeshift)
-  hooksecurefunc("ShapeshiftBar_UpdateState",   rActionButtonStyler_AB_styleshapeshift)
-  hooksecurefunc("PetActionBar_Update",   rActionButtonStyler_AB_stylepet)
+--hotkey func
+--is only needed when you want to hide the hotkeys and use the default barmod (Dominos does not need this)
+local function rActionButtonStyler_AB_hotkey(self, actionButtonType)
+if (not actionButtonType) then
+  actionButtonType = "ACTIONBUTTON";
+end
+local hotkey = _G[self:GetName().."HotKey"]
+local key = GetBindingKey(actionButtonType..self:GetID()) or GetBindingKey("CLICK "..self:GetName()..":LeftButton");
+local text = GetBindingText(key, "KEY_", 1);
+hotkey:SetText(text);
+hotkey:Hide()
+end
 
 
+---------------------------------------
+-- CALLS // HOOKS
+---------------------------------------
 
-  local _G = _G
+hooksecurefunc("ActionButton_Update",   rActionButtonStyler_AB_style)
+hooksecurefunc("ActionButton_UpdateUsable",   rActionButtonStyler_AB_usable)
+
+--rewrite default onUpdateFunc, the new one uses much less CPU power
+ActionButton_OnUpdate = rActionButtonStyler_AB_onupdate
+
+--fix grid
+hooksecurefunc("ActionButton_ShowGrid", rActionButtonStyler_AB_fixgrid)
+
+--call the special func to hide hotkeys after entering combat with the default actionbar
+if hide_hotkey == 1 and use_dominos == 0 then
+hooksecurefunc("ActionButton_UpdateHotkeys", rActionButtonStyler_AB_hotkey)
+end
+
+hooksecurefunc("ShapeshiftBar_OnLoad",   rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("ShapeshiftBar_Update",   rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("ShapeshiftBar_UpdateState",   rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("PetActionBar_Update",   rActionButtonStyler_AB_stylepet)
+
+
+
+local _G = _G
 
 function RedRange_ActionButton_OnUpdate(self, elapsed)
     local t = self.rangeTimer
