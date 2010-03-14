@@ -85,13 +85,13 @@ local r,g,b
 local function MakeDisplay(full, total, special)
 	local leftText = ""
 	local rightText = ""
-	
+
 	leftText = total - full
-	
+
 	rightText = "/"..total
-	
+
 	local output = leftText..rightText
-	
+
 	if special then
 		output = string.format("A: %s", output) --"|cFFFF00FF"..output.."|r"
 	else
@@ -223,80 +223,80 @@ recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIModuleDataFeedsDurability
 DurabilityUpdate()
 
 -- Cancel loading this feed if player is level 80.
---local player_level = UnitLevel("player")
---if player_level == 80 then return end
+local player_level = UnitLevel("player")
+if player_level ~= 80 then
+	local strfind = strfind
+	local tonumber = tonumber
+	local UnitXP = UnitXP
+	local UnitXPMax = UnitXPMax
+	_G["Feeds_1"].Feeds.Experience = Feeds:CreateFeed("Feeds_Experience", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
+	local out = _G["Feeds_1"].Feeds.Experience
+	out:SetText("---")
 
-local strfind = strfind
-local tonumber = tonumber
-local UnitXP = UnitXP
-local UnitXPMax = UnitXPMax
-_G["Feeds_1"].Feeds.Experience = Feeds:CreateFeed("Feeds_Experience", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
-local out = _G["Feeds_1"].Feeds.Experience
-out:SetText("---")
+	local lastxp, a, b = 0
+	local function ExperienceUpdate(retval, self, event, ...)
+		if event == "CHAT_MSG_COMBAT_XP_GAIN" then
+			_, _, lastxp = strfind(select(1, ...), ".*gain (.*) experience.*")
+			lastxp = tonumber(lastxp)
+			return
+		end
 
-local lastxp, a, b = 0
-local function ExperienceUpdate(retval, self, event, ...)
-	if event == "CHAT_MSG_COMBAT_XP_GAIN" then
-		_, _, lastxp = strfind(select(1, ...), ".*gain (.*) experience.*")
-		lastxp = tonumber(lastxp)
-		return
+		local petxp, petmaxxp
+
+		local xp = UnitXP("player")
+		local maxxp = UnitXPMax("player")
+		if UnitGUID("pet") then
+			petxp, petmaxxp = GetPetExperience()
+		end
+
+		local xpstring
+		if not petmaxxp or petmaxxp == 0 then
+			-- Cur/Max
+			--xpstring = string.format("P:%s/%s", xp, maxxp)
+
+			-- Perc
+			xpstring = string.format("P:%.1f%%", ((xp/maxxp)*100))
+		else
+			-- Cur/Max - pet/pet
+			--xpstring = string.format("P:%s/%s p:%s/%s", xp, maxxp, petxp, petmaxxp)
+
+			-- Perc
+			xpstring = string.format("P:%.1f%% p:%.0f%%", ((xp/maxxp)*100), ((petxp/petmaxxp)*100))
+		end
+
+		out:SetText(xpstring)
+
+		if retval then
+			local ktg = (maxxp - xp)/(lastxp or 0)
+			if not lastxp or lastxp < 1 then ktg = "Unknown" else ktg = string.format("%.1f", ktg) end
+			return string.format("Player: %s/%s (%.1f%%)", xp, maxxp, ((xp/maxxp)*100)), (petmaxxp and petmaxxp > 0) and string.format("Pet: %s/%s (%.0f%%)", petxp, petmaxxp, ((petxp/petmaxxp)*100)) or nil, string.format("Kills to go: %s", ktg)
+		end
+		Feeds:Update()
 	end
-	
-	local petxp, petmaxxp
 
-	local xp = UnitXP("player")
-	local maxxp = UnitXPMax("player")
-	if UnitGUID("pet") then
-		petxp, petmaxxp = GetPetExperience()
+	local function ShowTooltip(self, ...)
+		if not IsShiftKeyDown() then return end
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		local playerxp, petxp, ktg = Update(true)
+		GameTooltip:AddLine(playerxp)
+		if petxp then GameTooltip:AddLine(petxp) end
+		if ktg then GameTooltip:AddLine(ktg) end
+		GameTooltip:Show()
 	end
 
-	local xpstring
-	if not petmaxxp or petmaxxp == 0 then
-		-- Cur/Max
-		--xpstring = string.format("P:%s/%s", xp, maxxp)
+	recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedsExperience", ExperienceUpdate)
+	recUI.lib.registerEvent("CHAT_MSG_COMBAT_XP_GAIN", "recUIDataFeedsExperience", ExperienceUpdate)
+	recUI.lib.registerEvent("UNIT_PET", "recUIDataFeedsExperience", ExperienceUpdate)
+	recUI.lib.registerEvent("UNIT_EXPERIENCE", "recUIDataFeedsExperience", ExperienceUpdate)
+	recUI.lib.registerEvent("UNIT_LEVEL", "recUIDataFeedsExperience", ExperienceUpdate)
+	recUI.lib.registerEvent("PLAYER_XP_UPDATE", "recUIDataFeedsExperience", ExperienceUpdate)
 
-		-- Perc
-		xpstring = string.format("P:%.1f%%", ((xp/maxxp)*100))
-	else
-		-- Cur/Max - pet/pet
-		--xpstring = string.format("P:%s/%s p:%s/%s", xp, maxxp, petxp, petmaxxp)
-
-		-- Perc
-		xpstring = string.format("P:%.1f%% p:%.0f%%", ((xp/maxxp)*100), ((petxp/petmaxxp)*100))
-	end
-
-	out:SetText(xpstring)
-
-	if retval then
-		local ktg = (maxxp - xp)/(lastxp or 0)
-		if not lastxp or lastxp < 1 then ktg = "Unknown" else ktg = string.format("%.1f", ktg) end
-		return string.format("Player: %s/%s (%.1f%%)", xp, maxxp, ((xp/maxxp)*100)), (petmaxxp and petmaxxp > 0) and string.format("Pet: %s/%s (%.0f%%)", petxp, petmaxxp, ((petxp/petmaxxp)*100)) or nil, string.format("Kills to go: %s", ktg)
-	end
-	Feeds:Update()
+	out.b = CreateFrame("Button", out)
+	out.b:SetAllPoints(out)
+	out.b:SetScript("OnEnter", ShowTooltip)
+	out.b:SetScript("OnLeave", function(...) GameTooltip:Hide() end)
+	ExperienceUpdate()
 end
-
-local function ShowTooltip(self, ...)
-	if not IsShiftKeyDown() then return end
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-	local playerxp, petxp, ktg = Update(true)
-	GameTooltip:AddLine(playerxp)
-	if petxp then GameTooltip:AddLine(petxp) end
-	if ktg then GameTooltip:AddLine(ktg) end
-	GameTooltip:Show()
-end
-
-recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIDataFeedsExperience", ExperienceUpdate)
-recUI.lib.registerEvent("CHAT_MSG_COMBAT_XP_GAIN", "recUIDataFeedsExperience", ExperienceUpdate)
-recUI.lib.registerEvent("UNIT_PET", "recUIDataFeedsExperience", ExperienceUpdate)
-recUI.lib.registerEvent("UNIT_EXPERIENCE", "recUIDataFeedsExperience", ExperienceUpdate)
-recUI.lib.registerEvent("UNIT_LEVEL", "recUIDataFeedsExperience", ExperienceUpdate)
-recUI.lib.registerEvent("PLAYER_XP_UPDATE", "recUIDataFeedsExperience", ExperienceUpdate)
-
-out.b = CreateFrame("Button", out)
-out.b:SetAllPoints(out)
-out.b:SetScript("OnEnter", ShowTooltip)
-out.b:SetScript("OnLeave", function(...) GameTooltip:Hide() end)
-ExperienceUpdate()
 
 _G["Feeds_1"].Feeds.Framerate = Feeds:CreateFeed("Feeds_Framerate", _G["Feeds_1"], "LEFT",	"LEFT", 0, 0)
 local out = _G["Feeds_1"].Feeds.Framerate
@@ -362,13 +362,13 @@ local function LFGUpdate()
 	MiniMapLFGFrame.Show = function() end
 	local data_present, _, tanks_needed, healers_needed, dps_needed, _, _, _, _, _, _, wait_time = GetLFGQueueStats()
 	local mode, _ = GetLFGMode()
-	
+
 	if mode then
 		out:SetTextColor(0, 1, 0)
 	else
 		out:SetTextColor(1, 0, 0)
 	end
-	
+
 	local dungeon_names = ""
 	--[[for k,v in pairs(LFGQueuedForList) do
 		if k > 0 and ID:GetDungeonNameByID(k) then
@@ -377,7 +377,7 @@ local function LFGUpdate()
 			dungeon_names = string.format("%s%s", ID:GetDungeonAbbreviationByID(k), (dungeon_names ~= "" and string.format(", %s", dungeon_names) or ""))
 		end
 	end	--]]
-	
+
 	if mode == m_listed then
 		out:SetText(string.format(s_lfgraid, dungeon_names ~= "" and dungeon_names or "Raid"))
 		return
@@ -388,7 +388,7 @@ local function LFGUpdate()
 		out:SetText(s_lfg)
 		return
 	end
-	
+
 	--if not data_present or not mode == m_queued or not mode == m_listed or not mode == m_rolecheck then
 		--if mode and not mode == m_queued or not mode == m_listed or not mode == m_rolecheck then
 			--out:SetText(s_lfgsearch)
@@ -397,7 +397,7 @@ local function LFGUpdate()
 		--end
 		--return
 	--end
-	
+
 	out:SetText(
 		string.format(lfg_roles_format,
 			string.format(role_format, tanks_needed == 0 and green or red, tank),
@@ -408,7 +408,7 @@ local function LFGUpdate()
 			(wait_time ~= -1 and SecondsToTime(wait_time, false, false, 1) or unknown_time)
 		)
 	)
-	
+
 	Feeds:Update()
 end
 
@@ -439,7 +439,7 @@ out.b:SetScript("OnClick", function(self, button, ...)
 				return
 			end
 		end
-		
+
 		-- This should work fine, regardless of where the frame is at - I believe the dropdown is forced onto the screen
 		-- by default - but, the drop down is intended to show up and to the right of the frame.  Ideally, this should be
 		-- modified to auto-change based on the location of the lfg frame relative to the screen, but I have not had any
@@ -545,11 +545,11 @@ local function OnEnter()
 
 	table.sort(MemoryTable, MemSort)
 	local txt = "%d. %s"
-	
+
 	for k, v in pairs(MemoryTable) do
 		GameTooltip:AddDoubleLine(string.format(txt, k, v.addon), PrettyMemory(v.mem), 0, 1, 1, 0, 1, 0)
 	end
-	
+
 	for i = 1, #MemoryTable do
 		MemoryTable[i] = nil
 	end
@@ -690,16 +690,16 @@ local num_online_guild_members = 0
 
 local function on_enter()
 	if not IsShiftKeyDown() then return end
-	
+
 	num_guild_members = GetNumGuildMembers()
 	GameTooltip:SetOwner(out.b,"ANCHOR_RIGHT")
 	GameTooltip:AddLine("|cFFFFFFFFOnline Guild Members|r")
-	
+
 	for member_index = 1, num_guild_members do
        	local member_name, member_rank, member_rank_index, member_level, member_class_print, member_zone, member_note, member_officer_note, member_is_online, member_status, member_class = GetGuildRosterInfo(member_index)
        	if member_is_online then
 			local class_output = string.format("|cFF%02x%02x%02x%s|r", RAID_CLASS_COLORS[member_class].r*255, RAID_CLASS_COLORS[member_class].g*255, RAID_CLASS_COLORS[member_class].b*255, member_class_print)
-			
+
 			GameTooltip:AddDoubleLine(
 				string.format("|cFF%02x%02x%02x%s %s %s|r",
 					RAID_CLASS_COLORS[member_class].r*255,
@@ -710,11 +710,11 @@ local function on_enter()
 			)
 		end
 	end
-	
+
 	num_friends = GetNumFriends()
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine("|cFFFFFFFFOnline Friends|r")
-	
+
 	for i = 1, num_friends do
 		local friend_name, friend_level, friend_class, friend_area, friend_is_online, friend_status, friend_note = GetFriendInfo(i)
 		if friend_is_online then
@@ -768,17 +768,17 @@ local function DFGEvent(self, event)
 		num_friends = GetNumFriends()
 		if num_friends > 0 then
 			for i = 1, num_friends do
-				local friend_is_online = select(5,GetFriendInfo(i)) 
+				local friend_is_online = select(5,GetFriendInfo(i))
 				if friend_is_online then
 					num_online_friends = num_online_friends + 1
 				end
 			end
 		end
 	--end
-	
+
 	-- Remove yourself from the count.
 	num_online_guild_members = num_online_guild_members - 1
-	
+
 	guild_text = num_online_guild_members > 0 and string.format("%s:%d", num_online_friends > 0 and "G" or "Guild", num_online_guild_members) or nil
 	friend_text = num_online_friends > 0 and string.format("%s:%d", num_online_guild_members > 0 and "F" or "Friends", num_online_friends) or nil
 	out:SetText( (guild_text or friend_text) and string.format("%s%s%s", guild_text and guild_text or "", guild_text and friend_text and " " or "", friend_text and friend_text or "") or "Lonely")
