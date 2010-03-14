@@ -84,14 +84,25 @@ recUI.lib.registerEvent("UNIT_EXITED_VEHICLE", "recUIActionBar", OnVehicle)
 -- MOVE STUFF INTO POSITION
 ---------------------------------------------------
 local b1
+local scale = .6824
 
 ActionButton1:ClearAllPoints()
 ActionButton1:SetPoint('TOPLEFT', bar1Holder, 'TOPLEFT', 4.5, -4.5)
 
+local function PermaGrid()
+	ActionButton_HideGrid = function() end
+	for i = 1,12 do
+		local button = _G[format("ActionButton%d", i)]
+		button:SetAttribute("showgrid", 1)
+		ActionButton_ShowGrid(button)
+	end
+end
+recUI.lib.registerEvent("PLAYER_ENTERING_WORLD", "recUIActionBarGrid", PermaGrid)
+
 for i = 1, 12 do
 	b1 = _G[format("ActionButton%d", i)]
 	b1:SetParent(bar1Holder)
-	b1:SetScale(0.68625)
+	b1:SetScale(scale)
 
 	-- Action 1-12 On MOUSE down
 	--b1:RegisterForClicks("AnyDown")
@@ -121,7 +132,7 @@ BonusActionButton7:SetPoint('TOPLEFT', BonusActionButton1, 'BOTTOMLEFT', 0, -5)
 
 for i = 1, 12 do
 	b1 = _G[format("BonusActionButton%d", i)]
-	b1:SetScale(0.68625)
+	b1:SetScale(scale)
 
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
@@ -138,7 +149,7 @@ MultiBarBottomLeftButton1:SetPoint('TOPLEFT', bar2Holder, 'TOPLEFT', 4.5, -4.5)
 
 for i = 1, 12 do
 	b1 = _G[format("MultiBarBottomLeftButton%d", i)]
-	b1:SetScale(0.68625)
+	b1:SetScale(scale)
 
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
@@ -155,7 +166,7 @@ MultiBarBottomRightButton1:SetPoint('TOPLEFT', bar3Holder, 'TOPLEFT', 4.5, -4.5)
 
 for i = 1, 12 do
 	b1 = _G["MultiBarBottomRightButton"..i]
-	b1:SetScale(0.68625)
+	b1:SetScale(scale)
 
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
@@ -172,7 +183,7 @@ MultiBarRightButton1:SetPoint('TOPLEFT', bar45Holder, 'TOPLEFT', 4.5, -4.5)
 
 for i = 1, 12 do
 	b1 = _G["MultiBarRightButton"..i]
-	b1:SetScale(0.68625)
+	b1:SetScale(scale)
 
 	if i > 1 and i ~= 7 then
 		b1:ClearAllPoints()
@@ -184,7 +195,7 @@ for i = 1, 12 do
 end
 
 for i=1, 12 do
-	_G["MultiBarLeftButton"..i]:SetScale(0.68625)
+	_G["MultiBarLeftButton"..i]:SetScale(scale)
 end
 
 MultiBarLeft:SetParent(bar45Holder)
@@ -489,7 +500,7 @@ HideDefaultFrames()
     local na  = _G[format("%sName", name)]
     local fl  = _G[format("%sFlash", name)]
     local nt  = _G[format("%sNormalTexture", name)]
-
+	
 	bu:SetBackdrop({
 		bgFile = recUI.media.buttonBackdrop,
 		edgeFile = nil,
@@ -503,12 +514,6 @@ HideDefaultFrames()
     nt:SetPoint("CENTER")
 	nt:SetDrawLayer("OVERLAY")
 
-	bo:ClearAllPoints()
-	bo:SetTexture(recUI.media.buttonNormal)
-	bo:SetVertexColor(1, 1, 1, 1)
-	bo:SetPoint("TOPLEFT", bu, -2, 2)
-	bo:SetPoint("BOTTOMRIGHT", bu, 2, -2)
-
     ho:SetFont(recUI.media.font, 14, "OUTLINE")
     co:SetFont(recUI.media.font, 14, "OUTLINE")
     na:SetFont(recUI.media.font, 14, "OUTLINE")
@@ -520,7 +525,7 @@ HideDefaultFrames()
     fl:SetTexture(recUI.media.buttonFlash)
 	fl:SetDrawLayer("OVERLAY")
     bu:SetHighlightTexture(recUI.media.buttonHighlight)
-    bu:SetPushedTexture(recUI.media.buttonPushed)
+    bu:SetPushedTexture(recUI.media.buttonHighlight)
     bu:SetCheckedTexture(recUI.media.buttonChecked)
     bu:SetNormalTexture(recUI.media.buttonNormal)
 
@@ -530,10 +535,8 @@ HideDefaultFrames()
 	ic:SetDrawLayer("BORDER")
 
     if ( IsEquippedAction(action) ) then
-      bu:SetNormalTexture(recUI.media.buttonEquipped)
-      nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
+      nt:SetVertexColor(0,1,0,1)
     else
-      bu:SetNormalTexture(recUI.media.buttonNormal)
       nt:SetVertexColor(1,1,1,1)
     end
 
