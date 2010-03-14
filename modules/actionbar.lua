@@ -89,10 +89,14 @@ local scale = .6824
 ActionButton1:ClearAllPoints()
 ActionButton1:SetPoint('TOPLEFT', bar1Holder, 'TOPLEFT', 4.5, -4.5)
 
+-- Make textures for action bar 1 show all the time.
 local function PermaGrid()
 	ActionButton_HideGrid = function() end
 	for i = 1,12 do
 		local button = _G[format("ActionButton%d", i)]
+		button:SetAttribute("showgrid", 1)
+		ActionButton_ShowGrid(button)
+		button = _G[format("BonusActionButton%d", i)]
 		button:SetAttribute("showgrid", 1)
 		ActionButton_ShowGrid(button)
 	end
