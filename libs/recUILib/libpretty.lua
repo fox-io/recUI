@@ -28,3 +28,9 @@ lib.prettyNumber = function(value)
 		return value
 	end
 end
+
+--[[lib.gradient = function(val, low, hi, reverse)
+	local perc = (val - low)/(hi - low)
+	if perc >= 1 then if reverse then return 1, 0, 0 else return 0, 1, 0 end elseif perc <= 0 then if reverse then return 0, 1, 0 else return 1, 0, 0 end end
+	if reverse then return perc, 1+ (-1*perc), 0 else return 1+ (-1*perc), perc, 0 end
+end--]]

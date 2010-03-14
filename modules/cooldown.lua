@@ -20,7 +20,7 @@ local function GetFormattedTime(s)
 	end
 end
 
-local function Timer_OnUpdate(self, elapsed)
+local function Timer_OnUpdate(self)
 	if self.text:IsShown() then
 		if self.nextUpdate > 0 then
 			self.nextUpdate = self.nextUpdate - elapsed
