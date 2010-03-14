@@ -118,7 +118,7 @@ local function DataFeedBagUpdate()
 		end
 	end
 	if totalSlots > 0 then
-		displayString = displayString..MakeDisplay(fullSlots, totalSlots, false)
+		displayString = format("%s%s", displayString, MakeDisplay(fullSlots, totalSlots, false))
 	end
 	out:SetText(displayString)
 	Feeds:Update()
