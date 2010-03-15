@@ -316,7 +316,7 @@ local unusable_color = { r = 0.5, g = 0.5, b = 0.5, }
 -- if you set the timer to 0 it will update all your 120 buttons on every single frame
 -- so if you have 120FPS it will call the function 14.400 times a second!
 -- if the timer is 1 it will call the function 120 times a second (depends on actionbuttons in screen)
-local update_timer = 999
+local update_timer = TOOLTIP_UPDATE_TIME + 0.1
 
 ---------------------------------------
 -- CONFIG END
@@ -476,22 +476,22 @@ local function rActionButtonStyler_AB_usable(self)
 	local nt  = _G[name.."NormalTexture"]
 	local icon = _G[name.."Icon"]
 	if ( IsEquippedAction(action) ) then
-		nt:SetVertexColor(color_equipped.r,color_equipped.g,color_equipped.b,1)
+		nt:SetVertexColor(0, 1, 0, 1)
 	else
-		nt:SetVertexColor(color.r,color.g,color.b,1)
+		nt:SetVertexColor(1, 1, 1, 1)
 	end
 	local isUsable, notEnoughMana = IsUsableAction(action)
 	if (ActionHasRange(action) and IsActionInRange(action) == 0) then
-		icon:SetVertexColor(range_color.r,range_color.g,range_color.b,1)
+		icon:SetVertexColor(.8, .1, .1, 1)
 		return
 	elseif (notEnoughMana) then
-		icon:SetVertexColor(mana_color.r,mana_color.g,mana_color.b,1)
+		icon:SetVertexColor(.1, .3, 1, 1)
 		return
 	elseif (isUsable) then
-		icon:SetVertexColor(usable_color.r,usable_color.g,usable_color.b,1)
+		icon:SetVertexColor(1, 1, 1, 1)
 		return
 	else
-		icon:SetVertexColor(unusable_color.r,unusable_color.g,unusable_color.b,1);
+		icon:SetVertexColor(.5, .5, .5, 1)
 		return
 	end
 end
@@ -545,66 +545,3 @@ hooksecurefunc("ShapeshiftBar_OnLoad",       rActionButtonStyler_AB_styleshapesh
 hooksecurefunc("ShapeshiftBar_Update",       rActionButtonStyler_AB_styleshapeshift)
 hooksecurefunc("ShapeshiftBar_UpdateState",  rActionButtonStyler_AB_styleshapeshift)
 hooksecurefunc("PetActionBar_Update",        rActionButtonStyler_AB_stylepet)
-
--- RedRange
-function RedRange_ActionButton_OnUpdate(self, elapsed)
-    local t = self.rangeTimer
-    if (not t) then
-        return
-    end
-    local rt = (self.redRangeTimer or 0) - elapsed
-    if ((t == TOOLTIP_UPDATE_TIME) or (t <= 0) or (rt <= 0)) then
-        local newRange = false
-        local id = self.action
-        if ( ActionHasRange(id) and (IsActionInRange( id ) == 0)) then
-            newRange = true
-        end
-        if ( self.redRangeFlag ~= newRange ) then
-            self.redRangeFlag = newRange
-            RedRange_ActionButton_UpdateUsable(self)
-        end
-        self.redRangeTimer = TOOLTIP_UPDATE_TIME + 0.1
-    else
-        self.redRangeTimer = rt
-    end
-end
-
-function RedRange_ActionButton_UpdateUsable(self)
-    local id = self.action
-    local isUsable, notEnoughMana = IsUsableAction(id)
-    if (isUsable) then
-        if (ActionHasRange(id) and IsActionInRange(id) == 0) then
-            local name = self:GetName()
-            local icon = _G[name.."Icon"]
-            local normalTexture = _G[name.."NormalTexture"]
-
-            icon:SetVertexColor(0.8, 0.1, 0.1)
-            normalTexture:SetVertexColor(0.8, 0.1, 0.1)
-            self.redRangeRed = true
-            return
-        elseif (self.redRangeRed) then
-            local name = self:GetName()
-            local icon = _G[name.."Icon"]
-            local normalTexture = _G[name.."NormalTexture"]
-
-            icon:SetVertexColor(1.0, 1.0, 1.0)
-            normalTexture:SetVertexColor(1.0, 1.0, 1.0)
-            self.redRangeRed = false
-        end
-    elseif (notEnoughMana) then
-        local name = self:GetName()
-        local icon = _G[name.."Icon"]
-        local normalTexture = _G[name.."NormalTexture"]
-
-        icon:SetVertexColor(0.1, 0.3, 1.0)
-        normalTexture:SetVertexColor(0.1, 0.3, 1.0)
-        return
-    end
-end
-
-hooksecurefunc("ActionButton_OnUpdate",
-               RedRange_ActionButton_OnUpdate)
-hooksecurefunc("ActionButton_UpdateUsable",
-               RedRange_ActionButton_UpdateUsable)
-hooksecurefunc("ActionButton_Update",
-               RedRange_ActionButton_UpdateUsable)
