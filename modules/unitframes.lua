@@ -625,15 +625,17 @@ local function style(self, unit)
 	if unit == "player" or unit == "pet" or is_raid or is_party then
 		if lib.playerClass == "SHAMAN" then
 			self:SetAttribute("type1", "spell")
-			self:SetAttribute("spell1", (UnitLevel("player") > 1) and "Healing Wave" or "Lesser Healing Wave")
+			self:SetAttribute("spell1", (UnitLevel("player") >= 1) and "Healing Wave" or "Lesser Healing Wave")
 			--[[self:SetAttribute("type2", "spell")
 			self:SetAttribute("spell2", "Chain Heal")
 			self:SetAttribute("type3", "spell")
 			self:SetAttribute("spell3", "Riptide")
 			self:SetAttribute("shift-type1", "spell")
-			self:SetAttribute("shift-spell1", "Healing Wave")
-			self:SetAttribute("shift-type2", "spell")
-			self:SetAttribute("shift-spell2", "Cleanse Spirit")--]]
+			self:SetAttribute("shift-spell1", "Healing Wave")--]]
+			if UnitLevel("player") >= 16 then
+				self:SetAttribute("shift-type2", "spell")
+				self:SetAttribute("shift-spell2", "Cure Toxins") --"Cleanse Spirit")
+			end
 			self:SetAttribute("alt-type1", "target")
 			self:SetAttribute("alt-type2", "menu")
 		end
@@ -761,7 +763,7 @@ local function style(self, unit)
 			self.Enchant["growth-x"] = "RIGHT"
 			self.Enchant["growth-y"] = "DOWN"
 			self.Enchant.showCharges = false
-			self.Enchant.showCD = true
+			self.Enchant.showCD = false
 			self.Enchant.showBlizzard = false
 			self.Enchant:SetHeight(22)
 			self.Enchant:SetWidth(2 * 22 + 2 * 2)
