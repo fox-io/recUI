@@ -624,15 +624,24 @@ local function style(self, unit)
 	-- Friendly click casting
 	if unit == "player" or unit == "pet" or is_raid or is_party then
 		if lib.playerClass == "SHAMAN" then
+			local playerLevel = UnitLevel("player")
+			
 			self:SetAttribute("type1", "spell")
-			self:SetAttribute("spell1", (UnitLevel("player") >= 1) and "Healing Wave" or "Lesser Healing Wave")
+			self:SetAttribute("spell1", (playerLevel < 20) and "Healing Wave" or "Lesser Healing Wave")
+			
 			--[[self:SetAttribute("type2", "spell")
 			self:SetAttribute("spell2", "Chain Heal")
 			self:SetAttribute("type3", "spell")
-			self:SetAttribute("spell3", "Riptide")
-			self:SetAttribute("shift-type1", "spell")
-			self:SetAttribute("shift-spell1", "Healing Wave")--]]
-			if UnitLevel("player") >= 16 then
+			self:SetAttribute("spell3", "Riptide")--]]
+			
+			-- At level 20, Healing Wave moves to shift-left click.
+			if playerLevel >= 20 then
+				self:SetAttribute("shift-type1", "spell")
+				self:SetAttribute("shift-spell1", "Healing Wave")
+			end
+			
+			-- Cure Toxins at level 16
+			if playerLevel >= 16 then
 				self:SetAttribute("shift-type2", "spell")
 				self:SetAttribute("shift-spell2", "Cure Toxins") --"Cleanse Spirit")
 			end
