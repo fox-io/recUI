@@ -572,6 +572,7 @@ local PostCreateAuraIcon = function(self, button)
 	button.cd:ClearAllPoints()
 	button.cd:SetPoint("TOPLEFT", 3, -3)
 	button.cd:SetPoint("BOTTOMRIGHT", -3, 3)
+	button.cd:SetReverse()	-- ty cael
 	-- Remove cooldown spiral.
 	--button.cd = nil
 
@@ -629,10 +630,17 @@ local function style(self, unit)
 			self:SetAttribute("type1", "spell")
 			self:SetAttribute("spell1", (playerLevel < 20) and "Healing Wave" or "Lesser Healing Wave")
 			
-			--[[self:SetAttribute("type2", "spell")
-			self:SetAttribute("spell2", "Chain Heal")
-			self:SetAttribute("type3", "spell")
-			self:SetAttribute("spell3", "Riptide")--]]
+			-- Chain Heal at level 40.
+			if playerLevel >= 40 then
+				self:SetAttribute("type2", "spell")
+				self:SetAttribute("spell2", "Chain Heal")
+			end
+			
+			-- Riptide at 60 (for resto shaman)
+			if playerLevel >= 60 then
+				self:SetAttribute("type3", "spell")
+				self:SetAttribute("spell3", "Riptide")
+			end
 			
 			-- At level 20, Healing Wave moves to shift-left click.
 			if playerLevel >= 20 then
