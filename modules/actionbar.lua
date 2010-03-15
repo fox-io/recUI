@@ -539,12 +539,12 @@ hooksecurefunc("ActionButton_UpdateUsable",   rActionButtonStyler_AB_usable)
 ActionButton_OnUpdate = rActionButtonStyler_AB_onupdate
 
 --fix grid
-hooksecurefunc("ActionButton_ShowGrid", rActionButtonStyler_AB_fixgrid)
+hooksecurefunc("ActionButton_ShowGrid",      rActionButtonStyler_AB_fixgrid)
 hooksecurefunc("ActionButton_UpdateHotkeys", rActionButtonStyler_AB_hotkey)
-hooksecurefunc("ShapeshiftBar_OnLoad",   rActionButtonStyler_AB_styleshapeshift)
-hooksecurefunc("ShapeshiftBar_Update",   rActionButtonStyler_AB_styleshapeshift)
-hooksecurefunc("ShapeshiftBar_UpdateState",   rActionButtonStyler_AB_styleshapeshift)
-hooksecurefunc("PetActionBar_Update",   rActionButtonStyler_AB_stylepet)
+hooksecurefunc("ShapeshiftBar_OnLoad",       rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("ShapeshiftBar_Update",       rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("ShapeshiftBar_UpdateState",  rActionButtonStyler_AB_styleshapeshift)
+hooksecurefunc("PetActionBar_Update",        rActionButtonStyler_AB_stylepet)
 
 -- RedRange
 function RedRange_ActionButton_OnUpdate(self, elapsed)
