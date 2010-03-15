@@ -270,8 +270,9 @@ do
 	end
 
 	local function CreateIcon(self, icons)
-		local button = CreateFrame("Frame", nil, icons)
+		local button = CreateFrame("Button", nil, icons)
 		button:EnableMouse()
+		button:RegisterForClicks("RightButtonUp")
 		
 		button:SetWidth(icons.size or 16)
 		button:SetHeight(icons.size or 16)
@@ -283,18 +284,19 @@ do
 		icon:SetAllPoints(button)
 
 		local count = button:CreateFontString(nil, "OVERLAY")
-		count:SetFont(recUI.media.font, 8, "OUTLINE")
+		count:SetFontObject(NumberFontNormal)
 		count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 0)
 		
-		local overlay = button:CreateTexture(nil, "OVERLAY")
-		overlay:SetTexture"Interface\\Buttons\\UI-Debuff-Overlays"
-		overlay:SetAllPoints(button)
-		overlay:SetTexCoord(.296875, .5703125, 0, .515625)
+		--local overlay = button:CreateTexture(nil, "OVERLAY")
+		--overlay:SetTexture"Interface\\Buttons\\UI-Debuff-Overlays"
+		--overlay:SetAllPoints(button)
+		--overlay:SetTexCoord(.296875, .5703125, 0, .515625)
 			
 		table.insert(icons, button)
 		
-		button.overlay = overlay
+		button.parent = icons
 		button.frame = self
+		--button.overlay = overlay
 		button.icon = icon
 		button.count = count
 		button.cd = cd
@@ -761,7 +763,7 @@ local function style(self, unit)
 			self.Enchant.showCharges = false
 			self.Enchant.showCD = true
 			self.Enchant.showBlizzard = false
-			self.Enchant:SetHeight(1 * 22 + 1 * 2)
+			self.Enchant:SetHeight(22)
 			self.Enchant:SetWidth(2 * 22 + 2 * 2)
 			self.Enchant:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 2)
 		else
